@@ -6,15 +6,19 @@ import (
 	"testing"
 )
 
-func TestTerraformRepository(t *testing.T) {
-	t.Parallel()
+var githubOrganization, githubToken string
 
-	githubOrganization := os.Getenv("GITHUB_ORGANIZATION")
-	githubToken := os.Getenv("GITHUB_TOKEN")
+func init() {
+	githubOrganization = os.Getenv("GITHUB_ORGANIZATION")
+	githubToken = os.Getenv("GITHUB_TOKEN")
 
 	if githubToken == "" {
 		panic("Please set a github token using the GITHUB_TOKEN environment variable.")
 	}
+}
+
+func TestTerraformRepository(t *testing.T) {
+	t.Parallel()
 
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located
@@ -36,13 +40,6 @@ func TestTerraformRepository(t *testing.T) {
 
 func TestTerraformRepositoryWithCollaborators(t *testing.T) {
 	t.Parallel()
-
-	githubOrganization := os.Getenv("GITHUB_ORGANIZATION")
-	githubToken := os.Getenv("GITHUB_TOKEN")
-
-	if githubToken == "" {
-		panic("Please set a github token using the GITHUB_TOKEN environment variable.")
-	}
 
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located

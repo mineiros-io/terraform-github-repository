@@ -31,10 +31,6 @@ module "repository" {
     {
       username   = "soerenmartius"
       permission = "admin"
-    },
-    {
-      username   = "asquared-ci",
-      permission = "pull"
     }
   ]
 
