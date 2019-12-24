@@ -109,11 +109,11 @@ variable "collaborators" {
   # Example:
   # collaborators = [
   #   {
-  #     username   = "foo"
+  #     username   = "username1"
   #     permission = "admin"
   #   },
   #   {
-  #     username   = "faa"
+  #     username   = "username2"
   #     permission = "pull"
   #   }
   # ]
