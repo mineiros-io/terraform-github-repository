@@ -104,7 +104,7 @@ variable "collaborators" {
     username    = string
     permission  = string
   }))
-  description = "A list of users who should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin. Defaults to push"
+  description = "A list of users who should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin. Defaults to push."
   default = []
   # Example:
   # collaborators = [

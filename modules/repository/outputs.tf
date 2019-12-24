@@ -1,15 +1,19 @@
 output "full_name" {
-  value = github_repository.main.full_name
+  value = github_repository.repository.full_name
 }
 
 output "html_url" {
-  value = github_repository.main.html_url
+  value = github_repository.repository.html_url
 }
 
 output "ssh_clone_url" {
-  value = github_repository.main.ssh_clone_url
+  value = github_repository.repository.ssh_clone_url
 }
 
 output "git_clone_url" {
-  value = github_repository.main.git_clone_url
+  value = github_repository.repository.git_clone_url
+}
+
+output "collaborator_invitation_id" {
+  value = github_repository_collaborator.collaborator.*.invitation_id
 }

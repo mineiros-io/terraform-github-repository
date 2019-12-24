@@ -1,4 +1,4 @@
-resource "github_repository" "main" {
+resource "github_repository" "repository" {
   name               = var.name
   description        = var.description
   homepage_url       = var.homepage_url
@@ -18,10 +18,10 @@ resource "github_repository" "main" {
   topics             = var.topics
 }
 
-resource "github_repository_collaborator" "main" {
+resource "github_repository_collaborator" "collaborator" {
   count = length(var.collaborators)
 
-  repository = github_repository.main.name
+  repository = github_repository.repository.name
   username   = var.collaborators[count.index].username
   permission = var.collaborators[count.index].permission
 }
