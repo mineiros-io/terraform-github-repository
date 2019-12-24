@@ -98,3 +98,23 @@ variable "topics" {
   description = "The list of topics of the repository."
   default     = []
 }
+
+variable "collaborators" {
+  type = list(object({
+    username    = string
+    permission  = string
+  }))
+  description = "A list of users who should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin. Defaults to push"
+  default = []
+  # Example:
+  # collaborators = [
+  #   {
+  #     username   = "foo"
+  #     permission = "admin"
+  #   },
+  #   {
+  #     username   = "faa"
+  #     permission = "pull"
+  #   }
+  # ]
+}

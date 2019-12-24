@@ -17,3 +17,11 @@ resource "github_repository" "main" {
   archived           = var.archived
   topics             = var.topics
 }
+
+resource "github_repository_collaborator" "main" {
+  count = length(var.collaborators)
+
+  repository = github_repository.main.full_name
+  username   = var.collaborators[count.index].username
+  permission = var.collaborators[count.index].permission
+}
