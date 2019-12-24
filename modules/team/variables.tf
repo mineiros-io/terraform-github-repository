@@ -29,11 +29,11 @@ variable "ldap_dn" {
 
 variable "members" {
   type = list(object({
-    username    = string
-    role        = string
+    username = string
+    role     = string
   }))
   description = "A list of users who should be invited to the current team. Role must must be one of member or maintainer."
-  default = []
+  default     = []
   # Example:
   # collaborators = [
   #   {

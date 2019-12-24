@@ -101,11 +101,11 @@ variable "topics" {
 
 variable "collaborators" {
   type = list(object({
-    username    = string
-    permission  = string
+    username   = string
+    permission = string
   }))
   description = "A list of users who should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin. Defaults to push."
-  default = []
+  default     = []
   # Example:
   # collaborators = [
   #   {
