@@ -160,8 +160,8 @@ variable "branch_protection_rules" {
       teams = list(string)
     })
   }))
-  default     = []
   description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
+  default     = []
   # Example:
   # branch_protection_rules = [
   #   {
@@ -201,14 +201,37 @@ variable "issue_labels" {
   # Example:
   # issue_labels = [
   #   {
-  #     name = "WIP"
+  #     name        = "WIP"
   #     description = "Work in Progress..."
-  #     color = "d6c860"
+  #     color       = "d6c860"
   #   },
   #   {
-  #     name = "another-label"
+  #     name        = "another-label"
   #     description = "This is a lable created by Terraform..."
-  #     color = "1dc34f"
+  #     color       = "1dc34f"
+  #   }
+  # ]
+}
+
+variable "deploy_keys" {
+  type = list(object({
+    title     = string
+    key       = string
+    read_only = bool
+  }))
+  description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
+  default     = []
+  # Example:
+  # deploy_keys = [
+  #   {
+  #     title     = "CI User Deploy Key"
+  #     key       = "ssh-rsa AAAAB3NzaC1yc2...."
+  #     read_only = true
+  #   },
+  #   {
+  #     title     = "Test Key"
+  #     key       = "ssh-rsa AAAAB3NzaC1yc2...."
+  #     read_only = false
   #   }
   # ]
 }
