@@ -106,6 +106,7 @@ variable "collaborators" {
   }))
   description = "A list of users that should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin."
   default     = []
+
   # Example:
   # collaborators = [
   #   {
@@ -126,6 +127,7 @@ variable "teams" {
   }))
   description = "A list of teams that should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin."
   default     = []
+
   # Example:
   # collaborators = [
   #   {
@@ -162,6 +164,7 @@ variable "branch_protection_rules" {
   }))
   description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
   default     = []
+
   # Example:
   # branch_protection_rules = [
   #   {
@@ -198,6 +201,7 @@ variable "issue_labels" {
   }))
   description = "Configure a GitHub issue label resource."
   default     = []
+
   # Example:
   # issue_labels = [
   #   {
@@ -221,6 +225,7 @@ variable "deploy_keys" {
   }))
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
+
   # Example:
   # deploy_keys = [
   #   {
@@ -234,4 +239,22 @@ variable "deploy_keys" {
   #     read_only = false
   #   }
   # ]
+}
+
+variable "projects" {
+  type = list(object({
+    name = string
+    body = string
+  }))
+  description = "Create and manage projects for GitHub repository."
+  default     = []
+
+  # Example:
+  # projects = [
+  #   {
+  #     name = "Testproject"
+  #     body = "This is a fancy test project for testing"
+  #   }
+  # ]
+
 }

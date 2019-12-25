@@ -55,7 +55,7 @@ resource "github_repository" "repository" {
   homepage_url       = var.homepage_url
   private            = var.private
   has_issues         = var.has_issues
-  has_projects       = var.has_projects
+  has_projects       = length(var.projects) > 0 ? true : var.has_projects
   has_wiki           = var.has_wiki
   allow_merge_commit = var.allow_merge_commit
   allow_rebase_merge = var.allow_rebase_merge
@@ -140,4 +140,13 @@ resource "github_repository_deploy_key" "deploy_key" {
   title      = var.deploy_keys[count.index].title
   key        = var.deploy_keys[count.index].key
   read_only  = var.deploy_keys[count.index].read_only
+}
+
+resource "github_repository_project" "repository_project" {
+  count = length(var.projects)
+
+  repository = github_repository.repository.name
+  name       = var.projects[count.index].name
+  body       = var.projects[count.index].body
+
 }

@@ -85,6 +85,13 @@ module "repository" {
       read_only = false
     }
   ]
+
+  projects = [
+    {
+      name = "Testproject"
+      body = "This is a fancy test project for testing"
+    }
+  ]
 }
 
 module "team" {

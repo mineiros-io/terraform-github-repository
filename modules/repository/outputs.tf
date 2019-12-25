@@ -17,3 +17,7 @@ output "git_clone_url" {
 output "collaborator_invitation_id" {
   value = github_repository_collaborator.collaborator.*.invitation_id
 }
+
+output "project_url" {
+  value = github_repository_project.repository_project.*.url
+}
