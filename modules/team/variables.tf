@@ -32,7 +32,7 @@ variable "members" {
     username = string
     role     = string
   }))
-  description = "A list of users who should be invited to the current team. Role must must be one of member or maintainer."
+  description = "A list of users that should be invited to the current team. Role must must be one of member or maintainer."
   default     = []
   # Example:
   # collaborators = [

@@ -25,3 +25,11 @@ resource "github_repository_collaborator" "collaborator" {
   username   = var.collaborators[count.index].username
   permission = var.collaborators[count.index].permission
 }
+
+resource "github_team_repository" "team_repository" {
+  count = length(var.teams)
+
+  repository = github_repository.repository.name
+  team_id    = var.teams[count.index].id
+  permission = var.teams[count.index].permission
+}
