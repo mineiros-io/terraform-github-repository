@@ -100,6 +100,15 @@ resource "github_branch_protection" "branch_protection_rule" {
   }
 }
 
+resource "github_issue_label" "label" {
+  count = length(var.issue_labels)
+
+  repository  = github_repository.repository.name
+  name        = var.issue_labels[count.index].name
+  description = var.issue_labels[count.index].description
+  color       = var.issue_labels[count.index].color
+}
+
 resource "github_repository_collaborator" "collaborator" {
   count = length(var.collaborators)
 

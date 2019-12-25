@@ -188,5 +188,27 @@ variable "branch_protection_rules" {
   #     }
   #   }
   # ]
+}
 
+variable "issue_labels" {
+  type = list(object({
+    name        = string
+    description = string
+    color       = string
+  }))
+  description = "Configure a GitHub issue label resource."
+  default     = []
+  # Example:
+  # issue_labels = [
+  #   {
+  #     name = "WIP"
+  #     description = "Work in Progress..."
+  #     color = "d6c860"
+  #   },
+  #   {
+  #     name = "another-label"
+  #     description = "This is a lable created by Terraform..."
+  #     color = "1dc34f"
+  #   }
+  # ]
 }

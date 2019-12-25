@@ -59,6 +59,19 @@ module "repository" {
       }
     }
   ]
+
+  issue_labels = [
+    {
+      name = "WIP"
+      description = "Work in Progress..."
+      color = "d6c860"
+    },
+    {
+      name = "another-label"
+      description = "This is a lable created by Terraform..."
+      color = "1dc34f"
+    }
+  ]
 }
 
 module "team" {
