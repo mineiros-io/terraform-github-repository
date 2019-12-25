@@ -1,5 +1,4 @@
 locals {
-
   branch_protection_rules = [
     for b in var.branch_protection_rules : merge({
       branch                        = null
@@ -62,11 +61,13 @@ resource "github_repository" "repository" {
   topics             = var.topics
 }
 
+# https://www.terraform.io/docs/providers/github/r/branch_protection.html
 resource "github_branch_protection" "branch_protection_rule" {
-  count          = length(local.branch_protection_rules)
-  repository     = github_repository.repository.name
-  branch         = local.branch_protection_rules[count.index].branch
-  enforce_admins = local.branch_protection_rules[count.index].enforce_admins
+  count                  = length(local.branch_protection_rules)
+  repository             = github_repository.repository.name
+  branch                 = local.branch_protection_rules[count.index].branch
+  enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
+  require_signed_commits = local.branch_protection_rules[count.index].require_signed_commits
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]
