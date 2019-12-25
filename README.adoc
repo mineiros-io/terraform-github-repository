@@ -1,1 +1,8 @@
-# terraform-github
+= terraform-github
+
+== Limitations
+Due to current limitations of the HCL language, items added or removed from the `branch_protection`, `collaborators`, `teams` and `deploy_keys` lists, will also update subsequent items with indexes greater than where the addition or removal was made.
+
+*Also, currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.*
+
+
