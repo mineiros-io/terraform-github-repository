@@ -138,3 +138,55 @@ variable "teams" {
   #   }
   # ]
 }
+
+variable "branch_protection_rules" {
+  type = list(object({
+    branch                 = string
+    enforce_admins         = bool
+    require_signed_commits = bool
+    required_status_checks = object({
+      strict   = bool
+      contexts = list(string)
+    })
+    required_pull_request_reviews = object({
+      dismiss_stale_reviews           = bool
+      dismissal_users                 = list(string)
+      dismissal_teams                 = list(string)
+      require_code_owner_reviews      = bool
+      required_approving_review_count = number
+    })
+    restrictions = object({
+      users = list(string)
+      teams = list(string)
+    })
+  }))
+  default     = []
+  description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
+  # Example:
+  # branch_protection_rules = [
+  #   {
+  #     branch                 = "master"
+  #     enforce_admins         = true
+  #     require_signed_commits = true
+  #
+  #     required_status_checks = {
+  #       strict   = false
+  #       contexts = ["ci/travis"]
+  #     }
+  #
+  #     required_pull_request_reviews = {
+  #       dismiss_stale_reviews           = true
+  #       dismissal_users                 = ["user1", "usee2]
+  #       dismissal_teams                 = ["team-slug-1", "team-slug-2"]
+  #       require_code_owner_reviews      = true
+  #       required_approving_review_count = 1
+  #     }
+  #
+  #     restrictions = {
+  #       users = ["user1"]
+  #       teams = ["team-slug-1"]
+  #     }
+  #   }
+  # ]
+
+}

@@ -33,6 +33,32 @@ module "repository" {
       permission = "admin"
     }
   ]
+
+  branch_protection_rules = [
+    {
+      branch                 = "master"
+      enforce_admins         = true
+      require_signed_commits = true
+
+      required_status_checks = {
+        strict   = false
+        contexts = ["ci/travis"]
+      }
+
+      required_pull_request_reviews = {
+        dismiss_stale_reviews           = true
+        dismissal_users                 = ["foo-user"]
+        dismissal_teams                 = [module.team.slug]
+        require_code_owner_reviews      = true
+        required_approving_review_count = 1
+      }
+
+      restrictions = {
+        users = ["soerenmartius"]
+        teams = ["team-1"]
+      }
+    }
+  ]
 }
 
 module "team" {

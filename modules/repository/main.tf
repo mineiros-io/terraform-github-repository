@@ -1,3 +1,47 @@
+locals {
+
+  branch_protection_rules = [
+    for b in var.branch_protection_rules : merge({
+      branch                        = null
+      enforce_admins                = null
+      require_signed_commits        = null
+      required_status_checks        = []
+      required_pull_request_reviews = []
+      restrictions                  = []
+    }, b)
+  ]
+
+  required_status_checks = [
+    for b in local.branch_protection_rules : [
+      for r in b.required_status_checks[*] : merge({
+        strict   = null
+        contexts = []
+      }, r)
+    ]
+  ]
+
+  required_pull_request_reviews = [
+    for b in local.branch_protection_rules : [
+      for r in b.required_pull_request_reviews[*] : merge({
+        dismiss_stale_reviews           = true
+        dismissal_users                 = []
+        dismissal_teams                 = []
+        require_code_owner_reviews      = null
+        required_approving_review_count = null
+      }, r)
+    ]
+  ]
+
+  restrictions = [
+    for b in local.branch_protection_rules : [
+      for r in b.restrictions[*] : merge({
+        users = []
+        teams = []
+      }, r)
+    ]
+  ]
+}
+
 resource "github_repository" "repository" {
   name               = var.name
   description        = var.description
@@ -16,6 +60,42 @@ resource "github_repository" "repository" {
   default_branch     = var.default_branch
   archived           = var.archived
   topics             = var.topics
+}
+
+resource "github_branch_protection" "branch_protection_rule" {
+  count          = length(local.branch_protection_rules)
+  repository     = github_repository.repository.name
+  branch         = local.branch_protection_rules[count.index].branch
+  enforce_admins = local.branch_protection_rules[count.index].enforce_admins
+
+  dynamic "required_status_checks" {
+    for_each = local.required_status_checks[count.index]
+
+    content {
+      strict   = required_status_checks.value.strict
+      contexts = required_status_checks.value.contexts
+    }
+  }
+
+  dynamic "required_pull_request_reviews" {
+    for_each = local.required_pull_request_reviews[count.index]
+
+    content {
+      dismiss_stale_reviews      = required_pull_request_reviews.value.dismiss_stale_reviews
+      dismissal_users            = required_pull_request_reviews.value.dismissal_users
+      dismissal_teams            = required_pull_request_reviews.value.dismissal_teams
+      require_code_owner_reviews = required_pull_request_reviews.value.require_code_owner_reviews
+    }
+  }
+
+  dynamic "restrictions" {
+    for_each = local.restrictions[count.index]
+
+    content {
+      users = restrictions.value.users
+      teams = restrictions.value.teams
+    }
+  }
 }
 
 resource "github_repository_collaborator" "collaborator" {
