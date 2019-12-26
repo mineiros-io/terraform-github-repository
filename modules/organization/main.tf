@@ -8,10 +8,10 @@ locals {
 }
 
 resource "github_membership" "membership" {
-  count = length(var.members)
+  count = length(local.members)
 
-  username = var.members[count.index].username
-  role     = length(var.members[count.index].role) > 0 ? var.members[count.index].role : "member"
+  username = local.members[count.index].username
+  role     = length(local.members[count.index].role) > 0 ? local.members[count.index].role : "member"
 }
 
 resource "github_organization_block" "blocked_user" {

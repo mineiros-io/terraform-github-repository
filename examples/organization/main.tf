@@ -13,8 +13,10 @@ module "organization" {
   members = [
     {
       username = "soerenmartius"
-      #role     = ""
-      # won't work when role isn't set explicitly
+    },
+    {
+      username = "mariux"
+      role     = "admin"
     }
   ]
 
