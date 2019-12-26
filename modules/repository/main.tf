@@ -134,12 +134,12 @@ resource "github_team_repository" "team_repository" {
 }
 
 resource "github_repository_deploy_key" "deploy_key" {
-  count = length(var.deploy_keys)
+  count = length(local.deploy_keys)
 
   repository = github_repository.repository.name
-  title      = var.deploy_keys[count.index].title
-  key        = var.deploy_keys[count.index].key
-  read_only  = var.deploy_keys[count.index].read_only
+  title      = local.deploy_keys[count.index].title
+  key        = local.deploy_keys[count.index].key
+  read_only  = local.deploy_keys[count.index].read_only
 }
 
 resource "github_repository_project" "repository_project" {
@@ -148,5 +148,4 @@ resource "github_repository_project" "repository_project" {
   repository = github_repository.repository.name
   name       = var.projects[count.index].name
   body       = var.projects[count.index].body
-
 }
