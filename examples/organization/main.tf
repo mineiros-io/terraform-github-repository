@@ -7,11 +7,18 @@ provider "github" {
   organization = var.github_organization
 }
 
-module "blocked_users" {
+module "organization" {
   source = "../../modules/organization"
 
+  members = [
+    {
+      username = "soerenmartius"
+      #role     = ""
+      # won't work when role isn't set explicitly
+    }
+  ]
+
   blocked_users = [
-    "soerenmartius",
     "terraform-test-user-1"
   ]
 }
