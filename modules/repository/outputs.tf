@@ -15,7 +15,7 @@ output "git_clone_url" {
 }
 
 output "collaborator_invitation_id" {
-  value = github_repository_collaborator.collaborator.*.invitation_id
+  value = { for k, v in github_repository_collaborator.collaborator : k => v.invitation_id }
 }
 
 output "project_url" {

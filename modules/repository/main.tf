@@ -124,12 +124,19 @@ resource "github_issue_label" "label" {
   color       = each.value.color
 }
 
+locals {
+  collaborators = [for i in var.collaborators : merge({
+    id         = lower(i.username)
+    permission = "push"
+  }, i)]
+}
+
 resource "github_repository_collaborator" "collaborator" {
-  count = length(var.collaborators)
+  for_each = { for i in local.collaborators : i.id => i }
 
   repository = github_repository.repository.name
-  username   = var.collaborators[count.index].username
-  permission = var.collaborators[count.index].permission
+  username   = each.value.username
+  permission = each.value.permission
 }
 
 resource "github_team_repository" "team_repository" {
