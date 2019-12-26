@@ -14,7 +14,7 @@ variable "members" {
   #  username = string
   #  role     = optional(string)
   # }))
-  description = "A list of users to be added from your organization. When applied, an invitation will be sent to the user to become part of the organization. When destroyed, either the invitation will be cancelled or the user will be removed. Role must be one of member or admin."
+  description = "A list of users to be added from your organization. When applied, an invitation will be sent to the user to become part of the organization. When destroyed, either the invitation will be cancelled or the user will be removed. Role must be one of member or admin. Defaults to member."
   default     = []
 
   # Example:
