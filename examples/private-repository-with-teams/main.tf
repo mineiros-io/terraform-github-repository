@@ -90,6 +90,10 @@ module "repository" {
     {
       name = "Testproject"
       body = "This is a fancy test project for testing"
+    },
+    {
+      name = "Another Testproject"
+      body = "This is a fancy test project for testing"
     }
   ]
 }

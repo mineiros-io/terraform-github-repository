@@ -156,10 +156,17 @@ resource "github_repository_deploy_key" "deploy_key" {
   read_only  = local.deploy_keys[count.index].read_only
 }
 
+locals {
+  projects = [for i in var.projects : merge({
+    id   = lower(i.name)
+    body = null
+  }, i)]
+}
+
 resource "github_repository_project" "repository_project" {
-  count = length(var.projects)
+  for_each = { for i in local.projects : i.id => i }
 
   repository = github_repository.repository.name
-  name       = var.projects[count.index].name
-  body       = var.projects[count.index].body
+  name       = each.value.name
+  body       = each.value.body
 }

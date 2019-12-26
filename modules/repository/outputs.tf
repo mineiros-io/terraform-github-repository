@@ -19,5 +19,5 @@ output "collaborator_invitation_id" {
 }
 
 output "project_url" {
-  value = github_repository_project.repository_project.*.url
+  value = { for k, v in github_repository_project.repository_project : k => v.url }
 }
