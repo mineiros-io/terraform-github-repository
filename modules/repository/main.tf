@@ -12,7 +12,7 @@ locals {
 
   required_status_checks = [
     for b in local.branch_protection_rules : [
-      for r in b.required_status_checks[*] : merge({
+      for r in b.required_status_checks : merge({
         strict   = null
         contexts = []
       }, r)
@@ -21,7 +21,7 @@ locals {
 
   required_pull_request_reviews = [
     for b in local.branch_protection_rules : [
-      for r in b.required_pull_request_reviews[*] : merge({
+      for r in b.required_pull_request_reviews : merge({
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
@@ -33,7 +33,7 @@ locals {
 
   restrictions = [
     for b in local.branch_protection_rules : [
-      for r in b.restrictions[*] : merge({
+      for r in b.restrictions : merge({
         users = []
         teams = []
       }, r)
