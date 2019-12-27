@@ -130,7 +130,7 @@ locals {
 }
 
 resource "github_repository_collaborator" "collaborator" {
-  for_each = { for c in local.collaborators : c.id => c }
+  for_each = local.collaborators
 
   repository = github_repository.repository.name
   username   = each.value.username
