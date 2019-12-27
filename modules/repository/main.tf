@@ -116,8 +116,7 @@ locals {
 }
 
 resource "github_issue_label" "label" {
-  for_each = { for i in local.issue_labels : lookup(i, "id", lower(i.name)) => i }
-
+  for_each    = { for i in local.issue_labels : i.id => i }
   repository  = github_repository.repository.name
   name        = each.value.name
   description = each.value.description
@@ -125,9 +124,9 @@ resource "github_issue_label" "label" {
 }
 
 locals {
-  collaborators = { for collaborator in var.collaborators : lower(collaborator.username) => merge({
+  collaborators = { for c in var.collaborators : lower(c.username) => merge({
     permission = "pull"
-  }, collaborator)}
+  }, c) }
 }
 
 resource "github_repository_collaborator" "collaborator" {
