@@ -1,7 +1,7 @@
 output "username" {
-  value = github_membership.membership.*.username
+  value = { for k, v in github_membership.membership : k => v.username }
 }
 
 output "role" {
-  value = github_membership.membership.*.role
+  value = { for k, v in github_membership.membership : k => v.role }
 }

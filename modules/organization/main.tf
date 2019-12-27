@@ -1,17 +1,16 @@
 locals {
-  members = [
-    for m in var.members : merge({
-      username = null
-      role     = "member"
-    }, m)
-  ]
+  members = [for i in var.members : merge({
+    id       = lower(i.username)
+    username = null
+    role     = "member"
+  }, i)]
 }
 
 resource "github_membership" "membership" {
-  count = length(local.members)
+  for_each = { for i in local.members : i.id => i }
 
-  username = local.members[count.index].username
-  role     = local.members[count.index].role
+  username = each.value.username
+  role     = each.value.role
 }
 
 resource "github_organization_block" "blocked_user" {
