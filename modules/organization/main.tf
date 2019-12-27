@@ -14,7 +14,7 @@ resource "github_membership" "membership" {
 }
 
 resource "github_organization_block" "blocked_user" {
-  count = length(var.blocked_users)
+  for_each = toset(var.blocked_users)
 
-  username = var.blocked_users[count.index]
+  username = each.value
 }
