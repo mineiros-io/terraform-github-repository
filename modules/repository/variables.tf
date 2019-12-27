@@ -65,8 +65,8 @@ variable "has_downloads" {
 
 variable "auto_init" {
   type        = bool
-  description = "Set to true to produce an initial commit in the repository."
-  default     = false
+  description = "Wether or not to produce an initial commit in the repository."
+  default     = true
 }
 
 variable "gitignore_template" {
