@@ -19,14 +19,13 @@ resource "github_organization_block" "blocked_user" {
 }
 
 locals {
-  projects = [for p in var.projects : merge({
-    id   = lower(p.name)
+  projects = { for p in var.projects : lookup(p, "id", lower(p.name)) => merge({
     body = null
-  }, p)]
+  }, p) }
 }
 
 resource "github_organization_project" "project" {
-  for_each = { for p in local.projects : p.id => p }
+  for_each = local.projects
 
   name = each.value.name
   body = each.value.body
