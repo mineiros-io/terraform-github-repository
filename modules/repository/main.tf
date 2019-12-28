@@ -156,14 +156,13 @@ resource "github_repository_deploy_key" "deploy_key" {
 }
 
 locals {
-  projects = [for i in var.projects : merge({
-    id   = lower(i.name)
+  projects = { for i in var.projects : lookup(i, "id", lower(i.name)) => merge({
     body = null
-  }, i)]
+  }, i) }
 }
 
 resource "github_repository_project" "repository_project" {
-  for_each = { for i in local.projects : i.id => i }
+  for_each = local.projects
 
   repository = github_repository.repository.name
   name       = each.value.name
