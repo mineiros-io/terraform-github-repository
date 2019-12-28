@@ -61,9 +61,13 @@ resource "github_repository" "repository" {
   topics             = var.topics
 }
 
+#
+# Repository branch protections
+#
 # https://www.terraform.io/docs/providers/github/r/branch_protection.html
 resource "github_branch_protection" "branch_protection_rule" {
-  count                  = length(local.branch_protection_rules)
+  count = length(local.branch_protection_rules)
+
   repository             = github_repository.repository.name
   branch                 = local.branch_protection_rules[count.index].branch
   enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
@@ -100,6 +104,9 @@ resource "github_branch_protection" "branch_protection_rule" {
   }
 }
 
+#
+# Repository issue labels
+#
 locals {
   issue_labels = { for i in var.issue_labels : lookup(i, "id", lower(i.name)) => merge({
     description = null
@@ -115,6 +122,9 @@ resource "github_issue_label" "label" {
   color       = each.value.color
 }
 
+#
+# Repository collaborators
+#
 locals {
   collaborators = { for c in var.collaborators : lower(c.username) => merge({
     permission = "pull"
@@ -129,6 +139,9 @@ resource "github_repository_collaborator" "collaborator" {
   permission = each.value.permission
 }
 
+#
+# Repository teams
+#
 resource "github_team_repository" "team_repository" {
   count = length(var.teams)
 
@@ -137,6 +150,9 @@ resource "github_team_repository" "team_repository" {
   permission = var.teams[count.index].permission
 }
 
+#
+# Repository deploy keys
+#
 locals {
   deploy_keys = [
     for d in var.deploy_keys : merge({
@@ -155,6 +171,9 @@ resource "github_repository_deploy_key" "deploy_key" {
   read_only  = local.deploy_keys[count.index].read_only
 }
 
+#
+# Repository projects
+#
 locals {
   projects = { for i in var.projects : lookup(i, "id", lower(i.name)) => merge({
     body = null
