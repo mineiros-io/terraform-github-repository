@@ -1,13 +1,12 @@
 locals {
-  members = [for i in var.members : merge({
-    id       = lower(i.username)
+  members = { for i in var.members : lower(i.username) => merge({
     username = null
     role     = "member"
-  }, i)]
+  }, i) }
 }
 
 resource "github_membership" "membership" {
-  for_each = { for m in local.members : m.id => m }
+  for_each = local.members
 
   username = each.value.username
   role     = each.value.role
