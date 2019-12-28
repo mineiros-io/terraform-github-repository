@@ -101,14 +101,14 @@ resource "github_branch_protection" "branch_protection_rule" {
 }
 
 locals {
-  issue_labels = [for i in var.issue_labels : merge({
-    id          = lower(i.name)
+  issue_labels = { for i in var.issue_labels : lookup(i, "id", lower(i.name)) => merge({
     description = null
-  }, i)]
+  }, i) }
 }
 
 resource "github_issue_label" "label" {
-  for_each    = { for i in local.issue_labels : i.id => i }
+  for_each = local.issue_labels
+
   repository  = github_repository.repository.name
   name        = each.value.name
   description = each.value.description
