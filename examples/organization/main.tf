@@ -10,17 +10,28 @@ provider "github" {
 module "organization" {
   source = "../../modules/organization"
 
-  members = [
-    {
-      username = "soerenmartius"
-    },
-    {
-      username = "mariux"
-      role     = "admin"
-    }
-  ]
+  //  members = [
+  //    {
+  //      username = "soerenmartius"
+  //    },
+  //    {
+  //      username = "mariux"
+  //      role     = "admin"
+  //    }
+  //  ]
 
   blocked_users = [
-    "terraform-test-user-1"
+    "Ameobea",
+    "Testuser1g"
+  ]
+
+  projects = [
+    {
+      name = "Test Project"
+      body = "This is a test project created by Terraform"
+    },
+    {
+      name = "Test Project without a body"
+    }
   ]
 }
