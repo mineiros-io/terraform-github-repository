@@ -12,7 +12,7 @@ locals {
 
   required_status_checks = [
     for b in local.branch_protection_rules : [
-      for r in b.required_status_checks[*] : merge({
+      for r in b.required_status_checks : merge({
         strict   = null
         contexts = []
       }, r)
@@ -21,7 +21,7 @@ locals {
 
   required_pull_request_reviews = [
     for b in local.branch_protection_rules : [
-      for r in b.required_pull_request_reviews[*] : merge({
+      for r in b.required_pull_request_reviews : merge({
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
@@ -33,19 +33,11 @@ locals {
 
   restrictions = [
     for b in local.branch_protection_rules : [
-      for r in b.restrictions[*] : merge({
+      for r in b.restrictions : merge({
         users = []
         teams = []
       }, r)
     ]
-  ]
-
-  deploy_keys = [
-    for d in var.deploy_keys : merge({
-      title     = substr(d.key, 0, 26)
-      key       = null
-      read_only = true
-    }, d)
   ]
 }
 
@@ -69,9 +61,13 @@ resource "github_repository" "repository" {
   topics             = var.topics
 }
 
+#
+# Repository branch protections
+#
 # https://www.terraform.io/docs/providers/github/r/branch_protection.html
 resource "github_branch_protection" "branch_protection_rule" {
-  count                  = length(local.branch_protection_rules)
+  count = length(local.branch_protection_rules)
+
   repository             = github_repository.repository.name
   branch                 = local.branch_protection_rules[count.index].branch
   enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
@@ -108,21 +104,27 @@ resource "github_branch_protection" "branch_protection_rule" {
   }
 }
 
+#
+# Repository issue labels
+#
 locals {
-  issue_labels = [for i in var.issue_labels : merge({
-    id          = lower(i.name)
+  issue_labels = { for i in var.issue_labels : lookup(i, "id", lower(i.name)) => merge({
     description = null
-  }, i)]
+  }, i) }
 }
 
 resource "github_issue_label" "label" {
-  for_each    = { for i in local.issue_labels : i.id => i }
+  for_each = local.issue_labels
+
   repository  = github_repository.repository.name
   name        = each.value.name
   description = each.value.description
   color       = each.value.color
 }
 
+#
+# Repository collaborators
+#
 locals {
   collaborators = { for c in var.collaborators : lower(c.username) => merge({
     permission = "pull"
@@ -137,12 +139,27 @@ resource "github_repository_collaborator" "collaborator" {
   permission = each.value.permission
 }
 
+#
+# Repository teams
+#
 resource "github_team_repository" "team_repository" {
   count = length(var.teams)
 
   repository = github_repository.repository.name
   team_id    = var.teams[count.index].id
   permission = var.teams[count.index].permission
+}
+
+#
+# Repository deploy keys
+#
+locals {
+  deploy_keys = [
+    for d in var.deploy_keys : merge({
+      title     = substr(d.key, 0, 26)
+      read_only = true
+    }, d)
+  ]
 }
 
 resource "github_repository_deploy_key" "deploy_key" {
@@ -154,15 +171,17 @@ resource "github_repository_deploy_key" "deploy_key" {
   read_only  = local.deploy_keys[count.index].read_only
 }
 
+#
+# Repository projects
+#
 locals {
-  projects = [for i in var.projects : merge({
-    id   = lower(i.name)
+  projects = { for i in var.projects : lookup(i, "id", lower(i.name)) => merge({
     body = null
-  }, i)]
+  }, i) }
 }
 
 resource "github_repository_project" "repository_project" {
-  for_each = { for i in local.projects : i.id => i }
+  for_each = local.projects
 
   repository = github_repository.repository.name
   name       = each.value.name
