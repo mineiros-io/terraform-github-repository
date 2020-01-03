@@ -1,0 +1,7 @@
+= terraform-github
+
+== Limitations
+- Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.*
+- At the moment we cannot rename resources created with `for_each`. Renaming a resource will cause a recreation of that specific resource.
+
+
