@@ -10,10 +10,10 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "test-repository3"
+  name               = "test-repository4"
   description        = "A repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
-  private            = true
+  private            = false
   has_issues         = true
   has_projects       = true
   has_wiki           = true
