@@ -10,8 +10,8 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "test-repository-2"
-  description        = "A repository created with terraform to test the terraform-github-repository module."
+  name               = "public-test-repository-2"
+  description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
   has_issues         = false
@@ -29,7 +29,7 @@ module "repository" {
 
   collaborators = [
     {
-      username   = "soerenmartius"
+      username   = "terraform-test-user-1"
       permission = "admin"
     }
   ]

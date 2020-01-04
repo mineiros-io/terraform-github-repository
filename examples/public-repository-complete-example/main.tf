@@ -10,8 +10,8 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "test-repository4"
-  description        = "A repository created with terraform to test the terraform-github-repository module."
+  name               = "public-test-repository-3"
+  description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
   has_issues         = true
@@ -47,7 +47,7 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_users                 = ["soerenmartius"]
+        dismissal_users                 = ["terraform-test-user-1"]
         dismissal_teams                 = [module.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
@@ -100,7 +100,7 @@ module "repository" {
 
 module "team" {
   source      = "../../modules/team"
-  name        = "test-team-1"
+  name        = "test-team-2"
   description = "This team is created with terraform to test the terraformn-github-repository module."
   privacy     = "secret"
   members = [
