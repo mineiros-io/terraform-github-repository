@@ -14,9 +14,9 @@ endif::[]
 
 = terraform-github
 
-image::https://img.shields.io/badge/maintained%20by-mineiros.io-%235849a6.svg[Maintained by Mineiros.io, link="https://www.mineiros.io/ref=repo_terraform_github"]
-image::https://img.shields.io/github/tag/meineiros-io/terraform-github.svg?label=latest[GitHub tag (latest SemVer), link="https://github.com/mineiros-io/terraform-github/releases/latest"]
-image::https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
+image:https://img.shields.io/badge/maintained%20by-mineiros.io-%235849a6.svg[Maintained by Mineiros.io, link="https://www.mineiros.io/ref=repo_terraform_github"]
+image:https://img.shields.io/github/tag/meineiros-io/terraform-github.svg?label=latest[GitHub tag (latest Semantic Version), link="https://github.com/mineiros-io/terraform-github/releases"]
+image:https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
 
 [.lead]
 A Terraform module that acts as a wrapper around the Terraform https://www.terraform.io/docs/providers/github/index.html[GitHub provider]
@@ -40,8 +40,12 @@ This module uses https://github.com/terraform-providers/terraform-provider-githu
 ** Projects
 ** Webhooks
 
+== Table of Contents
 toc::[]
 
+== Requirements
+This module requires version `~> 0.12.9` of Terraform.
+This module requires version `~> 2.2` of the GitHub provider
 
 == Examples
 For a complete example please see link:/examples[examples] directory.
