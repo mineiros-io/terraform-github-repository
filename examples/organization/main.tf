@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = "~> 0.12.9"
 }
 
 provider "github" {
@@ -10,19 +10,20 @@ provider "github" {
 module "organization" {
   source = "../../modules/organization"
 
-  //  members = [
-  //    {
-  //      username = "soerenmartius"
-  //    },
-  //    {
-  //      username = "mariux"
-  //      role     = "admin"
-  //    }
-  //  ]
+  members = [
+    {
+      username = "terraform-test-user-1"
+    },
+    {
+      username = "terraform-test-user-2"
+      role     = "member"
+    }
+  ]
 
+  # randomly chosen users, sorry for blocking you guys!
   blocked_users = [
-    "Ameobea",
-    "Testuser1g"
+    "Testuser1",
+    "Testuser2"
   ]
 
   projects = [

@@ -59,7 +59,7 @@ func TestTerraformRepositoryWithCollaborators(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestTerraformPrivateRepositoryWithTeams(t *testing.T) {
+func TestTerraformPublicRepositoryCompleteExample(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{

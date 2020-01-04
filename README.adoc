@@ -1,7 +1,55 @@
+// AsciiDoc TOC settings
+:toc:
+:toc-placement!:
+:toc-title:
+
+// GitHub Flavored Asciidoc (GFA). See https://gist.github.com/dcode/0cfbf2699a1fe9b46ff04c41721dda74 for details.
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
 = terraform-github
 
+image:https://img.shields.io/badge/maintained%20by-mineiros.io-%235849a6.svg[Maintained by Mineiros.io, link="https://www.mineiros.io/ref=repo_terraform_github"]
+image:https://img.shields.io/github/tag/meineiros-io/terraform-github.svg?label=latest[GitHub tag (latest Semantic Version), link="https://github.com/mineiros-io/terraform-github/releases"]
+image:https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
+
+[.lead]
+A Terraform module that acts as a wrapper around the Terraform https://www.terraform.io/docs/providers/github/index.html[GitHub provider]
+and offers a more convenient and tested way to provision and configure resources following best practices.
+
+This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.2.1] and supports the following resources:
+
+* Organization
+** Memberships
+** Projects
+** Webhooks
+** Blocked Users
+* Teams
+** Memberships
+** Team Repositories
+* Repositories
+** Branch Protections
+** Collaborators
+** Issue Labels
+** Deployment Keys
+** Projects
+** Webhooks
+
+== Table of Contents
+toc::[]
+
+== Requirements
+This module requires version `~> 0.12.9` of Terraform.
+This module requires version `~> 2.2` of the GitHub provider
+
+== Examples
+For a complete example please see link:/examples[examples] directory.
+
+
 == Limitations
-- Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.*
-- At the moment we cannot rename resources created with `for_each`. Renaming a resource will cause a recreation of that specific resource.
-
-
+- Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.

@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = "~> 0.12.9"
 }
 
 provider "github" {
@@ -10,8 +10,8 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "test-repository"
-  description        = "A repository created with terraform to test the terraform-github-repository module."
+  name               = "public-test-repository-1"
+  description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
   has_issues         = false
