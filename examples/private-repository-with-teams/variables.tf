@@ -1,7 +1,7 @@
 variable "github_token" {
   type        = string
   description = "Github token used for deploying this example. Typically, we set this using variables on the command line to set the value inside our CI environment. https://www.terraform.io/docs/configuration/variables.html#variables-on-the-command-line"
-  default     = ""
+  default     = null
 }
 
 variable "github_organization" {
