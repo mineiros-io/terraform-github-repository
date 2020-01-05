@@ -8,7 +8,7 @@ provider "github" {
 }
 
 module "repository" {
-  source = "../../modules/repository"
+  source = "../.."
 
   name               = "public-repository"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
