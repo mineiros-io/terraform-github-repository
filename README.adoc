@@ -20,25 +20,20 @@ image:https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
 
 [.lead]
 A Terraform module that acts as a wrapper around the Terraform https://www.terraform.io/docs/providers/github/index.html[GitHub provider]
-and offers a more convenient and tested way to provision and configure resources following best practices.
+and offers a more convenient and tested way to provision and manage GitHub Repositories within your GitHub organization. following best practices.
 
-This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.2.1] and supports the following resources:
+[NOTE]
+====
+This resource cannot currently be used to manage personal repositories, outside of organizations due to limitations of the Terraform https://www.terraform.io/docs/providers/github/index.html[GitHub provider].
+====
 
-* Organization
-** Memberships
-** Projects
-** Webhooks
-** Blocked Users
-* Teams
-** Memberships
-** Team Repositories
 * Repositories
-** Branch Protections
-** Collaborators
-** Issue Labels
-** Deployment Keys
-** Projects
-** Webhooks
+* Branch Protections
+* Teams & Collaborators
+* Issue Labels
+* Deployment Keys
+* Projects
+* Webhooks
 
 == Table of Contents
 toc::[]
@@ -53,3 +48,4 @@ For a complete example please see link:/examples[examples] directory.
 
 == Limitations
 - Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.
+- Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to manage personal repositories, outside of organizations.

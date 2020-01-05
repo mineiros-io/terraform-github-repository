@@ -10,7 +10,7 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "private-test-repository-1"
+  name               = "private-repository-with-teams"
   description        = "A private repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = true
@@ -29,7 +29,7 @@ module "repository" {
 
   teams = [
     {
-      id         = module.team.id
+      id         = github_team.team.id
       permission = "admin"
     }
   ]
@@ -48,7 +48,7 @@ module "repository" {
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
         dismissal_users                 = ["terraform-test-user-1"]
-        dismissal_teams                 = [module.team.slug]
+        dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
@@ -61,15 +61,23 @@ module "repository" {
   ]
 }
 
-module "team" {
-  source      = "../../modules/team"
-  name        = "test-team-1"
+resource "github_team" "team" {
+  name        = "private-repository-with-teams-test-team"
   description = "This team is created with terraform to test the terraformn-github-repository module."
   privacy     = "secret"
-  members = [
-    {
-      username = "terraform-test-user-1"
-      role     = "member"
-    }
-  ]
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# TEAM MEMBERSHIP
+# We are adding two members to this team. terraform-test-user-1 and terraform-test-user-2 which are both existing users
+# and already members of the GitHub Organization terraform-test that is an Organization managed by Mineiros.io to run
+# integration tests with Terragrunt.
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_team_membership" "team_membership" {
+  count = 2
+
+  team_id  = github_team.team.id
+  username = "terraform-test-user-${count.index}"
+  role     = "member"
 }

@@ -10,7 +10,7 @@ provider "github" {
 module "repository" {
   source = "../../modules/repository"
 
-  name               = "public-test-repository-2"
+  name               = "public-repository-with-collaborators"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
