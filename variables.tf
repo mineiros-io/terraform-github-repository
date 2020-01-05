@@ -256,5 +256,4 @@ variable "projects" {
   #     body = "This is a fancy test project for testing"
   #   }
   # ]
-
 }

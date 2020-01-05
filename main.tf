@@ -62,7 +62,7 @@ resource "github_repository" "repository" {
 }
 
 #
-# Repository branch protections
+# Repository branch protection
 #
 # https://www.terraform.io/docs/providers/github/r/branch_protection.html
 resource "github_branch_protection" "branch_protection_rule" {
