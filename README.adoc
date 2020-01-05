@@ -37,6 +37,16 @@ Using `For, For-Each and Dynamic Nested Blocks` you can now dynamically add and 
 the necessity to render the whole list of resources again. Terraform will only add and remove the items you want it to.
 ====
 
+== Table of Contents
+toc::[]
+
+== Requirements
+This module requires version `~> 0.12.9` of Terraform.
+This module requires version `~> 2.2` of the GitHub provider
+
+== Features
+This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.2.1] that supports the following resources:
+
 * Repositories
 * Branch Protections
 * Teams & Collaborators
@@ -45,16 +55,8 @@ the necessity to render the whole list of resources again. Terraform will only a
 * Projects
 * Webhooks
 
-== Table of Contents
-toc::[]
-
-== Requirements
-This module requires version `~> 0.12.9` of Terraform.
-This module requires version `~> 2.2` of the GitHub provider
-
 == Examples
 For a complete example please see link:/examples[examples] directory.
-
 
 == Limitations
 - Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.
