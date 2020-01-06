@@ -7,5 +7,5 @@ variable "github_token" {
 variable "github_organization" {
   type        = string
   description = "Github organization used to deploy this module into. Typically, we set this using variables on the command line to set the value inside our CI environment. https://www.terraform.io/docs/configuration/variables.html#variables-on-the-command-line"
-  default     = ""
+  default     = null
 }
