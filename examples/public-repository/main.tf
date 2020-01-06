@@ -25,6 +25,6 @@ module "repository" {
   gitignore_template = "Terraform"
   license_template   = "mit"
   archived           = false
-  topics             = ["terrform", "integration-test"]
+  topics             = ["terraform", "integration-test"]
 
 }
