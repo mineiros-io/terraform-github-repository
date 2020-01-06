@@ -17,14 +17,14 @@ variable "homepage_url" {
 
 variable "private" {
   type        = bool
-  description = "Set to true to create a private repository."
-  default     = false
+  description = "Set to false to create a public repository."
+  default     = true
 }
 
 variable "has_issues" {
   type        = bool
   description = "Set to true to enable the GitHub Issues features on the repository."
-  default     = true
+  default     = false
 }
 
 variable "has_projects" {
@@ -41,20 +41,20 @@ variable "has_wiki" {
 
 variable "allow_merge_commit" {
   type        = bool
-  description = "Set to false to disable merge commits on the repository."
-  default     = true
+  description = "Set to true to enable merge commits on the repository."
+  default     = false
 }
 
 variable "allow_squash_merge" {
   type        = bool
-  description = "Set to false to disable squash merges on the repository."
-  default     = true
+  description = "Set to true to enable squash merges on the repository."
+  default     = false
 }
 
 variable "allow_rebase_merge" {
   type        = bool
-  description = "Set to false to disable rebase merges on the repository."
-  default     = true
+  description = "Set to true to enable rebase merges on the repository."
+  default     = false
 }
 
 variable "has_downloads" {
@@ -66,7 +66,7 @@ variable "has_downloads" {
 variable "auto_init" {
   type        = bool
   description = "Wether or not to produce an initial commit in the repository."
-  default     = true
+  default     = false
 }
 
 variable "gitignore_template" {
