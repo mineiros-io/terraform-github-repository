@@ -24,7 +24,7 @@ variable "private" {
 variable "has_issues" {
   type        = bool
   description = "Set to true to enable the GitHub Issues features on the repository."
-  default     = true
+  default     = false
 }
 
 variable "has_projects" {
