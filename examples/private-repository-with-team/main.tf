@@ -25,13 +25,10 @@ module "repository" {
   gitignore_template = "Terraform"
   license_template   = "mit"
   archived           = false
-  topics             = ["terrform", "integration-test"]
+  topics             = ["terraform", "integration-test"]
 
-  teams = [
-    {
-      id         = github_team.team.id
-      permission = "admin"
-    }
+  admin_team_ids = [
+    github_team.team.id
   ]
 
   branch_protection_rules = [

@@ -126,28 +126,38 @@ resource "github_issue_label" "label" {
 # Repository collaborators
 #
 locals {
-  collaborators = { for c in var.collaborators : lower(c.username) => merge({
-    permission = "pull"
-  }, c) }
+  collab_admin = { for i in var.admin_collaborators : i => "admin" }
+  collab_push  = { for i in var.push_collaborators : i => "push" }
+  collab_pull  = { for i in var.pull_collaborators : i => "pull" }
+
+  collaborators = merge(local.collab_admin, local.collab_push, local.collab_pull)
 }
 
 resource "github_repository_collaborator" "collaborator" {
   for_each = local.collaborators
 
   repository = github_repository.repository.name
-  username   = each.value.username
-  permission = each.value.permission
+  username   = each.key
+  permission = each.value
 }
 
 #
 # Repository teams
 #
+locals {
+  team_admin = { for i in var.admin_team_ids : i => "admin" }
+  team_push  = { for i in var.push_team_ids : i => "push" }
+  team_pull  = { for i in var.pull_team_ids : i => "pull" }
+
+  teams = merge(local.team_admin, local.team_push, local.team_pull)
+}
+
 resource "github_team_repository" "team_repository" {
-  count = length(var.teams)
+  for_each = local.teams
 
   repository = github_repository.repository.name
-  team_id    = var.teams[count.index].id
-  permission = var.teams[count.index].permission
+  team_id    = each.key
+  permission = each.value
 }
 
 #

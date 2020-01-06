@@ -99,46 +99,40 @@ variable "topics" {
   default     = []
 }
 
-variable "collaborators" {
-  type = list(object({
-    username   = string
-    permission = string
-  }))
-  description = "A list of users that should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin. Defaults to pull."
+variable "admin_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them admin (full) permission."
   default     = []
-
-  # Example:
-  # collaborators = [
-  #   {
-  #     username   = "username1"
-  #     permission = "admin"
-  #   },
-  #   {
-  #     username   = "username2"
-  #     permission = "pull"
-  #   }
-  # ]
 }
 
-variable "teams" {
-  type = list(object({
-    id         = string
-    permission = string
-  }))
-  description = "A list of teams that should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin."
+variable "push_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them push (read-write) permission."
   default     = []
+}
 
-  # Example:
-  # collaborators = [
-  #   {
-  #     id         = "team-1"
-  #     permission = "admin"
-  #   },
-  #   {
-  #     id         = "team-2"
-  #     permission = "pull"
-  #   }
-  # ]
+variable "pull_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them pull (read-only) permission."
+  default     = []
+}
+
+variable "admin_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant admin (full) permission to."
+  default     = []
+}
+
+variable "push_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant push (read-write) permission to."
+  default     = []
+}
+
+variable "pull_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant pull (read-only) permission to."
+  default     = []
 }
 
 variable "branch_protection_rules" {
