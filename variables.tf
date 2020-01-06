@@ -120,25 +120,22 @@ variable "collaborators" {
   # ]
 }
 
-variable "teams" {
-  type = list(object({
-    id         = string
-    permission = string
-  }))
-  description = "A list of teams that should be invited as collaborator to the current repository. Permission must be one of pull, push, or admin."
+variable "admin_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant admin (full) permission to."
   default     = []
+}
 
-  # Example:
-  # collaborators = [
-  #   {
-  #     id         = "team-1"
-  #     permission = "admin"
-  #   },
-  #   {
-  #     id         = "team-2"
-  #     permission = "pull"
-  #   }
-  # ]
+variable "push_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant push (read-write) permission to."
+  default     = []
+}
+
+variable "pull_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant pull (read-only) permission to."
+  default     = []
 }
 
 variable "branch_protection_rules" {

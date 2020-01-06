@@ -27,11 +27,8 @@ module "repository" {
   archived           = false
   topics             = ["terrform", "integration-test"]
 
-  teams = [
-    {
-      id         = github_team.team.id
-      permission = "admin"
-    }
+  admin_team_ids = [
+    github_team.team.id
   ]
 
   branch_protection_rules = [

@@ -142,12 +142,20 @@ resource "github_repository_collaborator" "collaborator" {
 #
 # Repository teams
 #
+locals {
+  team_admin = { for i in var.admin_team_ids : i => "admin" }
+  team_push  = { for i in var.push_team_ids : i => "push" }
+  team_pull  = { for i in var.pull_team_ids : i => "pull" }
+
+  teams = merge(local.team_admin, local.team_push, local.team_pull)
+}
+
 resource "github_team_repository" "team_repository" {
-  count = length(var.teams)
+  for_each = local.teams
 
   repository = github_repository.repository.name
-  team_id    = var.teams[count.index].id
-  permission = var.teams[count.index].permission
+  team_id    = each.key
+  permission = each.value
 }
 
 #
