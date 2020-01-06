@@ -27,11 +27,8 @@ module "repository" {
   archived           = false
   topics             = ["terraform", "integration-test"]
 
-  collaborators = [
-    {
-      username   = "terraform-test-user-1"
-      permission = "admin"
-    }
+  admin_collaborators = [
+    "terraform-test-user-1"
   ]
 
 }
