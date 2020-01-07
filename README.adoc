@@ -15,7 +15,7 @@ endif::[]
 = terraform-github-repository
 
 image:https://img.shields.io/badge/maintained%20by-mineiros.io-%235849a6.svg[Maintained by Mineiros.io, link="https://www.mineiros.io/ref=repo_terraform-github-repository"]
-image:https://img.shields.io/github/tag/meineiros-io/terraform-github-repository.svg?label=latest[GitHub tag (latest Semantic Version), link="https://github.com/mineiros-io/terraform-github-repository/releases"]
+image:https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver[GitHub tag (latest Semantic Version), link="https://github.com/mineiros-io/terraform-github-repository/releases"]
 image:https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
 
 [.lead]
