@@ -21,7 +21,7 @@ func init() {
 	}
 }
 
-func TestTerraformRepository(t *testing.T) {
+func TestGithubRepository(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
@@ -42,7 +42,7 @@ func TestTerraformRepository(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestTerraformRepositoryWithCollaborators(t *testing.T) {
+func TestGithubRepositoryWithCollaborators(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
@@ -63,7 +63,7 @@ func TestTerraformRepositoryWithCollaborators(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestTerraformPublicRepositoryCompleteExample(t *testing.T) {
+func TestGithubPublicRepositoryCompleteExample(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
