@@ -1,0 +1,37 @@
+version: v1.0
+name: "Terraform-Github-Repository CI Pipeline"
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+
+  - name: "Build"
+    task:
+      prologue:
+        commands:
+          - export BUILD_VERSION=${SEMAPHORE_GIT_SHA:0:7}
+          - checkout
+      jobs:
+        - name: "Build Docker Image"
+          commands:
+            - make docker-build
+            - make docker-save
+            - cache store docker-image-$BUILD_VERSION terraform-github-repository-$BUILD_VERSION.tar
+
+  - name: "Tests"
+    task:
+      secrets:
+        - name: TERRAFORM_GITHUB_CREDENTIALS
+      prologue:
+        commands:
+          - export BUILD_VERSION=${SEMAPHORE_GIT_SHA:0:7}
+          - checkout --use-cache
+          - cache restore docker-image-${BUILD_VERSION}
+      jobs:
+        - name: "Pre Commit Hooks"
+          commands:
+            - make docker-run-pre-commit-hooks-from-cache
+        - name: "Go Test"
+          commands:
+            - make docker-run-tests-from-cache

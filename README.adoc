@@ -15,6 +15,7 @@ endif::[]
 = terraform-github-repository
 
 image:https://img.shields.io/badge/maintained%20by-mineiros.io-%235849a6.svg[Maintained by Mineiros.io, link="https://www.mineiros.io/ref=repo_terraform-github-repository"]
+image:https://mineiros.semaphoreci.com/badges/terraform-github-repository/branches/master.svg?style=shields[Build Status, link="https://mineiros.semaphoreci.com/projects/terraform-github-repository"]
 image:https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver[GitHub tag (latest Semantic Version), link="https://github.com/mineiros-io/terraform-github-repository/releases"]
 image:https://img.shields.io/badge/tf-%3E%3D0.12.9-blue.svg[Terraform Version]
 
@@ -41,8 +42,9 @@ the necessity to render the whole list of resources again. Terraform will only a
 toc::[]
 
 == Requirements
-This module requires version `~> 0.12.9` of Terraform.
-This module requires version `~> 2.2` of the GitHub provider
+
+* Terraform `~> 0.12.9`
+* Terraform GitHub provider `~> 2.2`
 
 == Features
 This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.2.1] that supports the following resources:
@@ -55,8 +57,59 @@ This module uses https://github.com/terraform-providers/terraform-provider-githu
 * Projects
 * Webhooks
 
-== Examples
+== Usage
+
+[source,hcl]
+----
+module "repository" {
+  source           = "git::git::git@github.com:mineiros-io/terraform-github-repository.git?ref=master"
+
+  name               = "public-repository"
+  description        = "A public repository created with terraform to test the terraform-github-repository module."
+  homepage_url       = "https://example.com/"
+  private            = false
+  has_issues         = false
+  has_projects       = false
+  has_wiki           = false
+  allow_merge_commit = false
+  allow_rebase_merge = false
+  allow_squash_merge = true
+  has_downloads      = false
+  auto_init          = true
+  gitignore_template = "Terraform"
+  license_template   = "mit"
+  archived           = false
+  topics             = ["terraform", "test"]
+}
+----
+
+[TIP]
+====
+In a production environment you most likely want to stick to a specific version of this module instead of the master
+branch (e.g. ?ref=v0.0.1), because there may be breaking changes between releases.
+====
+
+=== Examples
+
 For a complete example please see link:/examples[examples] directory.
+
+=== Tests
+This modules ships with a link:Makefile[Makefile] and a link:Dockerfile[Dockerfile] that simplify executing the hooks
+and tests for you.
+
+Execute all pre-commit hooks with Docker:
+[source,shell script]
+----
+make docker-run-pre-commit-hooks
+----
+
+Execute the Unit Test (deploy und undeploy the example):
+[source,shell script]
+----
+GITHUB_ORGANIZATION=YOUR_GITHUB_ORGANIZATION \
+GITHUB_TOKEN=YOUR_GITHUB_TOKEN \
+make docker-run-tests
+----
 
 == Limitations
 - Currently the https://www.terraform.io/docs/providers/github/index.html[GitHub Provider] doesn't support to rename repositories.
