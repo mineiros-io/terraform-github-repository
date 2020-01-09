@@ -17,7 +17,7 @@ blocks:
           commands:
             - make docker-build
             - make docker-save
-            - cache store docker-image-$BUILD_VERSION terraform-github-repository-$BUILD_VERSION.tar
+            - cache store docker-image-${BUILD_VERSION} ${SEMAPHORE_PROJECT_NAME}-${BUILD_VERSION}.tar
 
   - name: "Tests"
     task:
