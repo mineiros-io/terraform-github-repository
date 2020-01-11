@@ -98,7 +98,24 @@ module "repository" {
   ]
 }
 
+locals {
+  defaults = {
+    homepage_url       = "https://github.com/mineiros-io"
+    private            = false
+    allow_merge_commit = true
+    gitignore_template = "Terraform"
+    license_template   = "mit"
+    topics             = ["terraform", "integration-test"]
+  }
+}
 
+module "repository-with-defaults" {
+  source = "../.."
+
+  name        = "public-repository-complete-example-2-${random_pet.suffix.id}"
+  description = "A public repository created with terraform to test the terraform-github-repository module."
+  defaults    = local.defaults
+}
 
 resource "github_team" "team" {
   name        = "private-repository-with-teams-test-team-${random_pet.suffix.id}"
