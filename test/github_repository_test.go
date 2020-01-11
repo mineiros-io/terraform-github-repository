@@ -28,11 +28,6 @@ func TestGithubPublicRepository(t *testing.T) {
 		// The path to where your Terraform code is located
 		TerraformDir: "../examples/public-repository",
 		Upgrade:      true,
-		// Variables to pass to our Terraform code using -var options
-		Vars: map[string]interface{}{
-			"github_token":        githubToken,
-			"github_organization": githubOrganization,
-		},
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -49,11 +44,6 @@ func TestGithubPublicRepositoryWithCollaborators(t *testing.T) {
 		// The path to where your Terraform code is located
 		TerraformDir: "../examples/public-repository-with-collaborators",
 		Upgrade:      true,
-		// Variables to pass to our Terraform code using -var options
-		Vars: map[string]interface{}{
-			"github_token":        githubToken,
-			"github_organization": githubOrganization,
-		},
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -70,11 +60,6 @@ func TestGithubPublicRepositoryCompleteExample(t *testing.T) {
 		// The path to where your Terraform code is located
 		TerraformDir: "../examples/public-repository-complete-example",
 		Upgrade:      true,
-		// Variables to pass to our Terraform code using -var options
-		Vars: map[string]interface{}{
-			"github_token":        githubToken,
-			"github_organization": githubOrganization,
-		},
 	}
 
 	// At the end of the test, run `terraform destroy` to clean up any resources that were created
