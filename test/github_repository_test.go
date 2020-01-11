@@ -21,7 +21,7 @@ func init() {
 	}
 }
 
-func TestGithubRepository(t *testing.T) {
+func TestGithubPublicRepository(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
@@ -42,7 +42,7 @@ func TestGithubRepository(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 }
 
-func TestGithubRepositoryWithCollaborators(t *testing.T) {
+func TestGithubPublicRepositoryWithCollaborators(t *testing.T) {
 	t.Parallel()
 
 	terraformOptions := &terraform.Options{
@@ -68,7 +68,7 @@ func TestGithubPublicRepositoryCompleteExample(t *testing.T) {
 
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located
-		TerraformDir: "../examples/private-repository-with-teams",
+		TerraformDir: "../examples/public-repository-complete-example",
 		Upgrade:      true,
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
