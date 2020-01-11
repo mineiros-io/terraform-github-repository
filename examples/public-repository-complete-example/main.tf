@@ -40,23 +40,23 @@ module "repository" {
       enforce_admins         = true
       require_signed_commits = true
 
-      required_status_checks = {
+      required_status_checks = [{
         strict   = true
         contexts = ["ci/travis"]
-      }
+      }]
 
-      required_pull_request_reviews = {
+      required_pull_request_reviews = [{
         dismiss_stale_reviews           = true
         dismissal_users                 = ["terraform-test-user-1"]
         dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
-      }
+      }]
 
-      restrictions = {
+      restrictions = [{
         users = ["terraform-test-user-1"]
         teams = ["team-1"]
-      }
+      }]
     }
   ]
 
