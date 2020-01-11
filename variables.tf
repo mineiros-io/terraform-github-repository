@@ -123,6 +123,12 @@ variable "topics" {
   default     = null
 }
 
+variable "extra_topics" {
+  type        = list(string)
+  description = "The list of additional topics of the repository. (Default: [])"
+  default     = []
+}
+
 variable "admin_collaborators" {
   type        = list(string)
   description = "A list of users to add as collaborators granting them admin (full) permission."

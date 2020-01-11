@@ -12,7 +12,8 @@ locals {
   gitignore_template = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
   license_template   = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
   default_branch     = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
-  topics             = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
+  standard_topics    = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
+  topics             = concat(local.standard_topics, var.extra_topics)
 }
 
 
