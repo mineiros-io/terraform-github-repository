@@ -6,10 +6,14 @@ provider "github" {
   version = "~> 2.2"
 }
 
+resource "random_pet" "suffix" {
+  length = 1
+}
+
 module "repository" {
   source = "../.."
 
-  name               = "public-repository-complete-example"
+  name               = "public-repository-complete-example-${random_pet.suffix.id}"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
@@ -97,7 +101,7 @@ module "repository" {
 
 
 resource "github_team" "team" {
-  name        = "private-repository-with-teams-test-team"
+  name        = "private-repository-with-teams-test-team-${random_pet.suffix.id}"
   description = "This team is created with terraform to test the terraformn-github-repository module."
   privacy     = "secret"
 }
