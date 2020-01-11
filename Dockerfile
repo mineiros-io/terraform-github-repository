@@ -14,8 +14,9 @@ RUN apk add --update bash curl git openssl python3 terraform
 RUN pip3 install pre-commit
 
 # Download Tflint
-ADD https://github.com/terraform-linters/tflint/releases/download/${TFLINT_VERSION}/tflint_linux_amd64.zip .
-ADD https://github.com/terraform-linters/tflint/releases/download/${TFLINT_VERSION}/checksums.txt .
+RUN wget \
+    https://github.com/terraform-linters/tflint/releases/download/${TFLINT_VERSION}/tflint_linux_amd64.zip \
+    https://github.com/terraform-linters/tflint/releases/download/${TFLINT_VERSION}/checksums.txt
 RUN sed -i '/.*tflint_linux_amd64.zip/!d' checksums.txt
 RUN sha256sum -cs checksums.txt
 
