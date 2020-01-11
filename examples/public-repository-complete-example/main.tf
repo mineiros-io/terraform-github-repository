@@ -113,6 +113,6 @@ resource "github_team_membership" "team_membership" {
   count = 2
 
   team_id  = github_team.team.id
-  username = "terraform-test-user-${count.index}"
+  username = "terraform-test-user-${count.index + 1}"
   role     = "member"
 }
