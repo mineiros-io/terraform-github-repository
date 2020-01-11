@@ -13,7 +13,7 @@ resource "random_pet" "suffix" {
 module "repository" {
   source = "../.."
 
-  name               = "public-repository-complete-example-${random_pet.suffix.id}"
+  name               = "public-repository-complete-example-1-${random_pet.suffix.id}"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
