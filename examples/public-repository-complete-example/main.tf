@@ -54,7 +54,7 @@ module "repository" {
       }]
 
       restrictions = [{
-        users = ["terraform-test-user-1"]
+        users = ["terraform-test-user"]
         teams = ["team-1"]
       }]
     }
@@ -118,5 +118,11 @@ resource "github_team_membership" "team_membership" {
 
   team_id  = github_team.team.id
   username = "terraform-test-user-${count.index + 1}"
+  role     = "member"
+}
+
+resource "github_team_membership" "team_membership_permanent" {
+  team_id  = github_team.team.id
+  username = "terraform-test-user"
   role     = "member"
 }
