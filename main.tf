@@ -68,6 +68,13 @@ resource "github_repository" "repository" {
 resource "github_branch_protection" "branch_protection_rule" {
   count = length(local.branch_protection_rules)
 
+  # ensure we have all members and collaborators added before applying
+  # any configuration for them
+  depends_on = [
+    github_repository_collaborator.collaborator,
+    github_team_repository.team_repository,
+  ]
+
   repository             = github_repository.repository.name
   branch                 = local.branch_protection_rules[count.index].branch
   enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
