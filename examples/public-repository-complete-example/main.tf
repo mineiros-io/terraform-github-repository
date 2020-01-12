@@ -1,7 +1,15 @@
+# -----------------------------------------------------------------------------
+# TERRAFORM
+# We need at least version 0.12.9 for full for_each functionality
+# -----------------------------------------------------------------------------
 terraform {
   required_version = "~> 0.12.9"
 }
 
+# -----------------------------------------------------------------------------
+# PROVIDERS
+# We are using specific version of different providers for consistant results
+# -----------------------------------------------------------------------------
 provider "github" {
   # we want to be compatible with 2.x series of github provider
   version = "~> 2.2"
@@ -18,6 +26,10 @@ provider "tls" {
   version = "= 2.1.1"
 }
 
+# -----------------------------------------------------------------------------
+# DEPENDENCIES from other providers
+# We are creating some resources for easier testing
+# -----------------------------------------------------------------------------
 resource "tls_private_key" "deploy" {
   count = 2
 
@@ -29,6 +41,11 @@ resource "random_pet" "suffix" {
   length = 1
 }
 
+# -----------------------------------------------------------------------------
+# TEST A
+# We are creating a repository, adding teams and setting up branch protection,
+# deploy keys, issue labels and projects
+# -----------------------------------------------------------------------------
 module "repository" {
   source = "../.."
 
@@ -117,6 +134,10 @@ module "repository" {
   ]
 }
 
+# -----------------------------------------------------------------------------
+# TEST B
+# We are creating a repository using some defaults defined in locals
+# -----------------------------------------------------------------------------
 locals {
   defaults = {
     homepage_url       = "https://github.com/mineiros-io"
@@ -136,6 +157,10 @@ module "repository-with-defaults" {
   defaults    = local.defaults
 }
 
+# -----------------------------------------------------------------------------
+# GITHUB DEPENDENCIES: TEAM
+# We are creating a github team to be added to the repository
+# -----------------------------------------------------------------------------
 resource "github_team" "team" {
   name        = "test-public-repository-complete-example-${random_pet.suffix.id}"
   description = "A secret team created with terraform to test the terraformn-github-repository module."
