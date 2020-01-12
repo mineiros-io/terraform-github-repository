@@ -6,11 +6,9 @@ import (
 	"testing"
 )
 
-var githubOrganization, githubToken string
-
 func init() {
-	githubOrganization = os.Getenv("GITHUB_ORGANIZATION")
-	githubToken = os.Getenv("GITHUB_TOKEN")
+	githubOrganization := os.Getenv("GITHUB_ORGANIZATION")
+	githubToken := os.Getenv("GITHUB_TOKEN")
 
 	if githubOrganization == "" {
 		panic("Please set a github organization using the GITHUB_ORGANIZATION environment variable.")

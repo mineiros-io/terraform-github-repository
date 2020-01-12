@@ -1,19 +1,55 @@
+# -----------------------------------------------------------------------------
+# TERRAFORM
+# We need at least version 0.12.9 for full for_each functionality
+# -----------------------------------------------------------------------------
 terraform {
   required_version = "~> 0.12.9"
 }
 
+# -----------------------------------------------------------------------------
+# PROVIDERS
+# We are using specific version of different providers for consistant results
+# -----------------------------------------------------------------------------
 provider "github" {
+  # we want to be compatible with 2.x series of github provider
   version = "~> 2.2"
+  # credentials are read from the environment
+  # GITHUB_TOKEN
+  # GITHUB_ORGANIZATION
+}
+
+provider "random" {
+  version = "= 2.2.1"
+}
+
+provider "tls" {
+  version = "= 2.1.1"
+}
+
+# -----------------------------------------------------------------------------
+# DEPENDENCIES from other providers
+# We are creating some resources for easier testing
+# -----------------------------------------------------------------------------
+resource "tls_private_key" "deploy" {
+  count = 2
+
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 resource "random_pet" "suffix" {
   length = 1
 }
 
+# -----------------------------------------------------------------------------
+# TEST A
+# We are creating a repository, adding teams and setting up branch protection,
+# deploy keys, issue labels and projects
+# -----------------------------------------------------------------------------
 module "repository" {
   source = "../.."
 
-  name               = "public-repository-complete-example-1-${random_pet.suffix.id}"
+  name               = "test-public-repository-complete-example-A-${random_pet.suffix.id}"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
@@ -76,12 +112,12 @@ module "repository" {
   deploy_keys = [
     {
       title     = "CI User Deploy Key"
-      key       = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCjv+wDq3BV0CTTIJYCnUv530ximNPwfrILIXRhhTZNPrDTpxYCO2ACexeX4wN1vfQqsSXwKutdBJoL42kXYHGRpEQ/1iiojJYL3wO7ktdeQuWDEhTyMzOp0FPrEWydzhCXKqcsA+RVPBAwXlsmaw7SkvjVgR9JCNC3OuIoPndMDSeT64/LHMX8UDlS+PikVRZ5rXhOI50Mqijd+xNf55hxURG3Zp1/iIjWCBHZQLOaazd09MD+HB9Hm/df8l6Mo4ahZuJFYfESIt8lR0FfKkfz4FDPil4JcK1BUs2013c4PYyt8JQR08dUIOGBQNe5mhLPJHD0+ylbQJown5Ahs+Nq5aX+1ZrpXlSO5KSsOKlq/Sj2uYyODWhhKuXlCaEU1eQcREhjP0KEx5AVcFCH3rxSC1gTp8w5fEuOeM3As0BPeo/LqLrtQcXnOZpYn/LGlcZE420YP8nfbMZ6I71KSn0+TjnUWQV93r+UMYmfjHwlq14pgPfWmi+nT/4g1n8WAR7VAKv/7fdY/e2gv5w22El1bXSvP+4fH86s+g/gGfxnjVhRB/CgxfrftyzBZOEXGQEGbiY2rJcLbdi2WY6i9rBQkEWCX8ExOK4HYLZ2qbw6jStl+yHDLgUbhwoe7ggzs5mReaMVcU0MQ6PRDJJ+AyI3bledoYFF+h8M8p2afcb3aw=="
+      key       = tls_private_key.deploy[0].public_key_openssh
       read_only = true
     },
     {
       title     = "Test Key"
-      key       = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7IF88OLL8j1bTvRCernM/J45aoQvOaHNTDkBnMpxWUsf+F3ZBy/ls8yOgeF+OAFCT3tPrh2drGa3cK460/zL2SxAn5mT1bcDJOk7axMcamZ0EpKWAaSbRKxCLkUsTbHiW0nHG+jT7PQCtWwx6CQNh5ztx+Ge5QwDgS7HpyMxIS5Ju4dt5Eh2+MaPMjKWd8P5FKqNCvO4VYy+/3RijeQO+6lM9rih3EECkLug44ZKtbSmQhjHS5/iY7TkfpFpOgMVprgTq5tEK13wrhgjDO5gZ+MopTv5jmuatBLUlpjVI64EHm+zPyxn5E/vehopX8uF1yM1dTt4t6t+p0SRmaCSIX6QOJt9LUmIjrHvseC/TCU8Bfv//QM3GhuaSd1YtbTxbni7R4YX8EKLuBK3bidAj1c9130aML89ckztI9RAiRj+oYyqZqoj1bNG0x1D7XFjyaLf+V+yVrACx/h3PvpG2/dNQ06PRdqAq33dQ7gfsI0qw5QnOCEZimbNigOUuqxf33k2hNkjZCyTXRHhslaY4LoOCIJZrC9dr+a4ENgWw0gVOsuP+Lr6I5UBR4B/H9PtvqAcRjpUOAoJYJiCPgWlglIyuV80u9Uwk11X09E09zEiW+CJWi4RHDWhRNcWO0z5o4nPbEExnXqpiVGPn+WOCsagpap0WXUErrCGhzwuHkQ=="
+      key       = tls_private_key.deploy[1].public_key_openssh
       read_only = false
     }
   ]
@@ -98,6 +134,10 @@ module "repository" {
   ]
 }
 
+# -----------------------------------------------------------------------------
+# TEST B
+# We are creating a repository using some defaults defined in locals
+# -----------------------------------------------------------------------------
 locals {
   defaults = {
     homepage_url       = "https://github.com/mineiros-io"
@@ -112,31 +152,26 @@ locals {
 module "repository-with-defaults" {
   source = "../.."
 
-  name        = "public-repository-complete-example-2-${random_pet.suffix.id}"
+  name        = "test-public-repository-complete-example-B-${random_pet.suffix.id}"
   description = "A public repository created with terraform to test the terraform-github-repository module."
   defaults    = local.defaults
 }
 
+# -----------------------------------------------------------------------------
+# GITHUB DEPENDENCIES: TEAM
+# We are creating a github team to be added to the repository
+# -----------------------------------------------------------------------------
 resource "github_team" "team" {
-  name        = "private-repository-with-teams-test-team-${random_pet.suffix.id}"
-  description = "This team is created with terraform to test the terraformn-github-repository module."
+  name        = "test-public-repository-complete-example-${random_pet.suffix.id}"
+  description = "A secret team created with terraform to test the terraformn-github-repository module."
   privacy     = "secret"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # TEAM MEMBERSHIP
-# We are adding two members to this team. terraform-test-user-1 and terraform-test-user-2 which are both existing users
-# and already members of the GitHub Organization terraform-test that is an Organization managed by Mineiros.io to run
-# integration tests with Terragrunt.
+# We are adding one members to this team for testing branch restrictions
+# terraform-test-user is permanent normal member of the test organization
 # ---------------------------------------------------------------------------------------------------------------------
-
-resource "github_team_membership" "team_membership" {
-  count = 2
-
-  team_id  = github_team.team.id
-  username = "terraform-test-user-${count.index + 1}"
-  role     = "member"
-}
 
 resource "github_team_membership" "team_membership_permanent" {
   team_id  = github_team.team.id
