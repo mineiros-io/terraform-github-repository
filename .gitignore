@@ -40,3 +40,6 @@ vendor
 build/
 */build/
 out/
+
+# local env
+.env

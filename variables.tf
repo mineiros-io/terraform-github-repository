@@ -136,26 +136,32 @@ variable "pull_team_ids" {
 }
 
 variable "branch_protection_rules" {
-  type = list(object({
-    branch                 = string
-    enforce_admins         = bool
-    require_signed_commits = bool
-    required_status_checks = object({
-      strict   = bool
-      contexts = list(string)
-    })
-    required_pull_request_reviews = object({
-      dismiss_stale_reviews           = bool
-      dismissal_users                 = list(string)
-      dismissal_teams                 = list(string)
-      require_code_owner_reviews      = bool
-      required_approving_review_count = number
-    })
-    restrictions = object({
-      users = list(string)
-      teams = list(string)
-    })
-  }))
+  type = list(any)
+
+  # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
+  # Terraform version. See https://github.com/hashicorp/terraform/issues/19898 and https://github.com/hashicorp/terraform/issues/22449
+  #
+  # type = list(object({
+  #   branch                 = string
+  #   enforce_admins         = bool
+  #   require_signed_commits = bool
+  #   required_status_checks = object({
+  #     strict   = bool
+  #     contexts = list(string)
+  #   })
+  #   required_pull_request_reviews = object({
+  #     dismiss_stale_reviews           = bool
+  #     dismissal_users                 = list(string)
+  #     dismissal_teams                 = list(string)
+  #     require_code_owner_reviews      = bool
+  #     required_approving_review_count = number
+  #   })
+  #   restrictions = object({
+  #     users = list(string)
+  #     teams = list(string)
+  #   })
+  # }))
+
   description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
   default     = []
 

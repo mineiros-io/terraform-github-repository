@@ -3,14 +3,17 @@ terraform {
 }
 
 provider "github" {
-  token        = var.github_token
-  organization = var.github_organization
+  version = "~> 2.2"
+}
+
+resource "random_pet" "suffix" {
+  length = 1
 }
 
 module "repository" {
   source = "../.."
 
-  name               = "public-repository-complete-example"
+  name               = "public-repository-complete-example-${random_pet.suffix.id}"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
@@ -37,23 +40,23 @@ module "repository" {
       enforce_admins         = true
       require_signed_commits = true
 
-      required_status_checks = {
+      required_status_checks = [{
         strict   = true
         contexts = ["ci/travis"]
-      }
+      }]
 
-      required_pull_request_reviews = {
+      required_pull_request_reviews = [{
         dismiss_stale_reviews           = true
         dismissal_users                 = ["terraform-test-user-1"]
         dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
-      }
+      }]
 
-      restrictions = {
-        users = ["terraform-test-user-1"]
+      restrictions = [{
+        users = ["terraform-test-user"]
         teams = ["team-1"]
-      }
+      }]
     }
   ]
 
@@ -98,7 +101,7 @@ module "repository" {
 
 
 resource "github_team" "team" {
-  name        = "private-repository-with-teams-test-team"
+  name        = "private-repository-with-teams-test-team-${random_pet.suffix.id}"
   description = "This team is created with terraform to test the terraformn-github-repository module."
   privacy     = "secret"
 }
@@ -114,6 +117,12 @@ resource "github_team_membership" "team_membership" {
   count = 2
 
   team_id  = github_team.team.id
-  username = "terraform-test-user-${count.index}"
+  username = "terraform-test-user-${count.index + 1}"
+  role     = "member"
+}
+
+resource "github_team_membership" "team_membership_permanent" {
+  team_id  = github_team.team.id
+  username = "terraform-test-user"
   role     = "member"
 }
