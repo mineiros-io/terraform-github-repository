@@ -78,6 +78,14 @@ resource "github_repository" "repository" {
   default_branch     = local.default_branch
   archived           = var.archived
   topics             = local.topics
+
+  lifecycle {
+    ignore_changes = [
+      auto_init,
+      license_template,
+      gitignore_template,
+    ]
+  }
 }
 
 #
