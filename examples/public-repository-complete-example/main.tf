@@ -3,7 +3,19 @@ terraform {
 }
 
 provider "github" {
+  # we want to be compatible with 2.x series of github provider
   version = "~> 2.2"
+  # credentials are read from the environment
+  # GITHUB_TOKEN
+  # GITHUB_ORGANIZATION
+}
+
+provider "random" {
+  version = "= 2.2.1"
+}
+
+provider "tls" {
+  version = "= 2.1.1"
 }
 
 resource "tls_private_key" "deploy" {
