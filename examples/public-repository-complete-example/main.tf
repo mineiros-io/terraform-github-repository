@@ -169,18 +169,9 @@ resource "github_team" "team" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # TEAM MEMBERSHIP
-# We are adding two members to this team. terraform-test-user-1 and terraform-test-user-2 which are both existing users
-# and already members of the GitHub Organization terraform-test that is an Organization managed by Mineiros.io to run
-# integration tests with Terragrunt.
+# We are adding one members to this team for testing branch restrictions
+# terraform-test-user is permanent normal member of the test organization
 # ---------------------------------------------------------------------------------------------------------------------
-
-resource "github_team_membership" "team_membership" {
-  count = 2
-
-  team_id  = github_team.team.id
-  username = "terraform-test-user-${count.index + 1}"
-  role     = "member"
-}
 
 resource "github_team_membership" "team_membership_permanent" {
   team_id  = github_team.team.id
