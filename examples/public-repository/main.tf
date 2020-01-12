@@ -6,10 +6,18 @@ provider "github" {
   version = "~> 2.2"
 }
 
+provider "random" {
+  version = "= 2.2.1"
+}
+
+resource "random_pet" "suffix" {
+  length = 1
+}
+
 module "repository" {
   source = "../.."
 
-  name               = "public-repository"
+  name               = "test-public-repository-${random_pet.suffix.id}"
   description        = "A public repository created with terraform to test the terraform-github-repository module."
   homepage_url       = "https://github.com/mineiros-io"
   private            = false
