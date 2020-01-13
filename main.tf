@@ -20,24 +20,12 @@ locals {
 locals {
   branch_protection_rules = [
     for b in var.branch_protection_rules : merge({
-      branch                 = null
-      enforce_admins         = null
-      require_signed_commits = null
-      required_status_checks = {
-        strict   = null
-        contexts = []
-      }
-      required_pull_request_reviews = {
-        dismiss_stale_reviews           = true
-        dismissal_users                 = []
-        dismissal_teams                 = []
-        require_code_owner_reviews      = null
-        required_approving_review_count = null
-      }
-      restrictions = {
-        users = []
-        teams = []
-      }
+      branch                        = null
+      enforce_admins                = null
+      require_signed_commits        = null
+      required_status_checks        = {}
+      required_pull_request_reviews = {}
+      restrictions                  = {}
     }, b)
   ]
 }
