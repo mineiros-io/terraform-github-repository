@@ -29,33 +29,34 @@ locals {
     }, b)
   ]
 
+
   required_status_checks = [
     for b in local.branch_protection_rules : [
-      for r in b.required_status_checks : merge({
+      merge({
         strict   = null
         contexts = []
-      }, r)
+      }, b.required_status_checks)
     ]
   ]
 
   required_pull_request_reviews = [
     for b in local.branch_protection_rules : [
-      for r in b.required_pull_request_reviews : merge({
+      merge({
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
         require_code_owner_reviews      = null
         required_approving_review_count = null
-      }, r)
+      }, b.required_pull_request_reviews)
     ]
   ]
 
   restrictions = [
     for b in local.branch_protection_rules : [
-      for r in b.restrictions : merge({
+      merge({
         users = []
         teams = []
-      }, r)
+      }, b.restrictions)
     ]
   ]
 }
@@ -107,34 +108,22 @@ resource "github_branch_protection" "branch_protection_rule" {
   enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
   require_signed_commits = local.branch_protection_rules[count.index].require_signed_commits
 
-  dynamic "required_status_checks" {
-    for_each = local.required_status_checks[count.index]
-
-    content {
-      strict   = required_status_checks.value.strict
-      contexts = required_status_checks.value.contexts
-    }
+  required_status_checks {
+    strict   = local.branch_protection_rules[count.index].required_status_checks.strict
+    contexts = local.branch_protection_rules[count.index].required_status_checks.contexts
   }
 
-  dynamic "required_pull_request_reviews" {
-    for_each = local.required_pull_request_reviews[count.index]
-
-    content {
-      dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
-      dismissal_users                 = required_pull_request_reviews.value.dismissal_users
-      dismissal_teams                 = required_pull_request_reviews.value.dismissal_teams
-      require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
-      required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
-    }
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = local.branch_protection_rules[count.index].required_pull_request_reviews.dismiss_stale_reviews
+    dismissal_users                 = local.branch_protection_rules[count.index].required_pull_request_reviews.dismissal_users
+    dismissal_teams                 = local.branch_protection_rules[count.index].required_pull_request_reviews.dismissal_teams
+    require_code_owner_reviews      = local.branch_protection_rules[count.index].required_pull_request_reviews.require_code_owner_reviews
+    required_approving_review_count = local.branch_protection_rules[count.index].required_pull_request_reviews.required_approving_review_count
   }
 
-  dynamic "restrictions" {
-    for_each = local.restrictions[count.index]
-
-    content {
-      users = restrictions.value.users
-      teams = restrictions.value.teams
-    }
+  restrictions {
+    users = local.branch_protection_rules[count.index].restrictions.users
+    teams = local.branch_protection_rules[count.index].restrictions.teams
   }
 }
 
@@ -179,9 +168,18 @@ resource "github_repository_collaborator" "collaborator" {
 # Repository teams
 #
 locals {
-  team_admin = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
-  team_push  = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
-  team_pull  = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
+  team_admin = [for i in var.admin_team_ids : {
+    team_id    = i,
+    permission = "admin"
+  }]
+  team_push = [for i in var.push_team_ids : {
+    team_id    = i,
+    permission = "push"
+  }]
+  team_pull = [for i in var.pull_team_ids : {
+    team_id    = i,
+    permission = "pull"
+  }]
 
   teams = concat(local.team_admin, local.team_push, local.team_pull)
 }
