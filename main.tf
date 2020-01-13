@@ -91,8 +91,8 @@ resource "github_branch_protection" "branch_protection_rule" {
   }
 
   restrictions {
-    users = lookup(local.branch_protection_rules[count.index].restrictions, "users", [])
-    teams = lookup(local.branch_protection_rules[count.index].restrictions, "teams", [])
+    users = lookup(local.branch_protection_rules[count.index].restrictions, "users", null)
+    teams = lookup(local.branch_protection_rules[count.index].restrictions, "teams", null)
   }
 }
 
@@ -137,18 +137,9 @@ resource "github_repository_collaborator" "collaborator" {
 # Repository teams
 #
 locals {
-  team_admin = [for i in var.admin_team_ids : {
-    team_id    = i,
-    permission = "admin"
-  }]
-  team_push = [for i in var.push_team_ids : {
-    team_id    = i,
-    permission = "push"
-  }]
-  team_pull = [for i in var.pull_team_ids : {
-    team_id    = i,
-    permission = "pull"
-  }]
+  team_admin = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
+  team_push  = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
+  team_pull  = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
 
   teams = concat(local.team_admin, local.team_push, local.team_pull)
 }
