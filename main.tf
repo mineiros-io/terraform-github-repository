@@ -28,37 +28,6 @@ locals {
       restrictions                  = []
     }, b)
   ]
-
-
-  required_status_checks = [
-    for b in local.branch_protection_rules : [
-      merge({
-        strict   = null
-        contexts = []
-      }, b.required_status_checks)
-    ]
-  ]
-
-  required_pull_request_reviews = [
-    for b in local.branch_protection_rules : [
-      merge({
-        dismiss_stale_reviews           = true
-        dismissal_users                 = []
-        dismissal_teams                 = []
-        require_code_owner_reviews      = null
-        required_approving_review_count = null
-      }, b.required_pull_request_reviews)
-    ]
-  ]
-
-  restrictions = [
-    for b in local.branch_protection_rules : [
-      merge({
-        users = []
-        teams = []
-      }, b.restrictions)
-    ]
-  ]
 }
 
 resource "github_repository" "repository" {
@@ -109,21 +78,21 @@ resource "github_branch_protection" "branch_protection_rule" {
   require_signed_commits = local.branch_protection_rules[count.index].require_signed_commits
 
   required_status_checks {
-    strict   = local.branch_protection_rules[count.index].required_status_checks.strict
-    contexts = local.branch_protection_rules[count.index].required_status_checks.contexts
+    strict   = lookup(local.branch_protection_rules[count.index].required_status_checks, "strict", null)
+    contexts = lookup(local.branch_protection_rules[count.index].required_status_checks, "contexts", [])
   }
 
   required_pull_request_reviews {
-    dismiss_stale_reviews           = local.branch_protection_rules[count.index].required_pull_request_reviews.dismiss_stale_reviews
-    dismissal_users                 = local.branch_protection_rules[count.index].required_pull_request_reviews.dismissal_users
-    dismissal_teams                 = local.branch_protection_rules[count.index].required_pull_request_reviews.dismissal_teams
-    require_code_owner_reviews      = local.branch_protection_rules[count.index].required_pull_request_reviews.require_code_owner_reviews
-    required_approving_review_count = local.branch_protection_rules[count.index].required_pull_request_reviews.required_approving_review_count
+    dismiss_stale_reviews           = lookup(local.branch_protection_rules[count.index].required_pull_request_reviews, "dismiss_stale_reviews", true)
+    dismissal_users                 = lookup(local.branch_protection_rules[count.index].required_pull_request_reviews, "dismissal_users", [])
+    dismissal_teams                 = lookup(local.branch_protection_rules[count.index].required_pull_request_reviews, "dismissal_teams", [])
+    require_code_owner_reviews      = lookup(local.branch_protection_rules[count.index].required_pull_request_reviews, "require_code_owner_reviews", null)
+    required_approving_review_count = lookup(local.branch_protection_rules[count.index].required_pull_request_reviews, "required_approving_review_count", null)
   }
 
   restrictions {
-    users = local.branch_protection_rules[count.index].restrictions.users
-    teams = local.branch_protection_rules[count.index].restrictions.teams
+    users = lookup(local.branch_protection_rules[count.index].restrictions, "users", [])
+    teams = lookup(local.branch_protection_rules[count.index].restrictions, "teams", [])
   }
 }
 
