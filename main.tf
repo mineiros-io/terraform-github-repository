@@ -16,47 +16,46 @@ locals {
   topics             = concat(local.standard_topics, var.extra_topics)
 }
 
-
 locals {
   branch_protection_rules = [
     for b in var.branch_protection_rules : merge({
       branch                        = null
       enforce_admins                = null
       require_signed_commits        = null
-      required_status_checks        = []
-      required_pull_request_reviews = []
-      restrictions                  = []
+      required_status_checks        = {}
+      required_pull_request_reviews = {}
+      restrictions                  = {}
     }, b)
   ]
 
   required_status_checks = [
-    for b in local.branch_protection_rules : [
-      for r in b.required_status_checks : merge({
+    for b in local.branch_protection_rules :
+    length(keys(b.required_status_checks)) > 0 ? [
+      merge({
         strict   = null
         contexts = []
-      }, r)
-    ]
+    }, b.required_status_checks)] : []
   ]
 
   required_pull_request_reviews = [
-    for b in local.branch_protection_rules : [
-      for r in b.required_pull_request_reviews : merge({
+    for b in local.branch_protection_rules :
+    length(keys(b.required_pull_request_reviews)) > 0 ? [
+      merge({
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
         require_code_owner_reviews      = null
         required_approving_review_count = null
-      }, r)
-    ]
+    }, b.required_pull_request_reviews)] : []
   ]
 
   restrictions = [
-    for b in local.branch_protection_rules : [
-      for r in b.restrictions : merge({
+    for b in local.branch_protection_rules :
+    length(keys(b.restrictions)) > 0 ? [
+      merge({
         users = []
         teams = []
-      }, r)
-    ]
+    }, b.restrictions)] : []
   ]
 }
 
