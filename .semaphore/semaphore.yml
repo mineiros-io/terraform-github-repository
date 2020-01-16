@@ -22,7 +22,7 @@ blocks:
   - name: "Tests"
     task:
       secrets:
-        - name: TERRAFORM_GITHUB_CREDENTIALS
+        - name: TERRAFORM_TESTS_GITHUB_CREDENTIALS
       prologue:
         commands:
           - export BUILD_VERSION=${SEMAPHORE_GIT_SHA:0:7}
