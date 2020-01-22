@@ -28,7 +28,7 @@ WORKDIR /app/src
 COPY . .
 
 # Download Go dependencies
-#RUN go mod vendor
+RUN go mod vendor
 
 # Install pre-commit hooks
 RUN pre-commit install
