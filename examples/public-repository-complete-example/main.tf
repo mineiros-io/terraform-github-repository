@@ -12,7 +12,7 @@ terraform {
 # -----------------------------------------------------------------------------
 provider "github" {
   # we want to be compatible with 2.x series of github provider
-  version = "~> 2.2"
+  version = "~> 2.3"
   # credentials are read from the environment
   # GITHUB_TOKEN
   # GITHUB_ORGANIZATION
