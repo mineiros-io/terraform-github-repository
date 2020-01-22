@@ -43,11 +43,11 @@ toc::[]
 == Requirements
 
 * Terraform `~> 0.12.9`
-* Terraform GitHub provider `~> 2.2`
+* Terraform GitHub provider `~> 2.3`
 
 == Features
 
-This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.2.1] that supports the following resources:
+This module uses https://github.com/terraform-providers/terraform-provider-github/releases[Terraform GitHub provider v2.3] that supports the following resources:
 
 * Repositories
 * Branch Protections
