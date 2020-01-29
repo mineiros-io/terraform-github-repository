@@ -248,11 +248,7 @@ variable "issue_labels" {
 }
 
 variable "deploy_keys" {
-  type = list(object({
-    title     = string
-    key       = string
-    read_only = bool
-  }))
+  type        = list(any)
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
 
@@ -267,6 +263,21 @@ variable "deploy_keys" {
   #     title     = "Test Key"
   #     key       = "ssh-rsa AAAAB3NzaC1yc2...."
   #     read_only = false
+  #   }
+  # ]
+}
+
+variable "deploy_keys_computed" {
+  type        = list(any)
+  description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
+  default     = []
+
+  # Example:
+  # deploy_keys_computed = [
+  #   {
+  #     title     = "CI User Deploy Key"
+  #     key       = computed.resource
+  #     read_only = true
   #   }
   # ]
 }

@@ -197,21 +197,39 @@ resource "github_team_repository" "team_repository" {
 # Repository deploy keys
 #
 locals {
-  deploy_keys = [
-    for d in var.deploy_keys : merge({
-      title     = substr(d.key, 0, 26)
+  deploy_keys_computed = [
+    for d in var.deploy_keys_computed : merge({
+      title     = length(split(" ", d.key)) > 2 ? element(split(" ", d.key), 2) : md5(d.key)
       read_only = true
     }, d)
   ]
 }
 
-resource "github_repository_deploy_key" "deploy_key" {
-  count = length(local.deploy_keys)
+resource "github_repository_deploy_key" "deploy_key_computed" {
+  count = length(local.deploy_keys_computed)
 
   repository = github_repository.repository.name
-  title      = local.deploy_keys[count.index].title
-  key        = local.deploy_keys[count.index].key
-  read_only  = local.deploy_keys[count.index].read_only
+  title      = local.deploy_keys_computed[count.index].title
+  key        = local.deploy_keys_computed[count.index].key
+  read_only  = local.deploy_keys_computed[count.index].read_only
+}
+
+locals {
+  deploy_keys = {
+    for d in var.deploy_keys : lookup(d, "id", md5(d.key)) => merge({
+      title     = length(split(" ", d.key)) > 2 ? element(split(" ", d.key), 2) : md5(d.key)
+      read_only = true
+    }, d)
+  }
+}
+
+resource "github_repository_deploy_key" "deploy_key" {
+  for_each = local.deploy_keys
+
+  repository = github_repository.repository.name
+  title      = each.value.title
+  key        = each.value.key
+  read_only  = each.value.read_only
 }
 
 #
