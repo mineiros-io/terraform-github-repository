@@ -38,7 +38,14 @@ output "projects" {
   description = ""
 }
 
+locals {
+  deploy_keys_output = merge({
+    for i, d in github_repository_deploy_key.deploy_key_computed :
+    lookup(var.deploy_keys_computed[i], "id", md5(d.key)) => d
+  }, github_repository_deploy_key.deploy_key)
+}
+
 output "deploy_keys" {
-  value       = github_repository_deploy_key.deploy_key
+  value       = local.deploy_keys_output
   description = ""
 }

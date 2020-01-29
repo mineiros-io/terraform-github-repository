@@ -109,7 +109,7 @@ module "repository" {
     }
   ]
 
-  deploy_keys = [
+  deploy_keys_computed = [
     {
       title     = "CI User Deploy Key"
       key       = tls_private_key.deploy[0].public_key_openssh
