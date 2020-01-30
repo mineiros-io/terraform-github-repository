@@ -58,7 +58,6 @@ module "repository" {
   version = "0.0.8"
 
   name               = "terraform-github-repository"
-  allow_merge_commit = true
   license_template   = "apache-2.0"
   gitignore_template = "Terraform"
 }
@@ -78,21 +77,17 @@ for details and use-cases.
 The name of the repository.
 
 - **`allow_merge_commit`**: *(Optional `bool`)*
-Set to `true` to enable merge commits on the repository.
-At least one of `allow_merge_commit`, `allow_squash_merge` or `allow_rebase_merge`
-has to be set to `true`.
-Default is `false`.
+Set to `false` to disable merge commits on the repository.
+If you set this to `false` you have to enable either `allow_squash_merge`
+or `allow_rebase_merge`.
+Default is `true`.
 
 - **`allow_squash_merge`**: *(Optional `bool`)*
 Set to `true` to enable squash merges on the repository.
-At least one of `allow_merge_commit`, `allow_squash_merge` or `allow_rebase_merge`
-has to be set to `true`.
 Default is `false`.
 
 - **`allow_rebase_merge`**: *(Optional `bool`)*
 Set to `true` to enable rebase merges on the repository.
-At least one of `allow_merge_commit`, `allow_squash_merge` or `allow_rebase_merge`
-has to be set to `true`.
 Default is `false`.
 
 - **`description`**: *(Optional `string`)*

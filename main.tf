@@ -4,7 +4,7 @@ locals {
   has_issues         = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
   has_projects       = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
   has_wiki           = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
-  allow_merge_commit = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", false) : var.allow_merge_commit
+  allow_merge_commit = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
   allow_rebase_merge = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
   allow_squash_merge = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
   has_downloads      = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
