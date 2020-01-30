@@ -166,6 +166,12 @@ variable "pull_team_ids" {
 }
 
 variable "branch_protection_rules" {
+  type        = any
+  description = "(DEPRECATED) Use variable branch_protections instead."
+  default     = []
+}
+
+variable "branch_protections" {
   type = any
 
   # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
@@ -196,7 +202,7 @@ variable "branch_protection_rules" {
   default     = []
 
   # Example:
-  # branch_protection_rules = [
+  # branch_protections = [
   #   {
   #     branch                 = "master"
   #     enforce_admins         = true

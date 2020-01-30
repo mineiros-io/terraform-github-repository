@@ -17,8 +17,8 @@ locals {
 }
 
 locals {
-  branch_protection_rules = [
-    for b in var.branch_protection_rules : merge({
+  branch_protections = [
+    for b in concat(var.branch_protections, var.branch_protection_rules) : merge({
       branch                        = null
       enforce_admins                = null
       require_signed_commits        = null
@@ -29,7 +29,7 @@ locals {
   ]
 
   required_status_checks = [
-    for b in local.branch_protection_rules :
+    for b in local.branch_protections :
     length(keys(b.required_status_checks)) > 0 ? [
       merge({
         strict   = null
@@ -38,7 +38,7 @@ locals {
   ]
 
   required_pull_request_reviews = [
-    for b in local.branch_protection_rules :
+    for b in local.branch_protections :
     length(keys(b.required_pull_request_reviews)) > 0 ? [
       merge({
         dismiss_stale_reviews           = true
@@ -50,7 +50,7 @@ locals {
   ]
 
   restrictions = [
-    for b in local.branch_protection_rules :
+    for b in local.branch_protections :
     length(keys(b.restrictions)) > 0 ? [
       merge({
         users = []
@@ -91,8 +91,8 @@ resource "github_repository" "repository" {
 # Repository branch protection
 #
 # https://www.terraform.io/docs/providers/github/r/branch_protection.html
-resource "github_branch_protection" "branch_protection_rule" {
-  count = length(local.branch_protection_rules)
+resource "github_branch_protection" "branch_protection" {
+  count = length(local.branch_protections)
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -102,9 +102,9 @@ resource "github_branch_protection" "branch_protection_rule" {
   ]
 
   repository             = github_repository.repository.name
-  branch                 = local.branch_protection_rules[count.index].branch
-  enforce_admins         = local.branch_protection_rules[count.index].enforce_admins
-  require_signed_commits = local.branch_protection_rules[count.index].require_signed_commits
+  branch                 = local.branch_protections[count.index].branch
+  enforce_admins         = local.branch_protections[count.index].enforce_admins
+  require_signed_commits = local.branch_protections[count.index].require_signed_commits
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]

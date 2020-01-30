@@ -70,7 +70,7 @@ module "repository" {
     github_team.team.id
   ]
 
-  branch_protection_rules = [
+  branch_protections = [
     {
       branch                 = "master"
       enforce_admins         = true
