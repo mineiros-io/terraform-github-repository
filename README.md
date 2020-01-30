@@ -66,9 +66,9 @@ module "repository" {
 
 ## Module Argument Reference
 See
-[https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf](variables.tf)
+[variables.tf](https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf)
 and
-[https://github.com/mineiros-io/terraform-github-repository/blob/master/examples/](examples)
+[examples/](https://github.com/mineiros-io/terraform-github-repository/blob/master/examples)
 for details and use-cases.
 
 #### Top-level Arguments
@@ -123,18 +123,6 @@ Default is `false`
 Set to `true` to enable the (deprecated) downloads features on the repository.
 Default is `false`.
 
-- **`auto_init`**: *(Optional `bool`)*
-Set to `false` to not produce an initial commit in the repository.
-Default is `true`.
-
-- **`gitignore_template`**: *(Optional `string`)*
-Use the name of the template without the extension.
-Default is `""`
-
-- **`license_template`**: *(Optional `string`)*
-Use the name of the template without the extension.
-Default is `""`
-
 - **`default_branch`**: *(Optional `string`)*
 The name of the default branch of the repository.
 NOTE: This can only be set after a repository has already been created, and
@@ -152,30 +140,55 @@ Default is `false`.
 The list of topics of the repository.
 Default is `[]`.
 
+##### Repository Creation Configuration
+The following four arguments can only be set at repository creation and
+changes will be ignored for repository updates and
+will not show a diff in plan or apply phase.
+
+- **`auto_init`**: *(Optional `bool`)*
+Set to `false` to not produce an initial commit in the repository.
+Default is `true`.
+
+- **`gitignore_template`**: *(Optional `string`)*
+Use the name of the template without the extension.
+Default is `""`
+
+- **`license_template`**: *(Optional `string`)*
+Use the name of the template without the extension.
+Default is `""`
+
 - **[`template`](#template-object-attributes)**: *(Optional `object`)*
 Use a template repository to create this resource.
-See [Template Object Arguments](#template-object-arguments) below for details.
+See [Template Object Attributes](#template-object-attributes) below for details.
 
 ##### Collaborator Configuration
 
-- **`admin_collaborators`**: *(Optional `list(string)`)*
-A list of user names to add as collaborators granting them admin (full) permission.
-Default is `[]`.
-
-- **`push_collaborators`**: *(Optional `list(string)`)*
-A list of user names to add as collaborators granting them push (read-write) permission.
-Default is `[]`.
-
 - **`pull_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them pull (read-only) permission.
+Recommended for non-code contributors who want to view or discuss your project.
 Default is `[]`.
 
 - **`triage_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them triage permission.
+Recommended for contributors who need to proactively manage issues and pull requests
+without write access.
+Default is `[]`.
+
+- **`push_collaborators`**: *(Optional `list(string)`)*
+A list of user names to add as collaborators granting them push (read-write) permission.
+Recommended for contributors who actively push to your project.
 Default is `[]`.
 
 - **`maintain_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them maintain permission.
+Recommended for project managers who need to manage the repository without access
+to sensitive or destructive actions.
+Default is `[]`.
+
+- **`admin_collaborators`**: *(Optional `list(string)`)*
+A list of user names to add as collaborators granting them admin (full) permission.
+Recommended for people who need full access to the project, including sensitive
+and destructive actions like managing security or deleting a repository.
 Default is `[]`.
 
 ##### Deploy Key Configuration
@@ -201,7 +214,7 @@ The GitHub organization or user the template repository is owned by.
 - **`repository`**: ***(Required `string`)***
 The name of the template repository.
 
-#### [`deploy_keys`](#repository-configuration) Object Attributes
+#### [`deploy_keys`](#deploy-key-configuration) Object Attributes
 - **`key`**: ***(Required `string`)***
 The SSH public key.
 
