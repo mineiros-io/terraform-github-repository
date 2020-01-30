@@ -30,22 +30,22 @@ output "git_clone_url" {
 
 output "collaborators" {
   value       = github_repository_collaborator.collaborator
-  description = ""
+  description = "A map of collaborator objects keyed by collaborator.name."
 }
 
 output "projects" {
   value       = github_repository_project.repository_project
-  description = ""
+  description = "A map of projects keyed by project input id."
 }
 
 locals {
   deploy_keys_output = merge({
     for i, d in github_repository_deploy_key.deploy_key_computed :
-    lookup(var.deploy_keys_computed[i], "id", md5(d.key)) => d
+    lookup(local.deploy_keys_computed_temp[i], "id", md5(d.key)) => d
   }, github_repository_deploy_key.deploy_key)
 }
 
 output "deploy_keys" {
   value       = local.deploy_keys_output
-  description = ""
+  description = "A map of deploy keys keyed by input id."
 }

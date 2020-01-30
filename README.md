@@ -151,7 +151,7 @@ Default is `false`.
 The list of topics of the repository.
 Default is `[]`.
 
-- **[`template`](#template-object-arguments)**: *(Optional `object`)*
+- **[`template`](#template-object-attributes)**: *(Optional `object`)*
 Use a template repository to create this resource.
 See [Template Object Arguments](#template-object-arguments) below for details.
 
@@ -169,12 +169,47 @@ Default is `[]`.
 A list of user names to add as collaborators granting them pull (read-only) permission.
 Default is `[]`.
 
-#### [`template`](#repository-configuration) Object Arguments
+##### Deploy Key Configuration
+
+- **[`deploy_keys`](#deploy_keys-object-attributes)**: *(Optional `list(object|string)`)*
+Specifies deploy keys and access-level of deploy keys used in this repository.
+Every `string` in the list will be converted internally into the `object`
+representation with the `key` argument being set to the `string`.
+`object` details are explained below.
+Default is `[]`.
+
+- **[`deploy_keys_computed`](#deploy_keys-object-attributes)**: *(Optional `list(object|string)`)*
+Use this argument if you depend on computed keys that terraform can not use in
+resource `for_each` execution. Downside of this is the recreation of deploy key
+resources whenever the order in the list changes. Prefer `deploy_keys` whenever possible.
+This argument does **not** conflict with `deploy_keys` and can be used only for computed resources.
+Default is `[]`.
+
+#### [`template`](#repository-configuration) Object Attributes
 - **`owner`**: ***(Required `string`)***
 The GitHub organization or user the template repository is owned by.
 
 - **`repository`**: ***(Required `string`)***
 The name of the template repository.
+
+#### [`deploy_keys`](#repository-configuration) Object Attributes
+- **`key`**: ***(Required `string`)***
+The SSH public key.
+
+- **`title`**: *(Optional `string`)*
+A Title for the key.
+Default is the comment field of SSH public key if it is not empty else it defaults to
+`md5(key)`.
+
+- **`read_only`**: *(Optional `bool`)*
+Specifies teh level of access for the key.
+Default is `true`.
+
+- *`id`*: *(Optional `string`)*
+Specifies an ID which is used to prevent resource recreation when the order in
+the list of deploy keys changes.
+The ID must be unique between `deploy_keys` and `deploy_keys_computed`.
+Default is `md5(key)`.
 
 ## Module Attributes Reference
 The following attributes are exported by the module:
@@ -187,10 +222,14 @@ containing all arguments as specified above and the other attributes as specifie
 - **`ssh_clone_url`**: URL that can be provided to git clone to clone the repository via SSH.
 - **`http_clone_url`**: URL that can be provided to git clone to clone the repository via HTTPS.
 - **`git_clone_url`**: URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+
 - **`collaborators`**: A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
 [`github_repository_collaborator` resource](https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference).
-- **`deploy_keys`**: A map of deploy key objects keyed by the `id` of the key as returned by the
-[`github_repository_project` resource](https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference).
+
+- **`deploy_keys`**: A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the
+[`github_repository_deploy_key` resource](https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference)
+keyed by the input `id` of the key.
+
 - **`projects`**: A map of Project objects keyed by the `id` of the project as returned by the
 [`github_repository_project` resource](https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference).
 

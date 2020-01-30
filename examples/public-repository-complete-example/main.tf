@@ -115,11 +115,7 @@ module "repository" {
       key       = tls_private_key.deploy[0].public_key_openssh
       read_only = true
     },
-    {
-      title     = "Test Key"
-      key       = tls_private_key.deploy[1].public_key_openssh
-      read_only = false
-    }
+    tls_private_key.deploy[1].public_key_openssh
   ]
 
   projects = [

@@ -248,7 +248,7 @@ variable "issue_labels" {
 }
 
 variable "deploy_keys" {
-  type        = list(any)
+  type        = any
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
 
@@ -268,7 +268,7 @@ variable "deploy_keys" {
 }
 
 variable "deploy_keys_computed" {
-  type        = list(any)
+  type        = any
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
 

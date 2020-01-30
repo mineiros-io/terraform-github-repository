@@ -197,8 +197,12 @@ resource "github_team_repository" "team_repository" {
 # Repository deploy keys
 #
 locals {
+  deploy_keys_computed_temp = [
+    for d in var.deploy_keys_computed : try({ key = tostring(d) }, d)
+  ]
+
   deploy_keys_computed = [
-    for d in var.deploy_keys_computed : merge({
+    for d in local.deploy_keys_computed_temp : merge({
       title     = length(split(" ", d.key)) > 2 ? element(split(" ", d.key), 2) : md5(d.key)
       read_only = true
     }, d)
@@ -215,8 +219,12 @@ resource "github_repository_deploy_key" "deploy_key_computed" {
 }
 
 locals {
+  deploy_keys_temp = [
+    for d in var.deploy_keys : try({ key = tostring(d) }, d)
+  ]
+
   deploy_keys = {
-    for d in var.deploy_keys : lookup(d, "id", md5(d.key)) => merge({
+    for d in local.deploy_keys_temp : lookup(d, "id", md5(d.key)) => merge({
       title     = length(split(" ", d.key)) > 2 ? element(split(" ", d.key), 2) : md5(d.key)
       read_only = true
     }, d)
