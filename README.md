@@ -36,7 +36,8 @@ features like Branch Protection or Collaborator Management.
   Merge Strategy,
   Auto Init,
   License Template,
-  Gitignore Template
+  Gitignore Template,
+  Template Repository
 
 - **Extended S3 Features**:
   Branch Protection,
@@ -47,6 +48,7 @@ features like Branch Protection or Collaborator Management.
   Projects
 
 - *Features not yet implemented*:
+  Repository Webhooks,
   Project Columns support
 
 ## Getting Started
@@ -196,13 +198,15 @@ representation with the `key` argument being set to the `string`.
 Default is `[]`.
 
 - **[`deploy_keys_computed`](#deploy_keys-object-attributes)**: *(Optional `list(object|string)`)*
+Same as `deploy_keys` argument with the following differences:
 Use this argument if you depend on computed keys that terraform can not use in
 resource `for_each` execution. Downside of this is the recreation of deploy key
-resources whenever the order in the list changes. Prefer `deploy_keys` whenever possible.
-This argument does **not** conflict with `deploy_keys` and can be used only for computed resources.
+resources whenever the order in the list changes. **Prefer `deploy_keys` whenever possible.**
+This argument does **not** conflict with `deploy_keys` and should exclusively be
+used for computed resources.
 Default is `[]`.
 
-#### [`template`](#repository-configuration) Object Attributes
+#### [`template`](#repository-creation-configuration) Object Attributes
 - **`owner`**: ***(Required `string`)***
 The GitHub organization or user the template repository is owned by.
 
@@ -219,7 +223,7 @@ Default is the comment field of SSH public key if it is not empty else it defaul
 `md5(key)`.
 
 - **`read_only`**: *(Optional `bool`)*
-Specifies teh level of access for the key.
+Specifies the level of access for the key.
 Default is `true`.
 
 - *`id`*: *(Optional `string`)*
