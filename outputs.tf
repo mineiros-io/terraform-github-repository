@@ -38,6 +38,11 @@ output "projects" {
   description = "A map of projects keyed by project input id."
 }
 
+output "issue_labels" {
+  value       = github_issue_label.label
+  description = "A map of issue labels keyed by label input id or name."
+}
+
 locals {
   deploy_keys_output = merge({
     for i, d in github_repository_deploy_key.deploy_key_computed :
