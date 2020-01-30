@@ -156,6 +156,18 @@ variable "pull_collaborators" {
   default     = []
 }
 
+variable "triage_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them triage permission."
+  default     = []
+}
+
+variable "maintain_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them maintain permission."
+  default     = []
+}
+
 variable "admin_team_ids" {
   type        = list(string)
   description = "A list of teams (by id) to grant admin (full) permission to."

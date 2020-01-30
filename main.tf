@@ -170,11 +170,19 @@ resource "github_issue_label" "label" {
 # Repository collaborators
 #
 locals {
-  collab_admin = { for i in var.admin_collaborators : i => "admin" }
-  collab_push  = { for i in var.push_collaborators : i => "push" }
-  collab_pull  = { for i in var.pull_collaborators : i => "pull" }
+  collab_admin    = { for i in var.admin_collaborators : i => "admin" }
+  collab_push     = { for i in var.push_collaborators : i => "push" }
+  collab_pull     = { for i in var.pull_collaborators : i => "pull" }
+  collab_triage   = { for i in var.triage_collaborators : i => "triage" }
+  collab_maintain = { for i in var.maintain_collaborators : i => "maintain" }
 
-  collaborators = merge(local.collab_admin, local.collab_push, local.collab_pull)
+  collaborators = merge(
+    local.collab_admin,
+    local.collab_push,
+    local.collab_pull,
+    local.collab_triage,
+    local.collab_maintain,
+  )
 }
 
 resource "github_repository_collaborator" "collaborator" {

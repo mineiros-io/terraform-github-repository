@@ -4,6 +4,7 @@
 [![Build Status](https://mineiros.semaphoreci.com/badges/terraform-github-repository/branches/master.svg?style=shields)](https://mineiros.semaphoreci.com/badges/terraform-github-repository/branches/master.svg?style=shields)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
 [![Terraform Version](https://img.shields.io/badge/terraform-~%3E%200.12.20-brightgreen.svg)](https://github.com/hashicorp/terraform/releases)
+[![Github Provider Version](https://img.shields.io/badge/github--provider-%3E%3D%202.3.1-brightgreen.svg)](https://github.com/terraform-providers/terraform-provider-github/releases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # terraform-github-repository
@@ -167,6 +168,14 @@ Default is `[]`.
 
 - **`pull_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them pull (read-only) permission.
+Default is `[]`.
+
+- **`triage_collaborators`**: *(Optional `list(string)`)*
+A list of user names to add as collaborators granting them triage permission.
+Default is `[]`.
+
+- **`maintain_collaborators`**: *(Optional `list(string)`)*
+A list of user names to add as collaborators granting them maintain permission.
 Default is `[]`.
 
 ##### Deploy Key Configuration
