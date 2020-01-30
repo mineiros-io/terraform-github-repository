@@ -14,6 +14,7 @@ locals {
   default_branch     = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
   standard_topics    = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
   topics             = concat(local.standard_topics, var.extra_topics)
+  template           = var.template == null ? [] : [var.template]
 }
 
 locals {
@@ -78,11 +79,21 @@ resource "github_repository" "repository" {
   archived           = var.archived
   topics             = local.topics
 
+  dynamic "template" {
+    for_each = local.template
+
+    content {
+      owner      = template.value.owner
+      repository = template.value.repository
+    }
+  }
+
   lifecycle {
     ignore_changes = [
       auto_init,
       license_template,
       gitignore_template,
+      template,
     ]
   }
 }

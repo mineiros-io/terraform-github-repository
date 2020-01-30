@@ -129,6 +129,15 @@ variable "extra_topics" {
   default     = []
 }
 
+variable "template" {
+  type = object({
+    owner      = string
+    repository = string
+  })
+  description = "Template repository to use. (Default: {})"
+  default     = null
+}
+
 variable "admin_collaborators" {
   type        = list(string)
   description = "A list of users to add as collaborators granting them admin (full) permission."
