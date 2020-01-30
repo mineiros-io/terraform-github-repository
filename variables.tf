@@ -198,12 +198,6 @@ variable "maintain_team_ids" {
   default     = []
 }
 
-variable "branch_protection_rules" {
-  type        = any
-  description = "(DEPRECATED) Use variable branch_protections instead."
-  default     = []
-}
-
 variable "branch_protections" {
   type = any
 

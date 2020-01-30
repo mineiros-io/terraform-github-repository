@@ -19,7 +19,7 @@ locals {
 
 locals {
   branch_protections = [
-    for b in concat(var.branch_protections, var.branch_protection_rules) : merge({
+    for b in var.branch_protections : merge({
       branch                        = null
       enforce_admins                = null
       require_signed_commits        = null
