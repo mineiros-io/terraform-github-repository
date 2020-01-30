@@ -197,11 +197,19 @@ resource "github_repository_collaborator" "collaborator" {
 # Repository teams
 #
 locals {
-  team_admin = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
-  team_push  = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
-  team_pull  = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
+  team_admin    = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
+  team_push     = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
+  team_pull     = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
+  team_triage   = [for i in var.triage_team_ids : { team_id = i, permission = "triage" }]
+  team_maintain = [for i in var.maintain_team_ids : { team_id = i, permission = "maintain" }]
 
-  teams = concat(local.team_admin, local.team_push, local.team_pull)
+  teams = concat(
+    local.team_admin,
+    local.team_push,
+    local.team_pull,
+    local.team_triage,
+    local.team_maintain,
+  )
 }
 
 resource "github_team_repository" "team_repository" {

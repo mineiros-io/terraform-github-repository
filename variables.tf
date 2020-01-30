@@ -186,6 +186,18 @@ variable "pull_team_ids" {
   default     = []
 }
 
+variable "triage_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant triage permission to."
+  default     = []
+}
+
+variable "maintain_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant maintain permission to."
+  default     = []
+}
+
 variable "branch_protection_rules" {
   type        = any
   description = "(DEPRECATED) Use variable branch_protections instead."
