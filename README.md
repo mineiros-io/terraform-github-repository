@@ -49,6 +49,7 @@ features like Branch Protection or Collaborator Management.
 
 - *Features not yet implemented*:
   Repository Webhooks,
+  Handle Github Defauls Issue Labels,
   Project Columns support
 
 ## Getting Started
@@ -77,6 +78,11 @@ for details and use-cases.
 ##### Repository Configuration
 - **`name`**: ***(Required `string`)***
 The name of the repository.
+
+- **[`defaults`](#defaults-object-attributes)**: *(Optional `object`)*
+A object of default settings to use instead of module defaults for top-level arguments.
+See below for a list of supported arguments.
+Default is `{}` - use module defaults as described in the README.
 
 - **`allow_merge_commit`**: *(Optional `bool`)*
 Set to `false` to disable merge commits on the repository.
@@ -137,6 +143,12 @@ Default is `false`.
 The list of topics of the repository.
 Default is `[]`.
 
+- **`extra_topics`**: *(Optional `list(string)`)*
+A list of additional topics of the repository. Those topics will be added to
+the list of `topics`. This is useful if `default.topics` are used and the list
+should be extended with more topics.
+Default is `[]`.
+
 ##### Repository Creation Configuration
 The following four arguments can only be set at repository creation and
 changes will be ignored for repository updates and
@@ -159,7 +171,6 @@ Use a template repository to create this resource.
 See [Template Object Attributes](#template-object-attributes) below for details.
 
 ##### Collaborator Configuration
-
 - **`pull_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them pull (read-only) permission.
 Recommended for non-code contributors who want to view or discuss your project.
@@ -188,16 +199,15 @@ Recommended for people who need full access to the project, including sensitive
 and destructive actions like managing security or deleting a repository.
 Default is `[]`.
 
-##### Deploy Key Configuration
-
-- **[`deploy_keys`](#deploy_keys-object-attributes)**: *(Optional `list(object|string)`)*
+##### Deploy Keys Configuration
+- **[`deploy_keys`](#deploy_key-object-attributes)**: *(Optional `list(deploy_key|string)`)*
 Specifies deploy keys and access-level of deploy keys used in this repository.
 Every `string` in the list will be converted internally into the `object`
 representation with the `key` argument being set to the `string`.
 `object` details are explained below.
 Default is `[]`.
 
-- **[`deploy_keys_computed`](#deploy_keys-object-attributes)**: *(Optional `list(object|string)`)*
+- **[`deploy_keys_computed`](#deploy_key-object-attributes)**: *(Optional `list(deploy_key|string)`)*
 Same as `deploy_keys` argument with the following differences:
 Use this argument if you depend on computed keys that terraform can not use in
 resource `for_each` execution. Downside of this is the recreation of deploy key
@@ -206,6 +216,51 @@ This argument does **not** conflict with `deploy_keys` and should exclusively be
 used for computed resources.
 Default is `[]`.
 
+##### Branch Protections Configuration
+- **[`branch_protections`](#branch_protection-object-attributes)**: *(Optional `list(branch_protection)`)*
+This resource allows you to configure branch protection for repositories in your organization.
+When applied, the branch will be protected from forced pushes and deletion.
+Additional constraints, such as required status checks or restrictions on users and teams,
+can also be configured.
+Default is `[]`.
+
+##### Issue Labels Configuration
+- **[`issue_labels`](#issue_label-object-attributes)**: *(Optional `list(issue_label)`)*
+This resource allows you to create and manage issue labels within your GitHub organization.
+Issue labels are keyed off of their "name", so pre-existing issue labels result
+in a 422 HTTP error if they exist outside of Terraform.
+Normally this would not be an issue, except new repositories are created with a
+"default" set of labels, and those labels easily conflict with custom ones.
+This resource will first check if the label exists, and then issue an update,
+otherwise it will create.
+Default is `[]`.
+
+##### Projects Configuration
+- **[`projects`](#project-object-attributes)**: *(Optional `list(project)`)*
+This resource allows you to create and manage projects for GitHub repository.
+Default is `[]`.
+
+#### [`defaults`](#repository-configuration) Object Attributes
+This is a special argument to set various defaults to be reused for multiple repositories.
+The following top-level arguments can be set as defaults:
+`homepage_url`,
+`private`,
+`has_issues`,
+`has_projects`,
+`has_wiki`,
+`allow_merge_commit`,
+`allow_rebase_merge`,
+`allow_squash_merge`,
+`has_downloads`,
+`auto_init`,
+`gitignore_template`,
+`license_template`,
+`default_branch`,
+`topics`.
+Module defaults are used for all arguments that are not set in `defaults`.
+Using top level arguments override defaults set by this argument.
+Default is `{}`.
+
 #### [`template`](#repository-creation-configuration) Object Attributes
 - **`owner`**: ***(Required `string`)***
 The GitHub organization or user the template repository is owned by.
@@ -213,7 +268,7 @@ The GitHub organization or user the template repository is owned by.
 - **`repository`**: ***(Required `string`)***
 The name of the template repository.
 
-#### [`deploy_keys`](#deploy-key-configuration) Object Attributes
+#### [`deploy_key`](#deploy-keys-configuration) Object Attributes
 - **`key`**: ***(Required `string`)***
 The SSH public key.
 
@@ -231,6 +286,107 @@ Specifies an ID which is used to prevent resource recreation when the order in
 the list of deploy keys changes.
 The ID must be unique between `deploy_keys` and `deploy_keys_computed`.
 Default is `md5(key)`.
+
+#### [`branch_protection`](#branch-protections-configuration) Object Attributes
+- **`branch`**: ***(Required `string`)***
+The Git branch to protect.
+
+- **`enforce_admins`**: *(Optional `bool`)*
+Setting this to true enforces status checks for repository administrators.
+Default is `false`.
+
+- **`require_signed_commits`**: *(Optional `bool`)*
+Setting this to true requires all commits to be signed with GPG.
+Default is `false`.
+
+- **`required_status_checks`**: *(Optional `required_status_checks`)*
+Enforce restrictions for required status checks.
+See Required Status Checks below for details.
+Default is `{}`.
+
+- **`required_pull_request_reviews`**: *(Optional `required_pull_request_reviews`)*
+Enforce restrictions for pull request reviews.
+See Required Pull Request Reviews below for details.
+Default is `{}`.
+
+- **`restrictions`**: *(Optional `restrictions`)*
+Enforce restrictions for the users and teams that may push to the branch -
+only available for organization-owned repositories. See Restrictions below for details.
+Default is `{}`.
+
+##### [`required_status_checks`](#branch_protection-object-attributes) Object Attributes
+- **`strict`**: *(Optional `bool`)*
+Require branches to be up to date before merging.
+Defaults is `false`.
+
+- **`contexts`**: *(Optional `list(string)`)*
+The list of status checks to require in order to merge into this branch.
+Default is `[]` - No status checks are required.
+
+##### [`required_pull_request_reviews`](#branch_protection-object-attributes) Object Attributes
+- **`dismiss_stale_reviews`**: *(Optional `bool`)*
+Dismiss approved reviews automatically when a new commit is pushed.
+Default is `false`.
+
+- **`dismissal_users`**: *(Optional `list(string)`)*
+The list of user logins with dismissal access
+Default is `[]`.
+
+- **`dismissal_teams`**: *(Optional `list(string)`)*
+The list of team slugs with dismissal access.
+Always use slug of the team, not its name.
+Each team already has to have access to the repository.
+Default is `[]`.
+
+- **`require_code_owner_reviews`**: *(Optional `bool`)*
+Require an approved review in pull requests including files with a designated code owner.
+Defaults is `false`.
+
+- **`required_approving_review_count`**: *(Optional `number`)*
+Require x number of approvals to satisfy branch protection requirements.
+If this is specified it must be a number between 1-6.
+This requirement matches Github's API, see the upstream documentation for more information.
+Default is no approving reviews are required.
+
+##### [`restrictions`](#branch_protection-object-attributes) Object Attributes
+- **`users`**: *(Optional `list(string)`)*
+The list of user logins with push access.
+Default is `[]`.
+
+- **`teams`**: *(Optional `list(string)`)*
+The list of team slugs with push access.
+Always use slug of the team, not its name.
+Each team already has to have access to the repository.
+Default is `[]`.
+
+#### [`issue_label`](#issue-labels-configuration) Object Attributes
+- **`name`**: ***(Required `string`)***
+The name of the label.
+
+- **`color`**: ***(Required `string`)***
+A 6 character hex code, without the leading #, identifying the color of the label.
+
+- **`description`**: *(Optional `string`)*
+A short description of the label.
+Default is `""`.
+
+- *`id`*: *(Optional `string`)*
+Specifies an ID which is used to prevent resource recreation when the order in
+the list of issue labels changes.
+Default is `name`.
+
+#### [`project`](#projects-configuration) Object Attributes
+- **`name`**: ***(Required `string`)***
+The name of the project.
+
+- **`body`**: *(Optional `string`)*
+The body of the project.
+Default is `""`.
+
+- *`id`*: *(Optional `string`)*
+Specifies an ID which is used to prevent resource recreation when the order in
+the list of projects changes.
+Default is `name`.
 
 ## Module Attributes Reference
 The following attributes are exported by the module:
