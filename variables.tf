@@ -256,6 +256,12 @@ variable "branch_protections" {
   # ]
 }
 
+variable "issue_labels_merge_with_github_labels" {
+  type        = bool
+  description = "Specify if you want to merge and control githubs default set of issue labels."
+  default     = null
+}
+
 variable "issue_labels" {
   type = list(object({
     name        = string

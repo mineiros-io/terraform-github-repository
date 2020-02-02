@@ -15,6 +15,12 @@ locals {
   standard_topics    = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
   topics             = concat(local.standard_topics, var.extra_topics)
   template           = var.template == null ? [] : [var.template]
+
+  # for readability
+  var_gh_labels = var.issue_labels_merge_with_github_labels
+  gh_labels     = local.var_gh_labels == null ? lookup(var.defaults, "issue_labels_merge_with_github_labels", true) : local.var_gh_labels
+
+  issue_labels_merge_with_github_labels = local.gh_labels
 }
 
 locals {
@@ -143,6 +149,7 @@ resource "github_branch_protection" "branch_protection" {
 
     content {
       users = restrictions.value.users
+      # TODO: try to convert teams to team-slug array
       teams = restrictions.value.teams
     }
   }
@@ -152,9 +159,65 @@ resource "github_branch_protection" "branch_protection" {
 # Repository issue labels
 #
 locals {
-  issue_labels = { for i in var.issue_labels : lookup(i, "id", lower(i.name)) => merge({
+  # only add to the list of labels even if github removes labels as changing this will affect
+  # all deployed repositories.
+  # add labels if new labels in github are added by default.
+  # this is the set of labels and colors as of 2020-02-02
+  github_default_issue_labels = local.issue_labels_merge_with_github_labels ? [
+    {
+      name        = "bug"
+      description = "Something isn't working"
+      color       = "d73a4a"
+    },
+    {
+      name        = "documentation"
+      description = "Improvements or additions to documentation"
+      color       = "0075ca"
+    },
+    {
+      name        = "duplicate"
+      description = "This issue or pull request already exists"
+      color       = "cfd3d7"
+    },
+    {
+      name        = "enhancement"
+      description = "New feature or request"
+      color       = "a2eeef"
+    },
+    {
+      name        = "good first issue"
+      description = "Good for newcomers"
+      color       = "7057ff"
+    },
+    {
+      name        = "help wanted"
+      description = "Extra attention is needed"
+      color       = "008672"
+    },
+    {
+      name        = "invalid"
+      description = "This doesn't seem right"
+      color       = "e4e669"
+    },
+    {
+      name        = "question"
+      description = "Further information is requested"
+      color       = "d876e3"
+    },
+    {
+      name        = "wontfix"
+      description = "This will not be worked on"
+      color       = "ffffff"
+    }
+  ] : []
+
+  github_issue_labels = { for i in local.github_default_issue_labels : i.name => i }
+
+  module_issue_labels = { for i in var.issue_labels : lookup(i, "id", lower(i.name)) => merge({
     description = null
   }, i) }
+
+  issue_labels = merge(local.github_issue_labels, local.module_issue_labels)
 }
 
 resource "github_issue_label" "label" {

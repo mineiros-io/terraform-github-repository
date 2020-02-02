@@ -42,6 +42,7 @@ features like Branch Protection or Collaborator Management.
 - **Extended S3 Features**:
   Branch Protection,
   Issue Labels,
+  Handle Github Default Issue Labels,
   Collaborators,
   Teams,
   Deploy Keys,
@@ -49,7 +50,6 @@ features like Branch Protection or Collaborator Management.
 
 - *Features not yet implemented*:
   Repository Webhooks,
-  Handle Github Defauls Issue Labels,
   Project Columns support
 
 ## Getting Started
@@ -235,6 +235,11 @@ This resource will first check if the label exists, and then issue an update,
 otherwise it will create.
 Default is `[]`.
 
+- **[`issue_labels_merge_with_github_labels`](#issue_label-object-attributes)**: *(Optional `bool`)*
+Specify if github default labels will be handled by terraform. This should be decided on upon creation of the repository. If you later decide to disable this feature, github default labels will be destroyed if not
+replaced by labels set in `issue_labels` argument.
+Default is `true`.
+
 ##### Projects Configuration
 - **[`projects`](#project-object-attributes)**: *(Optional `list(project)`)*
 This resource allows you to create and manage projects for GitHub repository.
@@ -256,7 +261,8 @@ The following top-level arguments can be set as defaults:
 `gitignore_template`,
 `license_template`,
 `default_branch`,
-`topics`.
+`topics`,
+`issue_labels_merge_with_github_labels`.
 Module defaults are used for all arguments that are not set in `defaults`.
 Using top level arguments override defaults set by this argument.
 Default is `{}`.
