@@ -12,7 +12,7 @@ terraform {
 # -----------------------------------------------------------------------------
 provider "github" {
   # we want to be compatible with 2.x series of github provider
-  version = "~> 2.3"
+  version = ">= 2.3.1, < 3.0.0"
   # credentials are read from the environment
   # GITHUB_TOKEN
   # GITHUB_ORGANIZATION
@@ -70,7 +70,7 @@ module "repository" {
     github_team.team.id
   ]
 
-  branch_protection_rules = [
+  branch_protections = [
     {
       branch                 = "master"
       enforce_admins         = true
@@ -115,11 +115,7 @@ module "repository" {
       key       = tls_private_key.deploy[0].public_key_openssh
       read_only = true
     },
-    {
-      title     = "Test Key"
-      key       = tls_private_key.deploy[1].public_key_openssh
-      read_only = false
-    }
+    tls_private_key.deploy[1].public_key_openssh
   ]
 
   projects = [

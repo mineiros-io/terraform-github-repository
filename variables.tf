@@ -65,7 +65,7 @@ variable "has_wiki" {
 
 variable "allow_merge_commit" {
   type        = bool
-  description = "Set to true to enable merge commits on the repository. (Default: false)"
+  description = "Set to false to disable merge commits on the repository. (Default: true)"
   default     = null
 }
 
@@ -129,6 +129,15 @@ variable "extra_topics" {
   default     = []
 }
 
+variable "template" {
+  type = object({
+    owner      = string
+    repository = string
+  })
+  description = "Template repository to use. (Default: {})"
+  default     = null
+}
+
 variable "admin_collaborators" {
   type        = list(string)
   description = "A list of users to add as collaborators granting them admin (full) permission."
@@ -144,6 +153,18 @@ variable "push_collaborators" {
 variable "pull_collaborators" {
   type        = list(string)
   description = "A list of users to add as collaborators granting them pull (read-only) permission."
+  default     = []
+}
+
+variable "triage_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them triage permission."
+  default     = []
+}
+
+variable "maintain_collaborators" {
+  type        = list(string)
+  description = "A list of users to add as collaborators granting them maintain permission."
   default     = []
 }
 
@@ -165,7 +186,19 @@ variable "pull_team_ids" {
   default     = []
 }
 
-variable "branch_protection_rules" {
+variable "triage_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant triage permission to."
+  default     = []
+}
+
+variable "maintain_team_ids" {
+  type        = list(string)
+  description = "A list of teams (by id) to grant maintain permission to."
+  default     = []
+}
+
+variable "branch_protections" {
   type = any
 
   # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
@@ -196,7 +229,7 @@ variable "branch_protection_rules" {
   default     = []
 
   # Example:
-  # branch_protection_rules = [
+  # branch_protections = [
   #   {
   #     branch                 = "master"
   #     enforce_admins         = true
@@ -221,6 +254,12 @@ variable "branch_protection_rules" {
   #     }
   #   }
   # ]
+}
+
+variable "issue_labels_merge_with_github_labels" {
+  type        = bool
+  description = "Specify if you want to merge and control githubs default set of issue labels."
+  default     = null
 }
 
 variable "issue_labels" {
@@ -248,7 +287,7 @@ variable "issue_labels" {
 }
 
 variable "deploy_keys" {
-  type        = list(any)
+  type        = any
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
 
@@ -268,7 +307,7 @@ variable "deploy_keys" {
 }
 
 variable "deploy_keys_computed" {
-  type        = list(any)
+  type        = any
   description = "Configure a deploy key ( SSH key ) that grants access to a single GitHub repository. This key is attached directly to the repository instead of to a personal user account."
   default     = []
 

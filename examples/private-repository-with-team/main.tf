@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "github" {
-  version = "~> 2.3"
+  version = ">= 2.3.1, < 3.0.0"
 }
 
 module "repository" {
@@ -30,7 +30,7 @@ module "repository" {
     github_team.team.id
   ]
 
-  branch_protection_rules = [
+  branch_protections = [
     {
       branch                 = "master"
       enforce_admins         = true
