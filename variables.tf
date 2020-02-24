@@ -66,7 +66,7 @@ variable "has_wiki" {
 variable "allow_merge_commit" {
   type        = bool
   description = "Set to false to disable merge commits on the repository. (Default: true)"
-  default     = null
+  default     = true
 }
 
 variable "allow_squash_merge" {
