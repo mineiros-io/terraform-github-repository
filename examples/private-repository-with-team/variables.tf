@@ -35,49 +35,49 @@ variable "homepage_url" {
 }
 
 variable "has_issues" {
-  description = "Set to true to enable the GitHub Issues features on the repository. (Default: false)"
+  description = "Set to true to enable the GitHub Issues features on the repository."
   type        = bool
   default     = true
 }
 
 variable "has_projects" {
-  description = "Set to true to enable the GitHub Projects features on the repository. Per the github documentation when in an organization that has disabled repository projects it will default to false and will otherwise default to true. If you specify true when it has been disabled it will return an error.  (Default: false)"
+  description = "Set to true to enable the GitHub Projects features on the repository."
   type        = bool
   default     = true
 }
 
 variable "has_wiki" {
-  description = "Set to true to enable the GitHub Wiki features on the repository. (Default: false)"
+  description = "Set to true to enable the GitHub Wiki features on the repository."
   type        = bool
   default     = true
 }
 
 variable "allow_merge_commit" {
-  description = "Set to false to disable merge commits on the repository. (Default: true)"
+  description = "Set to false to disable merge commits on the repository."
   type        = bool
   default     = true
 }
 
 variable "allow_squash_merge" {
-  description = "Set to true to enable squash merges on the repository. (Default: false)"
+  description = "Set to true to enable squash merges on the repository."
   type        = bool
   default     = true
 }
 
 variable "allow_rebase_merge" {
-  description = "Set to true to enable rebase merges on the repository. (Default: false)"
+  description = "Set to true to enable rebase merges on the repository."
   type        = bool
   default     = true
 }
 
 variable "has_downloads" {
-  description = "Set to true to enable the (deprecated) downloads features on the repository. (Default: false)"
+  description = "Set to true to enable the (deprecated) downloads features on the repository."
   type        = bool
   default     = false
 }
 
 variable "auto_init" {
-  description = "Wether or not to produce an initial commit in the repository. (Default: true)"
+  description = "Wether or not to produce an initial commit in the repository."
   type        = bool
   default     = true
 }

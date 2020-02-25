@@ -1,35 +1,40 @@
-# -----------------------------------------------------------------------------
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# CREATE TWO REPOSITORIES WITH TEAMS AND DEFAULTS
+# This example covers the whole functionality of the module. We create two different repositories and attach default
+# settings. Also we create a single team and attach it to one of the repositories.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# ---------------------------------------------------------------------------------------------------------------------
 # TERRAFORM
 # We need at least version 0.12.9 for full for_each functionality
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
 terraform {
-  required_version = "~> 0.12.9"
+  required_version = ">= 0.12.9"
 }
 
-# -----------------------------------------------------------------------------
-# PROVIDERS
-# We are using specific version of different providers for consistant results
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+# SET TERRAFORM AND PROVIDER REQUIREMENTS FOR RUNNING THIS MODULE
+# ---------------------------------------------------------------------------------------------------------------------
+
 provider "github" {
-  # we want to be compatible with 2.x series of github provider
+  # We want to be compatible with 2.x series of github provider
   version = ">= 2.3.1, < 3.0.0"
-  # credentials are read from the environment
+
+  # Read GitHub credentials from environment
   # GITHUB_TOKEN
   # GITHUB_ORGANIZATION
-}
-
-provider "random" {
-  version = "= 2.2.1"
 }
 
 provider "tls" {
   version = "= 2.1.1"
 }
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 # DEPENDENCIES from other providers
 # We are creating some resources for easier testing
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "tls_private_key" "deploy" {
   count = 2
 
@@ -37,34 +42,31 @@ resource "tls_private_key" "deploy" {
   rsa_bits  = 4096
 }
 
-resource "random_pet" "suffix" {
-  length = 1
-}
-
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 # TEST A
 # We are creating a repository, adding teams and setting up branch protection,
 # deploy keys, issue labels and projects
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
 module "repository" {
   source = "../.."
 
-  name               = "test-public-repository-complete-example-A-${random_pet.suffix.id}"
-  description        = "A public repository created with terraform to test the terraform-github-repository module."
-  homepage_url       = "https://github.com/mineiros-io"
+  name               = var.name
+  description        = var.description
+  homepage_url       = var.url
   private            = false
-  has_issues         = true
-  has_projects       = true
-  has_wiki           = true
-  allow_merge_commit = true
-  allow_rebase_merge = true
-  allow_squash_merge = true
-  has_downloads      = false
-  auto_init          = true
-  gitignore_template = "Terraform"
-  license_template   = "mit"
+  has_issues         = var.has_issues
+  has_projects       = var.has_projects
+  has_wiki           = var.has_wiki
+  allow_merge_commit = var.allow_merge_commit
+  allow_rebase_merge = var.allow_rebase_merge
+  allow_squash_merge = var.allow_squash_merge
+  has_downloads      = var.has_downloads
+  auto_init          = var.auto_init
+  gitignore_template = var.gitignore_template
+  license_template   = var.license_template
   archived           = false
-  topics             = ["terraform", "integration-test"]
+  topics             = var.topics
 
   admin_team_ids = [
     github_team.team.id
@@ -83,31 +85,22 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_users                 = ["terraform-test-user-1"]
+        dismissal_users                 = [var.team_user]
         dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
-        users = ["terraform-test-user"]
-        teams = ["team-1"]
+        users = [var.team_user]
+        teams = [
+          github_team.team.slug
+        ]
       }
     }
   ]
 
-  issue_labels = [
-    {
-      name        = "WIP"
-      description = "Work in Progress..."
-      color       = "d6c860"
-    },
-    {
-      name        = "another-label"
-      description = "This is a lable created by Terraform..."
-      color       = "1dc34f"
-    }
-  ]
+  issue_labels = var.issue_labels
 
   deploy_keys_computed = [
     {
@@ -118,59 +111,42 @@ module "repository" {
     tls_private_key.deploy[1].public_key_openssh
   ]
 
-  projects = [
-    {
-      name = "Testproject"
-      body = "This is a fancy test project for testing"
-    },
-    {
-      name = "Another Testproject"
-      body = "This is a fancy test project for testing"
-    }
-  ]
+  projects = var.projects
 }
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 # TEST B
-# We are creating a repository using some defaults defined in locals
-# -----------------------------------------------------------------------------
-locals {
-  defaults = {
-    homepage_url       = "https://github.com/mineiros-io"
-    private            = false
-    allow_merge_commit = true
-    gitignore_template = "Terraform"
-    license_template   = "mit"
-    topics             = ["terraform", "integration-test"]
-  }
-}
+# We are creating a repository using some defaults defined in
+# var.repository_defaults
+# ---------------------------------------------------------------------------------------------------------------------
 
 module "repository-with-defaults" {
   source = "../.."
 
-  name        = "test-public-repository-complete-example-B-${random_pet.suffix.id}"
-  description = "A public repository created with terraform to test the terraform-github-repository module."
-  defaults    = local.defaults
+  name        = var.repository_with_defaults_name
+  description = var.repository_with_defaults_description
+  defaults    = var.repository_defaults
 }
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 # GITHUB DEPENDENCIES: TEAM
 # We are creating a github team to be added to the repository
-# -----------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "github_team" "team" {
-  name        = "test-public-repository-complete-example-${random_pet.suffix.id}"
-  description = "A secret team created with terraform to test the terraformn-github-repository module."
+  name        = var.team_name
+  description = var.team_description
   privacy     = "secret"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 # TEAM MEMBERSHIP
-# We are adding one members to this team for testing branch restrictions
-# terraform-test-user is permanent normal member of the test organization
-# ---------------------------------------------------------------------------------------------------------------------
+# We are adding one members to this team for testing branch restrictions.
+# The user defined in "var.team_user" should be a permanent normal member of organization you run the tests in.
+# ----------------------------------------------------------------------------------------------------------------------
 
 resource "github_team_membership" "team_membership_permanent" {
   team_id  = github_team.team.id
-  username = "terraform-test-user"
+  username = var.team_user
   role     = "member"
 }

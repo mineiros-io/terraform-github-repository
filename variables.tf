@@ -12,8 +12,8 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "name" {
-  type        = string
   description = "The name of the repository."
+  type        = string
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -22,9 +22,8 @@ variable "name" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "defaults" {
-  type        = any
   description = "Overwrite defaults for various repository settings"
-  default     = {}
+  type        = any
 
   # Example:
   # defaults = {
@@ -43,6 +42,8 @@ variable "defaults" {
   #   default_branch     = "master"
   #   topics             = ["topic-1", "topic-2"]
   # }
+
+  default = {}
 }
 
 variable "description" {
@@ -137,13 +138,13 @@ variable "archived" {
 
 variable "topics" {
   description = "The list of topics of the repository.  (Default: [])"
-  type        = set(string)
+  type        = list(string)
   default     = null
 }
 
 variable "extra_topics" {
   description = "The list of additional topics of the repository. (Default: [])"
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
@@ -158,61 +159,61 @@ variable "template" {
 
 variable "admin_collaborators" {
   description = "A list of users to add as collaborators granting them admin (full) permission."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "push_collaborators" {
   description = "A list of users to add as collaborators granting them push (read-write) permission."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "pull_collaborators" {
   description = "A list of users to add as collaborators granting them pull (read-only) permission."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "triage_collaborators" {
   description = "A list of users to add as collaborators granting them triage permission."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "maintain_collaborators" {
   description = "A list of users to add as collaborators granting them maintain permission."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "admin_team_ids" {
   description = "A list of teams (by id) to grant admin (full) permission to."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "push_team_ids" {
   description = "A list of teams (by id) to grant push (read-write) permission to."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "pull_team_ids" {
   description = "A list of teams (by id) to grant pull (read-only) permission to."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "triage_team_ids" {
   description = "A list of teams (by id) to grant triage permission to."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
 variable "maintain_team_ids" {
   description = "A list of teams (by id) to grant maintain permission to."
-  type        = set(string)
+  type        = list(string)
   default     = []
 }
 
