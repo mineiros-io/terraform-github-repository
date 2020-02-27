@@ -39,7 +39,7 @@ features like Branch Protection or Collaborator Management.
   Gitignore Template,
   Template Repository
 
-- **Extended S3 Features**:
+- **Extended Repository Features**:
   Branch Protection,
   Issue Labels,
   Handle Github Default Issue Labels,
@@ -424,7 +424,7 @@ Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 2) `MINOR` version when we add functionality in a backwards compatible manner, and
 3) `PATCH` version when we make backwards compatible bug fixes.
 
-#### Backwards compatibility in `0.0.z` and `0.y.z` version
+### Backwards compatibility in `0.0.z` and `0.y.z` version
 - Backwards compatibility in versions `0.0.z` is **not guaranteed** when `z` is increased. (Initial development)
 - Backwards compatibility in versions `0.y.z` is **not guaranteed** when `y` is increased. (Pre-release)
 

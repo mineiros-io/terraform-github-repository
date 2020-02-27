@@ -1,3 +1,6 @@
+# Set default shell to bash
+SHELL := /bin/bash
+
 MOUNT_TARGET_DIRECTORY  = /app/src
 BUILD_TOOLS_DOCKER_REPO = mineiros/build-tools
 
@@ -37,7 +40,7 @@ docker/pre-commit-hooks:
 	@docker run --rm \
 		-v ${PWD}:${MOUNT_TARGET_DIRECTORY} \
 		${BUILD_TOOLS_DOCKER_IMAGE} \
-		sh -c "pre-commit install && pre-commit run --all-files"
+		sh -c "pre-commit run -a"
 
 ## Mounts the working directory inside a new container and runs the Go tests. Requires $GITHUB_TOKEN and $GITHUB_ORGANIZATION to be set
 docker/unit-tests:
@@ -47,6 +50,6 @@ docker/unit-tests:
 		-e GITHUB_ORGANIZATION \
 		-v ${PWD}:${MOUNT_TARGET_DIRECTORY} \
 		${BUILD_TOOLS_DOCKER_IMAGE} \
-		go test -v -timeout 10m -parallel 128 test/github_repository_test.go
+		go test -v -timeout 10m -parallel 128 ./test
 
-.PHONY: help docker/pre-commit-hooks docker/run-tests
+.PHONY: help docker/pre-commit-hooks docker/unit-tests

@@ -1,26 +1,37 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# CREATE A PRIVATE REPOSITORY WITH AN ATTACHED TEAM
+#   - create a private repository
+#   - create a team and invite members
+#   - add the team to the repository and grant admin permissions
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# ---------------------------------------------------------------------------------------------------------------------
+# SET TERRAFORM AND PROVIDER REQUIREMENTS FOR RUNNING THIS MODULE
+# ---------------------------------------------------------------------------------------------------------------------
 terraform {
-  required_version = "~> 0.12.9"
+  required_version = ">= 0.12.9"
+
+  required_providers {
+    github = ">= 2.3.1, < 3.0.0"
+  }
 }
 
-provider "github" {
-  version = ">= 2.3.1, < 3.0.0"
-}
 
 module "repository" {
   source = "../.."
 
-  name               = "private-repository-with-teams"
-  description        = "A private repository created with terraform to test the terraform-github-repository module."
-  homepage_url       = "https://github.com/mineiros-io"
+  name               = var.name
+  description        = var.description
+  homepage_url       = var.homepage_url
   private            = true
-  has_issues         = true
-  has_projects       = true
-  has_wiki           = true
-  allow_merge_commit = true
-  allow_rebase_merge = true
-  allow_squash_merge = true
-  has_downloads      = false
-  auto_init          = true
+  has_issues         = var.has_issues
+  has_projects       = var.has_projects
+  has_wiki           = var.has_wiki
+  allow_merge_commit = var.allow_merge_commit
+  allow_rebase_merge = var.allow_rebase_merge
+  allow_squash_merge = var.allow_squash_merge
+  has_downloads      = var.has_downloads
+  auto_init          = var.auto_init
   gitignore_template = "Terraform"
   license_template   = "mit"
   archived           = false
@@ -43,37 +54,37 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_users                 = ["terraform-test-user-1"]
+        dismissal_users                 = var.members
         dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
-        users = ["terraform-test-user-1"]
-        teams = ["team-1"]
+        users = var.members
+        teams = [github_team.team.slug]
       }
     }
   ]
 }
 
 resource "github_team" "team" {
-  name        = "private-repository-with-teams-test-team"
-  description = "This team is created with terraform to test the terraformn-github-repository module."
+  name        = var.team_name
+  description = var.team_description
   privacy     = "secret"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # TEAM MEMBERSHIP
-# We are adding two members to this team. terraform-test-user-1 and terraform-test-user-2 which are both existing users
-# and already members of the GitHub Organization terraform-test that is an Organization managed by Mineiros.io to run
-# integration tests with Terragrunt.
+# We are adding two members to this team. terraform-test-user-1 and terraform-test-user-2 that we define as default
+# members in our variables.tf are both existing users and already members of the GitHub Organization terraform-test that
+# is an Organization managed by Mineiros.io to run integration tests with Terratest.
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_team_membership" "team_membership" {
-  count = 2
+  count = length(var.members)
 
   team_id  = github_team.team.id
-  username = "terraform-test-user-${count.index}"
+  username = var.members[count.index]
   role     = "member"
 }

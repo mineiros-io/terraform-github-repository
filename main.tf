@@ -1,3 +1,9 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# CREATE A GITHUB REPOSITORY
+# This module creates a GitHub repository with opinionated default settings.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Set some opinionated default settings through var.defaults and locals
 locals {
   homepage_url       = var.homepage_url == null ? lookup(var.defaults, "homepage_url", "") : var.homepage_url
   private            = var.private == null ? lookup(var.defaults, "private", true) : var.private
@@ -66,6 +72,10 @@ locals {
   ]
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Create the repository
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "github_repository" "repository" {
   name               = var.name
   description        = var.description
@@ -104,10 +114,11 @@ resource "github_repository" "repository" {
   }
 }
 
-#
-# Repository branch protection
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Branch Protection
 # https://www.terraform.io/docs/providers/github/r/branch_protection.html
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "github_branch_protection" "branch_protection" {
   count = length(local.branch_protections)
 
@@ -155,9 +166,10 @@ resource "github_branch_protection" "branch_protection" {
   }
 }
 
-#
-# Repository issue labels
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Issue Labels
+# ---------------------------------------------------------------------------------------------------------------------
+
 locals {
   # only add to the list of labels even if github removes labels as changing this will affect
   # all deployed repositories.
@@ -229,9 +241,10 @@ resource "github_issue_label" "label" {
   color       = each.value.color
 }
 
-#
-# Repository collaborators
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Collaborators
+# ---------------------------------------------------------------------------------------------------------------------
+
 locals {
   collab_admin    = { for i in var.admin_collaborators : i => "admin" }
   collab_push     = { for i in var.push_collaborators : i => "push" }
@@ -256,9 +269,10 @@ resource "github_repository_collaborator" "collaborator" {
   permission = each.value
 }
 
-#
-# Repository teams
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Teams
+# ---------------------------------------------------------------------------------------------------------------------
+
 locals {
   team_admin    = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
   team_push     = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
@@ -283,9 +297,10 @@ resource "github_team_repository" "team_repository" {
   permission = local.teams[count.index].permission
 }
 
-#
-# Repository deploy keys
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Deploy Keys
+# ---------------------------------------------------------------------------------------------------------------------
+
 locals {
   deploy_keys_computed_temp = [
     for d in var.deploy_keys_computed : try({ key = tostring(d) }, d)
@@ -330,9 +345,10 @@ resource "github_repository_deploy_key" "deploy_key" {
   read_only  = each.value.read_only
 }
 
-#
-# Repository projects
-#
+# ---------------------------------------------------------------------------------------------------------------------
+# Projects
+# ---------------------------------------------------------------------------------------------------------------------
+
 locals {
   projects = { for i in var.projects : lookup(i, "id", lower(i.name)) => merge({
     body = null
