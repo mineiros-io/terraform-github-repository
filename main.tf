@@ -127,6 +127,7 @@ resource "github_branch_protection" "branch_protection" {
   depends_on = [
     github_repository_collaborator.collaborator,
     github_team_repository.team_repository,
+    github_team_repository.team_repository_by_slug
   ]
 
   repository             = github_repository.repository.name
@@ -295,6 +296,42 @@ resource "github_team_repository" "team_repository" {
   repository = github_repository.repository.name
   team_id    = local.team_ids[count.index].team_id
   permission = local.team_ids[count.index].permission
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Teams by name
+# ---------------------------------------------------------------------------------------------------------------------
+
+locals {
+  team_admin    = [for i in var.admin_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "admin" }]
+  team_push     = [for i in var.push_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "push" }]
+  team_pull     = [for i in var.pull_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "pull" }]
+  team_triage   = [for i in var.triage_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "triage" }]
+  team_maintain = [for i in var.maintain_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "maintain" }]
+
+  teams = { for i in concat(
+    local.team_admin,
+    local.team_push,
+    local.team_pull,
+    local.team_triage,
+    local.team_maintain,
+  ) : i.slug => i }
+}
+
+data "github_team" "teams" {
+  for_each = local.teams
+
+  slug = each.value.slug
+
+  depends_on = [github_repository.repository]
+}
+
+resource "github_team_repository" "team_repository_by_slug" {
+  for_each = local.teams
+
+  repository = github_repository.repository.name
+  team_id    = data.github_team.teams[each.key].id
+  permission = each.value.permission
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

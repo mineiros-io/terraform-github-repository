@@ -217,6 +217,36 @@ variable "maintain_team_ids" {
   default     = []
 }
 
+variable "admin_teams" {
+  description = "A list of teams (by name/slug) to grant admin (full) permission to."
+  type        = list(string)
+  default     = []
+}
+
+variable "push_teams" {
+  description = "A list of teams (by name/slug) to grant push (read-write) permission to."
+  type        = list(string)
+  default     = []
+}
+
+variable "pull_teams" {
+  description = "A list of teams (by name/slug) to grant pull (read-only) permission to."
+  type        = list(string)
+  default     = []
+}
+
+variable "triage_teams" {
+  description = "A list of teams (by name/slug) to grant triage permission to."
+  type        = list(string)
+  default     = []
+}
+
+variable "maintain_teams" {
+  description = "A list of teams (by name/slug) to grant maintain permission to."
+  type        = list(string)
+  default     = []
+}
+
 variable "branch_protections" {
   description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
   type        = any
