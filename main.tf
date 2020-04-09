@@ -70,6 +70,7 @@ locals {
       merge({
         users = []
         teams = []
+        apps  = []
     }, b.restrictions)] : []
   ]
 }
@@ -166,6 +167,7 @@ resource "github_branch_protection" "branch_protection" {
       users = restrictions.value.users
       # TODO: try to convert teams to team-slug array
       teams = restrictions.value.teams
+      apps  = restrictions.value.apps
     }
   }
 }
