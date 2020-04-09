@@ -270,31 +270,31 @@ resource "github_repository_collaborator" "collaborator" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Teams
+# Teams by id
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
-  team_admin    = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
-  team_push     = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
-  team_pull     = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
-  team_triage   = [for i in var.triage_team_ids : { team_id = i, permission = "triage" }]
-  team_maintain = [for i in var.maintain_team_ids : { team_id = i, permission = "maintain" }]
+  team_id_admin    = [for i in var.admin_team_ids : { team_id = i, permission = "admin" }]
+  team_id_push     = [for i in var.push_team_ids : { team_id = i, permission = "push" }]
+  team_id_pull     = [for i in var.pull_team_ids : { team_id = i, permission = "pull" }]
+  team_id_triage   = [for i in var.triage_team_ids : { team_id = i, permission = "triage" }]
+  team_id_maintain = [for i in var.maintain_team_ids : { team_id = i, permission = "maintain" }]
 
-  teams = concat(
-    local.team_admin,
-    local.team_push,
-    local.team_pull,
-    local.team_triage,
-    local.team_maintain,
+  team_ids = concat(
+    local.team_id_admin,
+    local.team_id_push,
+    local.team_id_pull,
+    local.team_id_triage,
+    local.team_id_maintain,
   )
 }
 
 resource "github_team_repository" "team_repository" {
-  count = length(local.teams)
+  count = length(local.team_ids)
 
   repository = github_repository.repository.name
-  team_id    = local.teams[count.index].team_id
-  permission = local.teams[count.index].permission
+  team_id    = local.team_ids[count.index].team_id
+  permission = local.team_ids[count.index].permission
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
