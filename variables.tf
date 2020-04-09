@@ -27,20 +27,21 @@ variable "defaults" {
 
   # Example:
   # defaults = {
-  #   homepage_url       = "https://mineiros.io/"
-  #   private            = true
-  #   has_issues         = false
-  #   has_projects       = false
-  #   has_wiki           = false
-  #   allow_merge_commit = true
-  #   allow_rebase_merge = false
-  #   allow_squash_merge = false
-  #   has_downloads      = false
-  #   auto_init          = true
-  #   gitignore_template = "terraform"
-  #   license_template   = "mit"
-  #   default_branch     = "master"
-  #   topics             = ["topic-1", "topic-2"]
+  #   homepage_url           = "https://mineiros.io/"
+  #   private                = true
+  #   has_issues             = false
+  #   has_projects           = false
+  #   has_wiki               = false
+  #   delete_branch_on_merge = true
+  #   allow_merge_commit     = true
+  #   allow_rebase_merge     = false
+  #   allow_squash_merge     = false
+  #   has_downloads          = false
+  #   auto_init              = true
+  #   gitignore_template     = "terraform"
+  #   license_template       = "mit"
+  #   default_branch         = "master"
+  #   topics                 = ["topic-1", "topic-2"]
   # }
 
   default = {}
@@ -100,6 +101,12 @@ variable "allow_rebase_merge" {
   default     = null
 }
 
+variable "delete_branch_on_merge" {
+  description = "Whether or not to delete the merged branch after merging a pull request. (Default: false)"
+  type        = bool
+  default     = false
+}
+
 variable "has_downloads" {
   description = "Set to true to enable the (deprecated) downloads features on the repository. (Default: false)"
   type        = bool
@@ -116,6 +123,12 @@ variable "gitignore_template" {
   description = "Use the name of the template without the extension. For example, Haskell. Available templates: https://github.com/github/gitignore"
   type        = string
   default     = null
+}
+
+variable "is_template" {
+  description = "Whether or not to tell GitHub that this is a template repository. ( Default: false)"
+  type        = bool
+  default     = false
 }
 
 variable "license_template" {

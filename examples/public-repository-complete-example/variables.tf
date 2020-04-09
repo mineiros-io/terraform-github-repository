@@ -28,12 +28,17 @@ variable "description" {
   default     = "A public repository created with terraform to test the terraform-github-repository module."
 }
 
+variable "delete_branch_on_merge" {
+  description = "Whether or not to delete the merged branch after merging a pull request."
+  type        = bool
+  default     = true
+}
+
 variable "url" {
   description = "The url of the created repository."
   type        = string
   default     = "https://github.com/mineiros-io"
 }
-
 
 variable "has_issues" {
   description = "Set to true to enable the GitHub Issues features on the repository."
@@ -51,6 +56,12 @@ variable "has_wiki" {
   description = "Set to true to enable the GitHub Wiki features on the repository."
   type        = bool
   default     = true
+}
+
+variable "is_template" {
+  description = "Whether or not to tell GitHub that this is a template repository. ( Default: false)"
+  type        = bool
+  default     = false
 }
 
 variable "allow_merge_commit" {
