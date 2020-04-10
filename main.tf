@@ -5,22 +5,24 @@
 
 # Set some opinionated default settings through var.defaults and locals
 locals {
-  homepage_url       = var.homepage_url == null ? lookup(var.defaults, "homepage_url", "") : var.homepage_url
-  private            = var.private == null ? lookup(var.defaults, "private", true) : var.private
-  has_issues         = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
-  has_projects       = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
-  has_wiki           = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
-  allow_merge_commit = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
-  allow_rebase_merge = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
-  allow_squash_merge = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
-  has_downloads      = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
-  auto_init          = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
-  gitignore_template = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
-  license_template   = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
-  default_branch     = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
-  standard_topics    = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
-  topics             = concat(local.standard_topics, var.extra_topics)
-  template           = var.template == null ? [] : [var.template]
+  homepage_url           = var.homepage_url == null ? lookup(var.defaults, "homepage_url", "") : var.homepage_url
+  private                = var.private == null ? lookup(var.defaults, "private", true) : var.private
+  has_issues             = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
+  has_projects           = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
+  has_wiki               = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
+  allow_merge_commit     = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
+  allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
+  allow_squash_merge     = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
+  delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", false) : var.delete_branch_on_merge
+  is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
+  has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
+  auto_init              = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
+  gitignore_template     = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
+  license_template       = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
+  default_branch         = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
+  standard_topics        = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
+  topics                 = concat(local.standard_topics, var.extra_topics)
+  template               = var.template == null ? [] : [var.template]
 
   # for readability
   var_gh_labels = var.issue_labels_merge_with_github_labels
@@ -77,23 +79,25 @@ locals {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_repository" "repository" {
-  name               = var.name
-  description        = var.description
-  homepage_url       = local.homepage_url
-  private            = local.private
-  has_issues         = local.has_issues
-  has_projects       = local.has_projects
-  has_wiki           = local.has_wiki
-  allow_merge_commit = local.allow_merge_commit
-  allow_rebase_merge = local.allow_rebase_merge
-  allow_squash_merge = local.allow_squash_merge
-  has_downloads      = local.has_downloads
-  auto_init          = local.auto_init
-  gitignore_template = local.gitignore_template
-  license_template   = local.license_template
-  default_branch     = local.default_branch
-  archived           = var.archived
-  topics             = local.topics
+  name                   = var.name
+  description            = var.description
+  homepage_url           = local.homepage_url
+  private                = local.private
+  has_issues             = local.has_issues
+  has_projects           = local.has_projects
+  has_wiki               = local.has_wiki
+  allow_merge_commit     = local.allow_merge_commit
+  allow_rebase_merge     = local.allow_rebase_merge
+  allow_squash_merge     = local.allow_squash_merge
+  delete_branch_on_merge = local.delete_branch_on_merge
+  is_template            = local.is_template
+  has_downloads          = local.has_downloads
+  auto_init              = local.auto_init
+  gitignore_template     = local.gitignore_template
+  license_template       = local.license_template
+  default_branch         = local.default_branch
+  archived               = var.archived
+  topics                 = local.topics
 
   dynamic "template" {
     for_each = local.template
