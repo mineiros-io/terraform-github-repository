@@ -178,6 +178,41 @@ Default is `""`
 Use a template repository to create this resource.
 See [Template Object Attributes](#template-object-attributes) below for details.
 
+##### Teams Configuration
+Teams need to exist beforehand. Your can use non-computed
+(known at `terraform plan`) team names or slugs
+(`*_teams` Attributes; **recommended**)
+or computed (only known in `terraform apply` phase) team IDs
+(`*_team_ids` Attributes).
+
+- **`pull_teams`** or **`pull_team_ids`**: *(Optional `list(string)`)*
+A list of teams to grant pull (read-only) permission.
+Recommended for non-code contributors who want to view or discuss your project.
+Default is `[]`.
+
+- **`triage_teams`** or **`triage_team_ids`**: *(Optional `list(string)`)*
+A list of teams to grant triage permission.
+Recommended for contributors who need to proactively manage issues and pull requests
+without write access.
+Default is `[]`.
+
+- **`push_teams`** or **`push_team_ids`**: *(Optional `list(string)`)*
+A list of teams to grant push (read-write) permission.
+Recommended for contributors who actively push to your project.
+Default is `[]`.
+
+- **`maintain_teams`** or **`maintain_team_ids`**: *(Optional `list(string)`)*
+A list of teams to grant maintain permission.
+Recommended for project managers who need to manage the repository without access
+to sensitive or destructive actions.
+Default is `[]`.
+
+- **`admin_teams`** or **`admin_team_ids`**: *(Optional `list(string)`)*
+A list of teams to grant admin (full) permission.
+Recommended for people who need full access to the project, including sensitive
+and destructive actions like managing security or deleting a repository.
+Default is `[]`.
+
 ##### Collaborator Configuration
 - **`pull_collaborators`**: *(Optional `list(string)`)*
 A list of user names to add as collaborators granting them pull (read-only) permission.
