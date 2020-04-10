@@ -104,7 +104,7 @@ variable "allow_rebase_merge" {
 variable "delete_branch_on_merge" {
   description = "Whether or not to delete the merged branch after merging a pull request. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "has_downloads" {
@@ -128,7 +128,7 @@ variable "gitignore_template" {
 variable "is_template" {
   description = "Whether or not to tell GitHub that this is a template repository. ( Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "license_template" {
