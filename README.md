@@ -102,6 +102,10 @@ Default is `false`.
 A description of the repository.
 Default is `""`
 
+- **`delete_branch_on_merge`**: *(Optional `string`)*
+Set to `true` to automatically delete head branch after a pull request is merged.
+Default is `false`
+
 - **`homepage_url`**: *(Optional `string`)*
 URL of a page describing the project.
 Default is `""`
@@ -124,6 +128,10 @@ Default is `false`
 
 - **`has_downloads`**: *(Optional `bool`)*
 Set to `true` to enable the (deprecated) downloads features on the repository.
+Default is `false`.
+
+- **`is_template`**: *(Optional `bool`)*
+Set to `true` to tell GitHub that this is a template repository.
 Default is `false`.
 
 - **`default_branch`**: *(Optional `string`)*

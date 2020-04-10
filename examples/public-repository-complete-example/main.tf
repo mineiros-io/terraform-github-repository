@@ -19,7 +19,7 @@ terraform {
 
 provider "github" {
   # We want to be compatible with 2.x series of github provider
-  version = ">= 2.3.1, < 3.0.0"
+  version = ">= 2.6.1, < 3.0.0"
 
   # Read GitHub credentials from environment
   # GITHUB_TOKEN
@@ -51,22 +51,24 @@ resource "tls_private_key" "deploy" {
 module "repository" {
   source = "../.."
 
-  name               = var.name
-  description        = var.description
-  homepage_url       = var.url
-  private            = false
-  has_issues         = var.has_issues
-  has_projects       = var.has_projects
-  has_wiki           = var.has_wiki
-  allow_merge_commit = var.allow_merge_commit
-  allow_rebase_merge = var.allow_rebase_merge
-  allow_squash_merge = var.allow_squash_merge
-  has_downloads      = var.has_downloads
-  auto_init          = var.auto_init
-  gitignore_template = var.gitignore_template
-  license_template   = var.license_template
-  archived           = false
-  topics             = var.topics
+  name                   = var.name
+  description            = var.description
+  homepage_url           = var.url
+  private                = false
+  has_issues             = var.has_issues
+  has_projects           = var.has_projects
+  has_wiki               = var.has_wiki
+  allow_merge_commit     = var.allow_merge_commit
+  allow_rebase_merge     = var.allow_rebase_merge
+  allow_squash_merge     = var.allow_squash_merge
+  delete_branch_on_merge = var.delete_branch_on_merge
+  is_template            = var.is_template
+  has_downloads          = var.has_downloads
+  auto_init              = var.auto_init
+  gitignore_template     = var.gitignore_template
+  license_template       = var.license_template
+  archived               = false
+  topics                 = var.topics
 
   admin_teams = [
     var.team_name
