@@ -339,15 +339,7 @@ resource "github_team_repository" "team_repository_by_slug" {
   team_id    = data.github_team.teams[each.key].id
   permission = each.value.permission
 
-  depends_on = [
-    null_resource.depends_on
-  ]
-}
-
-resource "null_resource" "depends_on" {
-  triggers = {
-    dependency = jsonencode(var.module_depends_on)
-  }
+  depends_on = [var.module_depends_on]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

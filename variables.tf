@@ -405,7 +405,7 @@ variable "projects" {
 }
 
 variable "module_depends_on" {
-  type        = list(any)
-  description = "A list of resources this module indirectly depends_on."
+  type        = any
+  description = "Define resources this module indirectly depends_on."
   default     = []
 }

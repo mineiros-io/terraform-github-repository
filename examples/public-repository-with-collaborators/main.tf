@@ -10,10 +10,6 @@ provider "github" {
   version = "~> 2.6"
 }
 
-provider "null" {
-  version = "~> 2.1"
-}
-
 module "repository" {
   source = "../.."
 

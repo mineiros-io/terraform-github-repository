@@ -7,6 +7,5 @@ terraform {
 
   required_providers {
     github = "~> 2.6"
-    null   = "~> 2.1"
   }
 }
