@@ -21,6 +21,10 @@ terraform {
 module "repository" {
   source = "../.."
 
+  module_depends_on = [
+    github_team.team
+  ]
+
   name               = var.name
   description        = var.description
   homepage_url       = var.homepage_url
