@@ -50,7 +50,9 @@ features like Branch Protection or Collaborator Management.
 
 - *Features not yet implemented*:
   Repository Webhooks,
-  Project Columns support
+  Project Columns support,
+  Actions,
+  Repository File
 
 ## Getting Started
 Most basic usage creating a new private github repository.
@@ -406,6 +408,10 @@ Default is `[]`.
 The list of team slugs with push access.
 Always use slug of the team, not its name.
 Each team already has to have access to the repository.
+Default is `[]`.
+
+- **`apps`**: *(Optional `list(string)`)*
+The list of app slugs with push access.
 Default is `[]`.
 
 #### [`issue_label`](#issue-labels-configuration) Object Attributes
