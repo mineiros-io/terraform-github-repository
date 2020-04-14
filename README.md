@@ -77,6 +77,14 @@ for details and use-cases.
 
 #### Top-level Arguments
 
+##### Module Configuration
+- **`module_depends_on`**: *(Optional `list(any)`)*
+Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)
+we might hit race conditions when dealing with team names instead of ids.
+So when using the feature of [adding teams by slug/name](#teams-configuration) to the repository when creating it,
+make sure to add all teams to this list as indirect dependencies.
+Default is `[]`.
+
 ##### Repository Configuration
 - **`name`**: ***(Required `string`)***
 The name of the repository.
@@ -186,6 +194,9 @@ Teams need to exist beforehand. Your can use non-computed
 (`*_teams` Attributes; **recommended**)
 or computed (only known in `terraform apply` phase) team IDs
 (`*_team_ids` Attributes).
+When using non-computed names/slugs make sure to add the actual team resources as
+indirect dependencies in `module_depends_on` as explained in
+[Module Configuration](#module-configuration) above.
 
 - **`pull_teams`** or **`pull_team_ids`**: *(Optional `list(string)`)*
 A list of teams to grant pull (read-only) permission.
@@ -449,11 +460,11 @@ The following attributes are exported by the module:
 - **`repository`**: All repository attributes as returned by the
 [`github_repository` resource](https://www.terraform.io/docs/providers/github/r/repository.html#attributes-reference)
 containing all arguments as specified above and the other attributes as specified below.
-- **`full_name`**: A string of the form "orgname/reponame".
-- **`html_url`**: URL to the repository on the web.
-- **`ssh_clone_url`**: URL that can be provided to git clone to clone the repository via SSH.
-- **`http_clone_url`**: URL that can be provided to git clone to clone the repository via HTTPS.
-- **`git_clone_url`**: URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+  - **`full_name`**: A string of the form "orgname/reponame".
+  - **`html_url`**: URL to the repository on the web.
+  - **`ssh_clone_url`**: URL that can be provided to git clone to clone the repository via SSH.
+  - **`http_clone_url`**: URL that can be provided to git clone to clone the repository via HTTPS.
+  - **`git_clone_url`**: URL that can be provided to git clone to clone the repository anonymously via the git protocol.
 
 - **`collaborators`**: A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
 [`github_repository_collaborator` resource](https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference).

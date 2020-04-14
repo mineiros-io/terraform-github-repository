@@ -8,18 +8,16 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # SET TERRAFORM AND PROVIDER REQUIREMENTS FOR RUNNING THIS MODULE
 # ---------------------------------------------------------------------------------------------------------------------
-
-terraform {
-  required_version = ">= 0.12.9"
-
-  required_providers {
-    github = ">= 2.3.1, < 3.0.0"
-  }
+provider "github" {
+  version = "~> 2.6"
 }
-
 
 module "repository" {
   source = "../.."
+
+  module_depends_on = [
+    github_team.team
+  ]
 
   name               = var.name
   description        = var.description

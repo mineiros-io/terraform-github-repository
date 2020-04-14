@@ -403,3 +403,9 @@ variable "projects" {
 
   default = []
 }
+
+variable "module_depends_on" {
+  type        = any
+  description = "Define resources this module indirectly depends_on."
+  default     = []
+}

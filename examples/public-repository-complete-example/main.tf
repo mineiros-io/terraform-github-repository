@@ -5,25 +5,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ---------------------------------------------------------------------------------------------------------------------
-# TERRAFORM
-# We need at least version 0.12.9 for full for_each functionality
-# ---------------------------------------------------------------------------------------------------------------------
-
-terraform {
-  required_version = ">= 0.12.9"
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
 # SET TERRAFORM AND PROVIDER REQUIREMENTS FOR RUNNING THIS MODULE
 # ---------------------------------------------------------------------------------------------------------------------
 
 provider "github" {
-  # We want to be compatible with 2.x series of github provider
-  version = ">= 2.6.1, < 3.0.0"
-
-  # Read GitHub credentials from environment
-  # GITHUB_TOKEN
-  # GITHUB_ORGANIZATION
+  version = "~> 2.6"
 }
 
 provider "tls" {
@@ -50,6 +36,10 @@ resource "tls_private_key" "deploy" {
 
 module "repository" {
   source = "../.."
+
+  module_depends_on = [
+    github_team.team
+  ]
 
   name                   = var.name
   description            = var.description

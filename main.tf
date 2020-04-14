@@ -338,6 +338,8 @@ resource "github_team_repository" "team_repository_by_slug" {
   repository = github_repository.repository.name
   team_id    = data.github_team.teams[each.key].id
   permission = each.value.permission
+
+  depends_on = [var.module_depends_on]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
