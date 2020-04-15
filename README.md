@@ -113,8 +113,8 @@ A description of the repository.
 Default is `""`
 
 - **`delete_branch_on_merge`**: *(Optional `string`)*
-Set to `true` to automatically delete head branch after a pull request is merged.
-Default is `false`
+Set to `false` to disable the automatic deletion of head branches after pull requests are merged.
+Default is `true`
 
 - **`homepage_url`**: *(Optional `string`)*
 URL of a page describing the project.
