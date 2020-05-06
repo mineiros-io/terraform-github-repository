@@ -407,3 +407,41 @@ resource "github_repository_project" "repository_project" {
   name       = each.value.name
   body       = each.value.body
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Webhooks
+# ---------------------------------------------------------------------------------------------------------------------
+locals {
+  webhooks = [
+    for b in var.webhooks : merge({
+      name   = null
+      active = null
+      events = []
+      configuration = try(
+        merge({
+          url          = null
+          content_type = null
+          insecure_ssl = null
+          secret       = null
+        }, b.configuration)
+        , {}
+      )
+    }, b)
+  ]
+}
+
+resource "github_repository_webhook" "repository_webhook" {
+  count = length(local.webhooks)
+
+  repository = github_repository.repository.name
+  name       = local.webhooks[count.index].name
+  active     = local.webhooks[count.index].active
+  events     = local.webhooks[count.index].events
+
+  configuration {
+    url          = local.webhooks[count.index].configuration.url
+    content_type = local.webhooks[count.index].configuration.content_type
+    insecure_ssl = local.webhooks[count.index].configuration.insecure_ssl
+    secret       = local.webhooks[count.index].configuration.secret
+  }
+}
