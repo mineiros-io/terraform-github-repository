@@ -302,7 +302,7 @@ This resource allows you to create and manage projects for GitHub repository.
 Default is `[]`.
 
 ##### Webhooks Configuration
-- **[`webhooks`](#webhooks-object-attributes)**: *(Optional `list(webhook)`)*
+- **[`webhooks`](#webhook-object-attributes)**: *(Optional `list(webhook)`)*
 This resource allows you to create and manage webhooks for repositories in your organization.
 When applied, a webhook will be created which specifies a URL to receive events and which events
 to receieve.  Additional constraints, such as SSL verification, pre-shared secret and content type
