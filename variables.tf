@@ -409,3 +409,38 @@ variable "module_depends_on" {
   description = "Define resources this module indirectly depends_on."
   default     = []
 }
+
+variable "webhooks" {
+  description = "Configuring webhooks. For details please check: https://www.terraform.io/docs/providers/github/r/repository_webhook.html"
+  type        = any
+
+  # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
+  # Terraform version. See https://github.com/hashicorp/terraform/issues/19898 and https://github.com/hashicorp/terraform/issues/22449
+  #
+  # type = list(object({
+  #   name   = string
+  #   active = bool
+  #   events = list(string)
+  #
+  #   configuration = object({
+  #     url          = string
+  #     content_type = string
+  #     insecure_ssl = bool
+  #     secret       = string
+  #   })
+  # }))
+
+  default = []
+
+  # Example:
+  # webhooks = [{
+  #   active = false
+  #   events = ["issues"]
+
+  #   configuration = {
+  #     url          = "https://google.de/"
+  #     content_type = "form"
+  #     insecure_ssl = false
+  #   }
+  # }]
+}

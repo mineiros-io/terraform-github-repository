@@ -301,6 +301,14 @@ Default is `true`.
 This resource allows you to create and manage projects for GitHub repository.
 Default is `[]`.
 
+##### Webhooks Configuration
+- **[`webhooks`](#webhook-object-attributes)**: *(Optional `list(webhook)`)*
+This resource allows you to create and manage webhooks for repositories in your organization.
+When applied, a webhook will be created which specifies a URL to receive events and which events
+to receieve.  Additional constraints, such as SSL verification, pre-shared secret and content type
+can also be configured
+Default is `[]`.
+
 #### [`defaults`](#repository-configuration) Object Attributes
 This is a special argument to set various defaults to be reused for multiple repositories.
 The following top-level arguments can be set as defaults:
@@ -453,6 +461,20 @@ Default is `""`.
 Specifies an ID which is used to prevent resource recreation when the order in
 the list of projects changes.
 Default is `name`.
+
+#### [`webhook`](#webhooks-configuration) Object Attributes
+- **`name`**: *(Optional `string`)*
+The type of the webhook. `web` is the default and the only option.
+
+- **`active`**: *(Optional `bool`)*
+Indicate if the webhook should receive events. Defaults to `true`.
+
+- **`events`**: ***(Required `list(string`)***
+A list of events which should trigger the webhook. [See a list of available events.](https://developer.github.com/v3/activity/events/types/)
+
+- **`configuration`**: ***(Required `map(string)`)***
+A key/value pair of configuration for this webhook. Available keys are `url`, `content_type`, `secret` and `insecure_ssl`. `secret` is the shared secret, see [API documentation](https://developer.github.com/v3/repos/hooks/#create-a-hook).
+
 
 ## Module Attributes Reference
 The following attributes are exported by the module:
