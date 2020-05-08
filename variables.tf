@@ -418,16 +418,13 @@ variable "webhooks" {
   # Terraform version. See https://github.com/hashicorp/terraform/issues/19898 and https://github.com/hashicorp/terraform/issues/22449
   #
   # type = list(object({
-  #   name   = string
-  #   active = bool
-  #   events = list(string)
-  #
-  #   configuration = object({
-  #     url          = string
-  #     content_type = string
-  #     insecure_ssl = bool
-  #     secret       = string
-  #   })
+  #   name         = string
+  #   active       = bool
+  #   events       = list(string)
+  #   url          = string
+  #   content_type = string
+  #   insecure_ssl = bool
+  #   secret       = string
   # }))
 
   default = []
@@ -436,11 +433,8 @@ variable "webhooks" {
   # webhooks = [{
   #   active = false
   #   events = ["issues"]
-
-  #   configuration = {
-  #     url          = "https://google.de/"
-  #     content_type = "form"
-  #     insecure_ssl = false
-  #   }
+  #   url          = "https://google.de/"
+  #   content_type = "form"
+  #   insecure_ssl = false
   # }]
 }
