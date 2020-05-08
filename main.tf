@@ -411,24 +411,6 @@ resource "github_repository_project" "repository_project" {
 # ---------------------------------------------------------------------------------------------------------------------
 # Webhooks
 # ---------------------------------------------------------------------------------------------------------------------
-locals {
-  webhooks = [
-    for b in var.webhooks : merge({
-      name   = null
-      active = null
-      events = []
-      configuration = try(
-        merge({
-          url          = null
-          content_type = null
-          insecure_ssl = null
-          secret       = null
-        }, b.configuration)
-        , {}
-      )
-    }, b)
-  ]
-}
 
 resource "github_repository_webhook" "repository_webhook" {
   count = length(local.webhooks)
