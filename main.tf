@@ -421,9 +421,9 @@ resource "github_repository_webhook" "repository_webhook" {
   events     = var.webhooks[count.index].events
 
   configuration {
-    url          = local.webhooks[count.index].configuration.url
-    content_type = local.webhooks[count.index].configuration.content_type
-    insecure_ssl = local.webhooks[count.index].configuration.insecure_ssl
-    secret       = local.webhooks[count.index].configuration.secret
+    url          = var.webhooks[count.index].url
+    content_type = try(var.webhooks[count.index].content_type, "json")
+    insecure_ssl = try(var.webhooks[count.index].insecure_ssl, false)
+    secret       = try(var.webhooks[count.index].secret, null)
   }
 }
