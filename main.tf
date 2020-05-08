@@ -413,7 +413,7 @@ resource "github_repository_project" "repository_project" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_repository_webhook" "repository_webhook" {
-  count = length(local.webhooks)
+  count = length(var.webhooks)
 
   repository = github_repository.repository.name
   name       = local.webhooks[count.index].name
