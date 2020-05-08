@@ -22,14 +22,11 @@ module "repository" {
   name = var.name
 
   webhooks = [{
-    active = var.webhook_active
-    events = var.webhook_events
-
-    configuration = {
-      url          = var.webhook_url
-      content_type = var.webhook_content_type
-      insecure_ssl = var.webhook_insecure_ssl
-      secret       = var.webhook_secret
-    }
+    active       = var.webhook_active
+    events       = var.webhook_events
+    url          = var.webhook_url
+    content_type = var.webhook_content_type
+    insecure_ssl = var.webhook_insecure_ssl
+    secret       = var.webhook_secret
   }]
 }
