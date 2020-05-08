@@ -46,10 +46,10 @@ features like Branch Protection or Collaborator Management.
   Collaborators,
   Teams,
   Deploy Keys,
-  Projects
+  Projects,
+  Repository Webhooks
 
 - *Features not yet implemented*:
-  Repository Webhooks,
   Project Columns support,
   Actions,
   Repository File
@@ -463,17 +463,23 @@ the list of projects changes.
 Default is `name`.
 
 #### [`webhook`](#webhooks-configuration) Object Attributes
-- **`name`**: *(Optional `string`)*
-The type of the webhook. `web` is the default and the only option.
+- **`events`**: ***(Required `list(string)`)***
+A list of events which should trigger the webhook. [See a list of available events.](https://developer.github.com/v3/activity/events/types/)
+
+- **`url`**: ***(Required `string`)***
+The URL to which the payloads will be delivered.
 
 - **`active`**: *(Optional `bool`)*
 Indicate if the webhook should receive events. Defaults to `true`.
 
-- **`events`**: ***(Required `list(string`)***
-A list of events which should trigger the webhook. [See a list of available events.](https://developer.github.com/v3/activity/events/types/)
+- **`content_type`**: *(Optional `string`)*
+The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.
 
-- **`configuration`**: ***(Required `map(string)`)***
-A key/value pair of configuration for this webhook. Available keys are `url`, `content_type`, `secret` and `insecure_ssl`. `secret` is the shared secret, see [API documentation](https://developer.github.com/v3/repos/hooks/#create-a-hook).
+- **`secret`**: *(Optional `string`)*
+If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value in the `[X-Hub-Signature](https://developer.github.com/webhooks/#delivery-headers)` header.
+
+- **`insecure_ssl`**: *(Optional `bool`)*
+Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
 
 
 ## Module Attributes Reference
