@@ -416,9 +416,9 @@ resource "github_repository_webhook" "repository_webhook" {
   count = length(var.webhooks)
 
   repository = github_repository.repository.name
-  name       = local.webhooks[count.index].name
-  active     = local.webhooks[count.index].active
-  events     = local.webhooks[count.index].events
+  name       = try(var.webhooks[count.index].name, "web")
+  active     = try(var.webhooks[count.index].active, true)
+  events     = var.webhooks[count.index].events
 
   configuration {
     url          = local.webhooks[count.index].configuration.url
