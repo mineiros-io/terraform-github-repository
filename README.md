@@ -46,10 +46,10 @@ features like Branch Protection or Collaborator Management.
   Collaborators,
   Teams,
   Deploy Keys,
-  Projects
+  Projects,
+  Repository Webhooks
 
 - *Features not yet implemented*:
-  Repository Webhooks,
   Project Columns support,
   Actions,
   Repository File
@@ -301,6 +301,14 @@ Default is `true`.
 This resource allows you to create and manage projects for GitHub repository.
 Default is `[]`.
 
+##### Webhooks Configuration
+- **[`webhooks`](#webhook-object-attributes)**: *(Optional `list(webhook)`)*
+This resource allows you to create and manage webhooks for repositories in your organization.
+When applied, a webhook will be created which specifies a URL to receive events and which events
+to receieve.  Additional constraints, such as SSL verification, pre-shared secret and content type
+can also be configured
+Default is `[]`.
+
 #### [`defaults`](#repository-configuration) Object Attributes
 This is a special argument to set various defaults to be reused for multiple repositories.
 The following top-level arguments can be set as defaults:
@@ -453,6 +461,26 @@ Default is `""`.
 Specifies an ID which is used to prevent resource recreation when the order in
 the list of projects changes.
 Default is `name`.
+
+#### [`webhook`](#webhooks-configuration) Object Attributes
+- **`events`**: ***(Required `list(string)`)***
+A list of events which should trigger the webhook. [See a list of available events.](https://developer.github.com/v3/activity/events/types/)
+
+- **`url`**: ***(Required `string`)***
+The URL to which the payloads will be delivered.
+
+- **`active`**: *(Optional `bool`)*
+Indicate if the webhook should receive events. Defaults to `true`.
+
+- **`content_type`**: *(Optional `string`)*
+The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.
+
+- **`secret`**: *(Optional `string`)*
+If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value in the `[X-Hub-Signature](https://developer.github.com/webhooks/#delivery-headers)` header.
+
+- **`insecure_ssl`**: *(Optional `bool`)*
+Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
+
 
 ## Module Attributes Reference
 The following attributes are exported by the module:

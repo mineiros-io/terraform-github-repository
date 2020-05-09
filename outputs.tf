@@ -54,3 +54,8 @@ output "deploy_keys" {
   value       = local.deploy_keys_output
   description = "A map of deploy keys keyed by input id."
 }
+
+output "webhooks" {
+  value       = github_repository_webhook.repository_webhook
+  description = "All attributes and arguments as returned by the github_repository_webhook resource."
+}
