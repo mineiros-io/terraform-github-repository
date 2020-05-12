@@ -324,6 +324,12 @@ variable "issue_labels_merge_with_github_labels" {
   default     = null
 }
 
+variable "issue_labels_create" {
+  description = "Specify whether you want to force or suppress the creation of issues labels."
+  type        = bool
+  default     = null
+}
+
 variable "issue_labels" {
   description = "Configure a GitHub issue label resource."
   type = list(object({
