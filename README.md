@@ -296,6 +296,10 @@ Specify if github default labels will be handled by terraform. This should be de
 replaced by labels set in `issue_labels` argument.
 Default is `true`.
 
+- **[`issue_labels_create`](#issue_label-object-attributes)**: *(Optional `bool`)*
+Specify whether you want to force or suppress the creation of issues labels.
+Default is `true` if `has_issues` is `true` or `issue_labels` is non-empty, otherwise default is `false`.
+
 ##### Projects Configuration
 - **[`projects`](#project-object-attributes)**: *(Optional `list(project)`)*
 This resource allows you to create and manage projects for GitHub repository.
@@ -326,6 +330,7 @@ The following top-level arguments can be set as defaults:
 `license_template`,
 `default_branch`,
 `topics`,
+`issue_labels_create`,
 `issue_labels_merge_with_github_labels`.
 Module defaults are used for all arguments that are not set in `defaults`.
 Using top level arguments override defaults set by this argument.

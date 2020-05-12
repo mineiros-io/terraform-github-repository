@@ -23,6 +23,9 @@ locals {
   standard_topics        = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
+  issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
+
+  issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
   # for readability
   var_gh_labels = var.issue_labels_merge_with_github_labels
@@ -240,7 +243,7 @@ locals {
 }
 
 resource "github_issue_label" "label" {
-  for_each = local.issue_labels
+  for_each = local.issue_labels_create ? local.issue_labels : {}
 
   repository  = github_repository.repository.name
   name        = each.value.name
