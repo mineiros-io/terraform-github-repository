@@ -332,7 +332,10 @@ data "github_team" "teams" {
 
   slug = each.value.slug
 
-  depends_on = [github_repository.repository]
+  depends_on = [
+    var.module_depends_on,
+    github_repository.repository,
+  ]
 }
 
 resource "github_team_repository" "team_repository_by_slug" {
