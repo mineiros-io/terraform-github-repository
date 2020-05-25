@@ -331,8 +331,6 @@ data "github_team" "teams" {
   for_each = local.teams
 
   slug = each.value.slug
-
-  depends_on = [github_repository.repository]
 }
 
 resource "github_team_repository" "team_repository_by_slug" {
