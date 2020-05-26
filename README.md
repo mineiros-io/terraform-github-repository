@@ -189,14 +189,14 @@ Use a template repository to create this resource.
 See [Template Object Attributes](#template-object-attributes) below for details.
 
 ##### Teams Configuration
-Teams need to exist beforehand. Your can use non-computed
+Your can use non-computed
 (known at `terraform plan`) team names or slugs
-(`*_teams` Attributes; **recommended**)
+(`*_teams` Attributes)
 or computed (only known in `terraform apply` phase) team IDs
 (`*_team_ids` Attributes).
-When using non-computed names/slugs make sure to add the actual team resources as
-indirect dependencies in `module_depends_on` as explained in
-[Module Configuration](#module-configuration) above.
+**When using non-computed names/slugs teams need to exist before running plan.**
+This is due to some terraform limitation and we will update the module once terraform
+removed thislimitation.
 
 - **`pull_teams`** or **`pull_team_ids`**: *(Optional `list(string)`)*
 A list of teams to grant pull (read-only) permission.
