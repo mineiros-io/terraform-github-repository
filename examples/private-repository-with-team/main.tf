@@ -36,8 +36,8 @@ module "repository" {
   archived           = false
   topics             = ["terraform", "integration-test"]
 
-  admin_teams = [
-    var.team_name
+  admin_team_ids = [
+    github_team.team.id
   ]
 
   branch_protections = [
