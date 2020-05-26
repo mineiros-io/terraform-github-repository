@@ -60,8 +60,8 @@ module "repository" {
   archived               = false
   topics                 = var.topics
 
-  admin_teams = [
-    var.team_name
+  admin_team_ids = [
+    github_team.team.id
   ]
 
   branch_protections = [
