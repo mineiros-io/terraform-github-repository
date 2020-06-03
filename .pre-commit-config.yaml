@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/mineiros-io/pre-commit-hooks
-    rev: v0.1.0
+    rev: v0.1.3
     hooks:
       - id: terraform-fmt
       - id: terraform-validate
@@ -8,3 +8,5 @@ repos:
       - id: gofmt
       - id: goimports
       - id: golint
+      - id: phony-targets
+      - id: markdown-link-check
