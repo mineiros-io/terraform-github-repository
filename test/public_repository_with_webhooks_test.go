@@ -14,7 +14,7 @@ func TestGithubPublicRepositoryWithWebhook(t *testing.T) {
 	t.Parallel()
 
 	const OutputRepositoryName = "repository_name"
-	const OutputRepositoryURL = "repository_url"
+	// const OutputRepositoryURL = "repository_url"
 	const OutputWebhookContentType = "webhook_content_type"
 	const OutputWebhookInsecureSsl = "webhook_insecure_ssl"
 	const OutputWebhookSecret = "webhook_secret"
