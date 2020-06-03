@@ -1,9 +1,9 @@
 # Contribution Guidelines
 
-First and foremost, we’d like to express our gratitude to you for taking the time to contribute. 
-We welcome and appreciate any and all contributions via 
+First of all, thanks for the time to contribute.  
+We welcome and appreciate contributions through
 [Pull Requests](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
-along the [GitHub Flow](https://guides.github.com/introduction/flow/).  
+that are following the [GitHub Flow](https://guides.github.com/introduction/flow/).
 
 1. [Open a GitHub issue](#open-a-github-issue)
 1. [Fork the repository on GitHub](#fork-the-repository-on-github)
@@ -16,13 +16,11 @@ along the [GitHub Flow](https://guides.github.com/introduction/flow/).
 
 ## Open a GitHub issue
 
-For bug reports or requests, please submit your issue in the appropriate repository.
+For bug reports or requests please submit an issue in the appropriate repository.
 
-We advise that you open an issue and ask the
+In general, we advise you to open an issue and ask the
 [CODEOWNERS](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners) and
-community prior to starting a contribution. This is your chance to ask questions and receive feedback before you start
-writing ( potentially wrong ) code. We value the direct contact to our community a lot, so don't hesitate to ask any
-questions. 
+community any questions before you start working on your contribution.
 
 ## Fork the repository on GitHub
 
@@ -30,17 +28,18 @@ questions.
 account and [create a new branch](https://guides.github.com/introduction/flow/) as described in the
 [GitHub Flow](https://guides.github.com/introduction/flow/).
 
+
 ## Install the pre-commit hooks
 
-If the repository you're working on ships with a `.pre-commit-config.yaml,` make sure the necessary hooks have been
-installed before you begin working (e.g. a `pre-commit install`). 
+If the repository you're working on ships with a `.pre-commit-config.yaml`, make sure that you install the hooks before
+you start working. E.g. `pre-commit install`.
 
 ## Update the documentation
 
-We encourage you to update the documentation before writing any code (please see
-[Readme Driven Development](https://tom.preston-werner.com/2010/08/23/readme-driven-development.html). This ensures the
-documentation stays up to date and allows you to think through the problem fully before you begin implementing any
-changes.
+We would like to encourage you to update the documentation before updating any code
+(see [Readme Driven Development](https://tom.preston-werner.com/2010/08/23/readme-driven-development.html)).
+This ensures the documentation stays up to date and allows you to think through the problem at a high level before you
+you start implementing your changes.
 
 ## Update the tests
 
