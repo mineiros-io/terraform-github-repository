@@ -1,16 +1,14 @@
-[<img src="https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg" width="400"/>](https://www.mineiros.io/?ref=terraform-github-repository)
+[<img src="https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg" width="400"/>][homepage]
 
-[![Build Status](https://mineiros.semaphoreci.com/badges/terraform-github-repository/branches/master.svg?style=shields)](https://mineiros.semaphoreci.com/projects/terraform-github-repository)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
-[![license](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Terraform Version](https://img.shields.io/badge/terraform-~%3E%200.12.20-623CE4.svg)](https://github.com/hashicorp/terraform/releases)
-[<img src="https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack">](https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg)
+[![Build Status][badge-build]][build-status]
+[![GitHub tag (latest SemVer)][badge-semver]][releases-github]
+[![license][badge-license]][apache20]
+[![Terraform Version][badge-terraform]][releases-terraform]
+[![Join Slack][badge-slack]][slack]
 
 # terraform-github-repository
 
-A [Terraform](https://www.terraform.io) 0.12 base module for
-creating a public or private repository on
-[Github](https://github.com/).
+A [Terraform] 0.12 module for creating a public or private repository on [Github].
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -37,6 +35,7 @@ creating a public or private repository on
     - [`project` Object Attributes](#project-object-attributes)
     - [`webhook` Object Attributes](#webhook-object-attributes)
 - [Module Attributes Reference](#module-attributes-reference)
+- [External Documentation](#external-documentation)
 - [Module Versioning](#module-versioning)
   - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
 - [About Mineiros](#about-mineiros)
@@ -94,17 +93,14 @@ module "repository" {
 
 ## Module Argument Reference
 
-See
-[variables.tf](https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf)
-and
-[examples/](https://github.com/mineiros-io/terraform-github-repository/blob/master/examples)
-for details and use-cases.
+See [variables.tf] and [examples/] for details and use-cases.
 
 ### Top-level Arguments
 
 #### Module Configuration
 
 - **`module_depends_on`**: _(Optional `list(any)`)_
+
   Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)
   we might hit race conditions when dealing with team names instead of ids.
   So when using the feature of [adding teams by slug/name](#teams-configuration) to the repository when creating it,
@@ -114,64 +110,79 @@ for details and use-cases.
 #### Repository Configuration
 
 - **`name`**: **_(Required `string`)_**
+
   The name of the repository.
 
 - **[`defaults`](#defaults-object-attributes)**: _(Optional `object`)_
+
   A object of default settings to use instead of module defaults for top-level arguments.
   See below for a list of supported arguments.
   Default is `{}` - use module defaults as described in the README.
 
 - **`allow_merge_commit`**: _(Optional `bool`)_
+
   Set to `false` to disable merge commits on the repository.
   If you set this to `false` you have to enable either `allow_squash_merge`
   or `allow_rebase_merge`.
   Default is `true`.
 
 - **`allow_squash_merge`**: _(Optional `bool`)_
+
   Set to `true` to enable squash merges on the repository.
   Default is `false`.
 
 - **`allow_rebase_merge`**: _(Optional `bool`)_
+
   Set to `true` to enable rebase merges on the repository.
   Default is `false`.
 
 - **`description`**: _(Optional `string`)_
+
   A description of the repository.
   Default is `""`
 
 - **`delete_branch_on_merge`**: _(Optional `string`)_
+
   Set to `false` to disable the automatic deletion of head branches after pull requests are merged.
   Default is `true`
 
 - **`homepage_url`**: _(Optional `string`)_
+
   URL of a page describing the project.
   Default is `""`
 
 - **`private`**: _(Optional `bool`)_
+
   Set to false to create a public repository.
   Default is `true`
 
 - **`has_issues`**: _(Optional `bool`)_
+
   Set to true to enable the GitHub Issues features on the repository.
   Default is `false`
 
 - **`has_projects`**: _(Optional `bool`)_
+
   Set to true to enable the GitHub Projects features on the repository.
   Default is `false`
 
 - **`has_wiki`**: _(Optional `bool`)_
+
   Set to true to enable the GitHub Wiki features on the repository.
   Default is `false`
 
 - **`has_downloads`**: _(Optional `bool`)_
+
   Set to `true` to enable the (deprecated) downloads features on the repository.
   Default is `false`.
 
 - **`is_template`**: _(Optional `bool`)_
+
   Set to `true` to tell GitHub that this is a template repository.
   Default is `false`.
 
 - **`default_branch`**: _(Optional `string`)_
+
   The name of the default branch of the repository.
   NOTE: This can only be set after a repository has already been created, and
   after a correct reference has been created for the target branch inside the repository.
@@ -180,15 +191,18 @@ for details and use-cases.
   Default is `""`
 
 - **`archived`**: _(Optional `bool`)_
+
   Specifies if the repository should be archived.
   NOTE: Currently, the API does not support unarchiving.
   Default is `false`.
 
 - **`topics`**: _(Optional `list(string)`)_
+
   The list of topics of the repository.
   Default is `[]`.
 
 - **`extra_topics`**: _(Optional `list(string)`)_
+
   A list of additional topics of the repository. Those topics will be added to
   the list of `topics`. This is useful if `default.topics` are used and the list
   should be extended with more topics.
@@ -201,18 +215,22 @@ changes will be ignored for repository updates and
 will not show a diff in plan or apply phase.
 
 - **`auto_init`**: _(Optional `bool`)_
+
   Set to `false` to not produce an initial commit in the repository.
   Default is `true`.
 
 - **`gitignore_template`**: _(Optional `string`)_
+
   Use the name of the template without the extension.
   Default is `""`
 
 - **`license_template`**: _(Optional `string`)_
+
   Use the name of the template without the extension.
   Default is `""`
 
 - **[`template`](#template-object-attributes)**: _(Optional `object`)_
+
   Use a template repository to create this resource.
   See [Template Object Attributes](#template-object-attributes) below for details.
 
@@ -228,28 +246,33 @@ This is due to some terraform limitation and we will update the module once terr
 removed thislimitation.
 
 - **`pull_teams`** or **`pull_team_ids`**: _(Optional `list(string)`)_
+
   A list of teams to grant pull (read-only) permission.
   Recommended for non-code contributors who want to view or discuss your project.
   Default is `[]`.
 
 - **`triage_teams`** or **`triage_team_ids`**: _(Optional `list(string)`)_
+
   A list of teams to grant triage permission.
   Recommended for contributors who need to proactively manage issues and pull requests
   without write access.
   Default is `[]`.
 
 - **`push_teams`** or **`push_team_ids`**: _(Optional `list(string)`)_
+
   A list of teams to grant push (read-write) permission.
   Recommended for contributors who actively push to your project.
   Default is `[]`.
 
 - **`maintain_teams`** or **`maintain_team_ids`**: _(Optional `list(string)`)_
+
   A list of teams to grant maintain permission.
   Recommended for project managers who need to manage the repository without access
   to sensitive or destructive actions.
   Default is `[]`.
 
 - **`admin_teams`** or **`admin_team_ids`**: _(Optional `list(string)`)_
+
   A list of teams to grant admin (full) permission.
   Recommended for people who need full access to the project, including sensitive
   and destructive actions like managing security or deleting a repository.
@@ -258,28 +281,33 @@ removed thislimitation.
 #### Collaborator Configuration
 
 - **`pull_collaborators`**: _(Optional `list(string)`)_
+
   A list of user names to add as collaborators granting them pull (read-only) permission.
   Recommended for non-code contributors who want to view or discuss your project.
   Default is `[]`.
 
 - **`triage_collaborators`**: _(Optional `list(string)`)_
+
   A list of user names to add as collaborators granting them triage permission.
   Recommended for contributors who need to proactively manage issues and pull requests
   without write access.
   Default is `[]`.
 
 - **`push_collaborators`**: _(Optional `list(string)`)_
+
   A list of user names to add as collaborators granting them push (read-write) permission.
   Recommended for contributors who actively push to your project.
   Default is `[]`.
 
 - **`maintain_collaborators`**: _(Optional `list(string)`)_
+
   A list of user names to add as collaborators granting them maintain permission.
   Recommended for project managers who need to manage the repository without access
   to sensitive or destructive actions.
   Default is `[]`.
 
 - **`admin_collaborators`**: _(Optional `list(string)`)_
+
   A list of user names to add as collaborators granting them admin (full) permission.
   Recommended for people who need full access to the project, including sensitive
   and destructive actions like managing security or deleting a repository.
@@ -288,6 +316,7 @@ removed thislimitation.
 #### Deploy Keys Configuration
 
 - **[`deploy_keys`](#deploy_key-object-attributes)**: _(Optional `list(deploy_key|string)`)_
+
   Specifies deploy keys and access-level of deploy keys used in this repository.
   Every `string` in the list will be converted internally into the `object`
   representation with the `key` argument being set to the `string`.
@@ -295,6 +324,7 @@ removed thislimitation.
   Default is `[]`.
 
 - **[`deploy_keys_computed`](#deploy_key-object-attributes)**: _(Optional `list(deploy_key|string)`)_
+
   Same as `deploy_keys` argument with the following differences:
   Use this argument if you depend on computed keys that terraform can not use in
   resource `for_each` execution. Downside of this is the recreation of deploy key
@@ -306,6 +336,7 @@ removed thislimitation.
 #### Branch Protections Configuration
 
 - **[`branch_protections`](#branch_protection-object-attributes)**: _(Optional `list(branch_protection)`)_
+
   This resource allows you to configure branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams,
@@ -315,6 +346,7 @@ removed thislimitation.
 #### Issue Labels Configuration
 
 - **[`issue_labels`](#issue_label-object-attributes)**: _(Optional `list(issue_label)`)_
+
   This resource allows you to create and manage issue labels within your GitHub organization.
   Issue labels are keyed off of their "name", so pre-existing issue labels result
   in a 422 HTTP error if they exist outside of Terraform.
@@ -325,23 +357,27 @@ removed thislimitation.
   Default is `[]`.
 
 - **[`issue_labels_merge_with_github_labels`](#issue_label-object-attributes)**: _(Optional `bool`)_
+
   Specify if github default labels will be handled by terraform. This should be decided on upon creation of the repository. If you later decide to disable this feature, github default labels will be destroyed if not
   replaced by labels set in `issue_labels` argument.
   Default is `true`.
 
 - **[`issue_labels_create`](#issue_label-object-attributes)**: _(Optional `bool`)_
+
   Specify whether you want to force or suppress the creation of issues labels.
   Default is `true` if `has_issues` is `true` or `issue_labels` is non-empty, otherwise default is `false`.
 
 #### Projects Configuration
 
 - **[`projects`](#project-object-attributes)**: _(Optional `list(project)`)_
+
   This resource allows you to create and manage projects for GitHub repository.
   Default is `[]`.
 
 #### Webhooks Configuration
 
 - **[`webhooks`](#webhook-object-attributes)**: _(Optional `list(webhook)`)_
+
   This resource allows you to create and manage webhooks for repositories in your organization.
   When applied, a webhook will be created which specifies a URL to receive events and which events
   to receieve. Additional constraints, such as SSL verification, pre-shared secret and content type
@@ -375,26 +411,32 @@ Default is `{}`.
 #### [`template`](#repository-creation-configuration) Object Attributes
 
 - **`owner`**: **_(Required `string`)_**
+
   The GitHub organization or user the template repository is owned by.
 
 - **`repository`**: **_(Required `string`)_**
+
   The name of the template repository.
 
 #### [`deploy_key`](#deploy-keys-configuration) Object Attributes
 
 - **`key`**: **_(Required `string`)_**
+
   The SSH public key.
 
 - **`title`**: _(Optional `string`)_
+
   A Title for the key.
   Default is the comment field of SSH public key if it is not empty else it defaults to
   `md5(key)`.
 
 - **`read_only`**: _(Optional `bool`)_
+
   Specifies the level of access for the key.
   Default is `true`.
 
-- _`id`_: _(Optional `string`)_
+- **`id`**: _(Optional `string`)_
+
   Specifies an ID which is used to prevent resource recreation when the order in
   the list of deploy keys changes.
   The ID must be unique between `deploy_keys` and `deploy_keys_computed`.
@@ -403,27 +445,33 @@ Default is `{}`.
 #### [`branch_protection`](#branch-protections-configuration) Object Attributes
 
 - **`branch`**: **_(Required `string`)_**
+
   The Git branch to protect.
 
 - **`enforce_admins`**: _(Optional `bool`)_
+
   Setting this to true enforces status checks for repository administrators.
   Default is `false`.
 
 - **`require_signed_commits`**: _(Optional `bool`)_
+
   Setting this to true requires all commits to be signed with GPG.
   Default is `false`.
 
 - **`required_status_checks`**: _(Optional `required_status_checks`)_
+
   Enforce restrictions for required status checks.
   See Required Status Checks below for details.
   Default is `{}`.
 
 - **`required_pull_request_reviews`**: _(Optional `required_pull_request_reviews`)_
+
   Enforce restrictions for pull request reviews.
   See Required Pull Request Reviews below for details.
   Default is `{}`.
 
 - **`restrictions`**: _(Optional `restrictions`)_
+
   Enforce restrictions for the users and teams that may push to the branch -
   only available for organization-owned repositories. See Restrictions below for details.
   Default is `{}`.
@@ -431,34 +479,41 @@ Default is `{}`.
 ##### [`required_status_checks`](#branch_protection-object-attributes) Object Attributes
 
 - **`strict`**: _(Optional `bool`)_
+
   Require branches to be up to date before merging.
   Defaults is `false`.
 
 - **`contexts`**: _(Optional `list(string)`)_
+
   The list of status checks to require in order to merge into this branch.
   Default is `[]` - No status checks are required.
 
 ##### [`required_pull_request_reviews`](#branch_protection-object-attributes) Object Attributes
 
 - **`dismiss_stale_reviews`**: _(Optional `bool`)_
+
   Dismiss approved reviews automatically when a new commit is pushed.
   Default is `false`.
 
 - **`dismissal_users`**: _(Optional `list(string)`)_
+
   The list of user logins with dismissal access
   Default is `[]`.
 
 - **`dismissal_teams`**: _(Optional `list(string)`)_
+
   The list of team slugs with dismissal access.
   Always use slug of the team, not its name.
   Each team already has to have access to the repository.
   Default is `[]`.
 
 - **`require_code_owner_reviews`**: _(Optional `bool`)_
+
   Require an approved review in pull requests including files with a designated code owner.
   Defaults is `false`.
 
 - **`required_approving_review_count`**: _(Optional `number`)_
+
   Require x number of approvals to satisfy branch protection requirements.
   If this is specified it must be a number between 1-6.
   This requirement matches Github's API, see the upstream documentation for more information.
@@ -467,32 +522,39 @@ Default is `{}`.
 ##### [`restrictions`](#branch_protection-object-attributes) Object Attributes
 
 - **`users`**: _(Optional `list(string)`)_
+
   The list of user logins with push access.
   Default is `[]`.
 
 - **`teams`**: _(Optional `list(string)`)_
+
   The list of team slugs with push access.
   Always use slug of the team, not its name.
   Each team already has to have access to the repository.
   Default is `[]`.
 
 - **`apps`**: _(Optional `list(string)`)_
+
   The list of app slugs with push access.
   Default is `[]`.
 
 #### [`issue_label`](#issue-labels-configuration) Object Attributes
 
 - **`name`**: **_(Required `string`)_**
+
   The name of the label.
 
 - **`color`**: **_(Required `string`)_**
+
   A 6 character hex code, without the leading #, identifying the color of the label.
 
 - **`description`**: _(Optional `string`)_
+
   A short description of the label.
   Default is `""`.
 
-- _`id`_: _(Optional `string`)_
+- **`id`**: _(Optional `string`)_
+
   Specifies an ID which is used to prevent resource recreation when the order in
   the list of issue labels changes.
   Default is `name`.
@@ -500,13 +562,16 @@ Default is `{}`.
 #### [`project`](#projects-configuration) Object Attributes
 
 - **`name`**: **_(Required `string`)_**
+
   The name of the project.
 
 - **`body`**: _(Optional `string`)_
+
   The body of the project.
   Default is `""`.
 
-- _`id`_: _(Optional `string`)_
+- **`id`**: _(Optional `string`)_
+
   Specifies an ID which is used to prevent resource recreation when the order in
   the list of projects changes.
   Default is `name`.
@@ -514,50 +579,88 @@ Default is `{}`.
 #### [`webhook`](#webhooks-configuration) Object Attributes
 
 - **`events`**: **_(Required `list(string)`)_**
+
   A list of events which should trigger the webhook. [See a list of available events.](https://developer.github.com/v3/activity/events/types/)
 
 - **`url`**: **_(Required `string`)_**
+
   The URL to which the payloads will be delivered.
 
 - **`active`**: _(Optional `bool`)_
+
   Indicate if the webhook should receive events. Defaults to `true`.
 
 - **`content_type`**: _(Optional `string`)_
+
   The media type used to serialize the payloads. Supported values include `json` and `form`. The default is `form`.
 
 - **`secret`**: _(Optional `string`)_
+
   If provided, the `secret` will be used as the `key` to generate the HMAC hex digest value in the `[X-Hub-Signature](https://developer.github.com/webhooks/#delivery-headers)` header.
 
 - **`insecure_ssl`**: _(Optional `bool`)_
+
   Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
 
 ## Module Attributes Reference
 
 The following attributes are exported by the module:
 
-- **`repository`**: All repository attributes as returned by the
-  [`github_repository` resource](https://www.terraform.io/docs/providers/github/r/repository.html#attributes-reference)
+- **`repository`**
+
+  All repository attributes as returned by the
+  [`github_repository`] resource
   containing all arguments as specified above and the other attributes as specified below.
 
-  - **`full_name`**: A string of the form "orgname/reponame".
-  - **`html_url`**: URL to the repository on the web.
-  - **`ssh_clone_url`**: URL that can be provided to git clone to clone the repository via SSH.
-  - **`http_clone_url`**: URL that can be provided to git clone to clone the repository via HTTPS.
-  - **`git_clone_url`**: URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+  - **`full_name`**
 
-- **`collaborators`**: A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
-  [`github_repository_collaborator` resource](https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference).
+    A string of the form "orgname/reponame".
 
-- **`deploy_keys`**: A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the
-  [`github_repository_deploy_key` resource](https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference)
+  - **`html_url`**
+
+    URL to the repository on the web.
+
+  - **`ssh_clone_url`**
+
+    URL that can be provided to git clone to clone the repository via SSH.
+
+  - **`http_clone_url`**
+
+    URL that can be provided to git clone to clone the repository via HTTPS.
+
+  - **`git_clone_url`**
+
+    URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+
+- **`collaborators`**
+
+  A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
+  [`github_repository_collaborator`] resource.
+
+- **`deploy_keys`**
+
+  A merged map of deploy key objects for the keys originally passed via `deploy_keys` and
+  `deploy_keys_computed` as returned by the [`github_repository_deploy_key`] resource
   keyed by the input `id` of the key.
 
-- **`projects`**: A map of Project objects keyed by the `id` of the project as returned by the
-  [`github_repository_project` resource](https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference).
+- **`projects`**
+
+  A map of Project objects keyed by the `id` of the project as returned by the
+  [`github_repository_project`] resource
+
+
+## External Documentation
+
+- Terraform Github Provider Documentation:
+  - https://www.terraform.io/docs/providers/github/r/repository.html
+  - https://www.terraform.io/docs/providers/github/r/repository_collaborator.html
+  - https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html
+  - https://www.terraform.io/docs/providers/github/r/repository_project.html
+
 
 ## Module Versioning
 
-This Module follows the principles of [Semantic Versioning (SemVer)](https://semver.org/).
+This Module follows the principles of [Semantic Versioning (SemVer)].
 
 Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 
@@ -572,37 +675,68 @@ Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 
 ## About Mineiros
 
-Mineiros is a [DevOps as a Service](https://www.mineiros.io/?ref=terraform-github-repository) Company based in Berlin, Germany.
-We offer Commercial Support for all of our projects, just send us an email to [hello@mineiros.io](mailto:hello@mineiros.io).
+Mineiros is a [DevOps as a Service][homepage] company based in Berlin, Germany.
+We offer commercial support for all of our projects and encourage you to reach out
+if you have any questions or need help. Feel free to send us an email at [hello@mineiros.io] or join our [Community Slack channel][slack].
 
 We can also help you with:
 
-- Terraform Modules for all types of infrastructure such as VPC's, Docker clusters,
-  databases, logging and monitoring, CI, etc.
-- Complex Cloud- and Multi Cloud environments.
-- Consulting & Training on AWS, Terraform and DevOps.
+- Terraform modules for all types of infrastructure such as VPCs, Docker clusters, databases, logging and monitoring, CI, etc.
+- Consulting & training on AWS, Terraform and DevOps
 
 ## Reporting Issues
 
-We use GitHub [Issues](https://github.com/mineiros-io/terraform-github-repository/issues) to track community reported issues and missing features.
+We use GitHub [Issues] to track community reported issues and missing features.
 
 ## Contributing
 
-Contributions are very welcome!
-We use [Pull Requests](https://github.com/mineiros-io/terraform-github-repository/pulls)
-for accepting changes.
-Please see our
-[Contribution Guidelines](https://github.com/mineiros-io/terraform-github-repository/blob/master/CONTRIBUTING.md)
-for full details.
+Contributions are always encouraged and welcome! For the process of accepting changes, we use
+[Pull Requests]. If you'd like more information, please see our [Contribution Guidelines].
 
 ## Makefile Targets
 
-This repository comes with a handy [https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile](Makefile).
+This repository comes with a handy [Makefile].
 Run `make help` to see details on each available target.
 
 ## License
 
 This module is licensed under the Apache License Version 2.0, January 2004.
-Please see [LICENSE](https://github.com/mineiros-io/terraform-github-repository/blob/master/LICENSE) for full details.
+Please see [LICENSE] for full details.
 
-Copyright &copy; 2020 Mineiros
+Copyright &copy; 2020 [Mineiros GmbH][homepage]
+
+<!-- References -->
+
+[Github]: https://github.com/
+[`github_repository`]: https://www.terraform.io/docs/providers/github/r/repository.html#attributes-reference
+[`github_repository_collaborator`]: https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference
+[`github_repository_deploy_key`]: https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference
+[`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
+
+[homepage]: https://mineiros.io/?ref=terraform-github-repository
+[hello@mineiros.io]: mailto:hello@mineiros.io
+
+[badge-build]: https://mineiros.semaphoreci.com/badges/terraform-github-repository/branches/master.svg?style=shields&key=df11a416-f581-4d35-917a-fa3c2de2048e
+[badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
+[badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
+[badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.20+-623CE4.svg?logo=terraform
+[badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
+
+[build-status]: https://mineiros.semaphoreci.com/projects/terraform-github-repository
+[releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
+[releases-terraform]: https://github.com/hashicorp/terraform/releases
+[apache20]: https://opensource.org/licenses/Apache-2.0
+[slack]: https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg
+
+[Terraform]: https://www.terraform.io
+[AWS]: https://aws.amazon.com/
+[Semantic Versioning (SemVer)]: https://semver.org/
+
+[examples/example/main.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples/example/main.tf
+[variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf
+[examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples
+[Issues]: https://github.com/mineiros-io/terraform-github-repository/issues
+[LICENSE]: https://github.com/mineiros-io/terraform-github-repository/blob/master/LICENSE
+[Makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile
+[Pull Requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
+[Contribution Guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/master/CONTRIBUTING.md

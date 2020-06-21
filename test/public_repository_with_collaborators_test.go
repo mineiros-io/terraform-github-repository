@@ -26,7 +26,7 @@ func TestGithubPublicRepositoryWithCollaborators(t *testing.T) {
 
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located
-		TerraformDir: "../examples/public-repository-with-collaborators",
+		TerraformDir: "public-repository-with-collaborators",
 		Upgrade:      true,
 		Vars: map[string]interface{}{
 			"name": expectedRepositoryName,
