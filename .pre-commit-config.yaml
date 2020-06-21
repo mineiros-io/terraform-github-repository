@@ -4,6 +4,7 @@ repos:
     hooks:
       - id: terraform-fmt
       - id: terraform-validate
+        exclude: ^examples|.terraform/
       - id: tflint
       - id: gofmt
       - id: goimports

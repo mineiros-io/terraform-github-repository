@@ -1,21 +1,24 @@
 version: v1.0
-name: "Terraform-Github-Repository CI Pipeline"
+name: "CI/CD Pipeline"
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
+
+global_job_config:
+  secrets:
+    - name: TERRAFORM_TESTS_GITHUB_CREDENTIALS
+  prologue:
+    commands:
+      - checkout --use-cache
+
 blocks:
   - name: "Tests"
     task:
-      secrets:
-        - name: TERRAFORM_TESTS_GITHUB_CREDENTIALS
-      prologue:
-        commands:
-          - checkout --use-cache
       jobs:
         - name: "Pre Commit Hooks"
           commands:
-            - make docker/pre-commit-hooks
+            - make test/pre-commit
         - name: "Unit Tests"
           commands:
-            - make docker/unit-tests
+            - make test/unit-tests
