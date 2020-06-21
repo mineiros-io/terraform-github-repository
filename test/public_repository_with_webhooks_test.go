@@ -37,7 +37,7 @@ func TestGithubPublicRepositoryWithWebhook(t *testing.T) {
 
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located
-		TerraformDir: "../examples/public-repository-with-webhook",
+		TerraformDir: "public-repository-with-webhook",
 		Upgrade:      true,
 		Vars: map[string]interface{}{
 			"name":                 expectedRepositoryName,

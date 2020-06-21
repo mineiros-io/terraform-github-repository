@@ -56,7 +56,7 @@ func TestGithubPublicRepositoryCompleteExample(t *testing.T) {
 	// Set Terraform options
 	terraformOptions := &terraform.Options{
 		// The path to where your Terraform code is located
-		TerraformDir: "../examples/public-repository-complete-example",
+		TerraformDir: "public-repository-complete-example",
 		Upgrade:      true,
 		Vars: map[string]interface{}{
 			// Repositories
