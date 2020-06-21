@@ -732,7 +732,6 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [AWS]: https://aws.amazon.com/
 [Semantic Versioning (SemVer)]: https://semver.org/
 
-[examples/example/main.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples/example/main.tf
 [variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf
 [examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples
 [Issues]: https://github.com/mineiros-io/terraform-github-repository/issues
