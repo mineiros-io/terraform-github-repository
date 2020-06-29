@@ -44,6 +44,7 @@ default: help
 
 ## Run pre-commit hooks in build-tools docker container.
 .PHONY: test/pre-commit
+test/pre-commit: DOCKER_FLAGS += ${DOCKER_GITHUB_FLAGS}
 test/pre-commit:
 	$(call docker-run,pre-commit run -a)
 
