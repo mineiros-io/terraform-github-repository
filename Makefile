@@ -5,13 +5,16 @@ BUILD_TOOLS_VERSION      ?= v0.5.4
 BUILD_TOOLS_DOCKER_REPO  ?= mineiros/build-tools
 BUILD_TOOLS_DOCKER_IMAGE ?= ${BUILD_TOOLS_DOCKER_REPO}:${BUILD_TOOLS_VERSION}
 
-# if running in CI (e.g. Semaphore CI)
-# https://docs.semaphoreci.com/ci-cd-environment/environment-variables/#ci
 #
-# to disable TF_IN_AUTOMATION in CI set it to empty
+# Some CI providers such as GitHub Actions, CircleCI, and TravisCI are setting
+# the CI environment variable to a non-empty value by default to indicate that
+# the current workflow is running in a Continuous Integration environment.
+#
+# If TF_IN_AUTOMATION is set to any non-empty value, Terraform adjusts its
+# output to avoid suggesting specific commands to run next.
 # https://www.terraform.io/docs/commands/environment-variables.html#tf_in_automation
 #
-# we are using GNU style quiet commands to disable set V to non-empty e.g. V=1
+# We are using GNU style quiet commands to disable set V to non-empty e.g. V=1
 # https://www.gnu.org/software/automake/manual/html_node/Debugging-Make-Rules.html
 #
 ifdef CI
