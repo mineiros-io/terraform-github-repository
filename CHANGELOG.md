@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0]
+### Changed
+- Add support for Terraform v0.13.
+- Add support for Terraform Github Provider v3.
+
 ## [0.4.2] - 2020-06-23
 ### Added
 - Add `CHANGELOG.md`.
@@ -111,9 +116,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   creating and managing GitHub Repositories for Organizations.
 
 <!-- markdown-link-check-disable -->
-[Unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.2...HEAD
-[0.4.2]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.1...v0.4.2
+[Unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.2...v0.5.0
 <!-- markdown-link-check-enable -->
+[0.4.2]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.3.0...v0.3.1
