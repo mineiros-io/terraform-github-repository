@@ -2,13 +2,16 @@
 
 [![Build Status][badge-build]][build-status]
 [![GitHub tag (latest SemVer)][badge-semver]][releases-github]
-[![license][badge-license]][apache20]
 [![Terraform Version][badge-terraform]][releases-terraform]
+[![Github Provider Version][badge-tf-gh]][releases-github-provider]
 [![Join Slack][badge-slack]][slack]
 
 # terraform-github-repository
 
-A [Terraform] 0.12 module for creating a public or private repository on [Github].
+A [Terraform] module for creating a public or private repository on [Github].
+
+***This module supports Terraform v0.13 as well as v0.12.9 and above
+and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.***
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -700,6 +703,8 @@ Run `make help` to see details on each available target.
 
 ## License
 
+[![license][badge-license]][apache20]
+
 This module is licensed under the Apache License Version 2.0, January 2004.
 Please see [LICENSE] for full details.
 
@@ -719,8 +724,11 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.20+-623CE4.svg?logo=terraform
+[badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.9+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
+
+[badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
+[releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
