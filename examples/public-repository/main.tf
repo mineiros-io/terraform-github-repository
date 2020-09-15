@@ -7,7 +7,7 @@
 
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "0.4.2"
+  version = "~> 0.5.0"
 
   module_depends_on = [
     github_team.team
@@ -91,14 +91,6 @@ resource "github_team_membership" "team_membership" {
   team_id  = github_team.team.id
   username = "terraform-test-user-2"
   role     = "member"
-}
-
-# ------------------------------------------------------------------------------
-# EXAMPLE PROVIDER CONFIGURATION
-# ------------------------------------------------------------------------------
-
-provider "github" {
-  version = "~> 2.6"
 }
 
 # ------------------------------------------------------------------------------
