@@ -40,7 +40,7 @@ variable "defaults" {
   #   auto_init              = true
   #   gitignore_template     = "terraform"
   #   license_template       = "mit"
-  #   default_branch         = "master"
+  #   default_branch         = "main"
   #   topics                 = ["topic-1", "topic-2"]
   # }
 
@@ -293,7 +293,7 @@ variable "branch_protections" {
   # Example:
   # branch_protections = [
   #   {
-  #     branch                 = "master"
+  #     branch                 = "main"
   #     enforce_admins         = true
   #     require_signed_commits = true
   #

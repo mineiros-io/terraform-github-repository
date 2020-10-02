@@ -60,7 +60,7 @@ module "repository" {
 
   branch_protections = [
     {
-      branch                 = "master"
+      branch                 = "main"
       enforce_admins         = true
       require_signed_commits = true
 
