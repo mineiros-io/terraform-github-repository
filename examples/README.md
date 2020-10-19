@@ -11,16 +11,16 @@
 
 <!-- References -->
 <!-- markdown-link-check-disable -->
+
 [public-respository/]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples/public-respository
+
 <!-- markdown-link-check-enable -->
 
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
-
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
-
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
 [releases-terraform]: https://github.com/hashicorp/terraform/releases
 [apache20]: https://opensource.org/licenses/Apache-2.0

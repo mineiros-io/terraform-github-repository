@@ -10,8 +10,8 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-***This module supports Terraform v0.13 as well as v0.12.9 and above
-and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.***
+**_This module supports Terraform v0.13 as well as v0.12.9 and above
+and is compatible with the Terraform Github Provider v3 as well as v2.6 and above._**
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -651,7 +651,6 @@ The following attributes are exported by the module:
   A map of Project objects keyed by the `id` of the project as returned by the
   [`github_repository_project`] resource
 
-
 ## External Documentation
 
 - Terraform Github Provider Documentation:
@@ -659,7 +658,6 @@ The following attributes are exported by the module:
   - https://www.terraform.io/docs/providers/github/r/repository_collaborator.html
   - https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html
   - https://www.terraform.io/docs/providers/github/r/repository_project.html
-
 
 ## Module Versioning
 
@@ -712,38 +710,32 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 
 <!-- References -->
 
-[Github]: https://github.com/
+[github]: https://github.com/
 [`github_repository`]: https://www.terraform.io/docs/providers/github/r/repository.html#attributes-reference
 [`github_repository_collaborator`]: https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference
 [`github_repository_deploy_key`]: https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference
 [`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
-
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [hello@mineiros.io]: mailto:hello@mineiros.io
-
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.9+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-
 [badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
-
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
 [releases-terraform]: https://github.com/hashicorp/terraform/releases
 [apache20]: https://opensource.org/licenses/Apache-2.0
 [slack]: https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg
-
-[Terraform]: https://www.terraform.io
-[AWS]: https://aws.amazon.com/
-[Semantic Versioning (SemVer)]: https://semver.org/
-
+[terraform]: https://www.terraform.io
+[aws]: https://aws.amazon.com/
+[semantic versioning (semver)]: https://semver.org/
 [variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf
 [examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples
-[Issues]: https://github.com/mineiros-io/terraform-github-repository/issues
-[LICENSE]: https://github.com/mineiros-io/terraform-github-repository/blob/master/LICENSE
-[Makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile
-[Pull Requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
-[Contribution Guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/master/CONTRIBUTING.md
+[issues]: https://github.com/mineiros-io/terraform-github-repository/issues
+[license]: https://github.com/mineiros-io/terraform-github-repository/blob/master/LICENSE
+[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile
+[pull requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
+[contribution guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/master/CONTRIBUTING.md
