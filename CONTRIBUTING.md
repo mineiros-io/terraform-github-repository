@@ -77,14 +77,13 @@ If everything looks good, they will merge the code and release a new version whi
 
 <!-- References -->
 
-[Pull Requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
+[pull requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
 [pre-commit-file]: https://github.com/mineiros-io/terraform-github-repository/blob/master/.pre-commit-config.yaml
-
-[Github Flow]: https://guides.github.com/introduction/flow/
-[CODEOWNERS]: https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
-[Fork]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
+[github flow]: https://guides.github.com/introduction/flow/
+[codeowners]: https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+[fork]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
 [create a new branch]: https://guides.github.com/introduction/flow/
-[Readme Driven Development]: https://tom.preston-werner.com/2010/08/23/readme-driven-development.html
+[readme driven development]: https://tom.preston-werner.com/2010/08/23/readme-driven-development.html
 [commit]: https://help.github.com/en/desktop/contributing-to-projects/committing-and-reviewing-changes-to-your-project
 [create a pull request]: https://help.github.com/articles/creating-a-pull-request/
-[Semantic Versioning (SemVer)]: https://semver.org/
+[semantic versioning (semver)]: https://semver.org/
