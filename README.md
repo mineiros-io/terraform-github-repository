@@ -10,8 +10,8 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-**_This module supports Terraform v0.13 as well as v0.12.9 and above
-and is compatible with the Terraform Github Provider v3 as well as v2.6 and above._**
+*This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above
+and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.*
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -86,7 +86,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.5.0"
+  version = "~> 0.6.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
@@ -720,7 +720,7 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-0.13%20and%200.12.9+-623CE4.svg?logo=terraform
+[badge-terraform]: https://img.shields.io/badge/terraform-0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
