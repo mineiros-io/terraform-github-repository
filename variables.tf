@@ -444,3 +444,21 @@ variable "webhooks" {
   #   insecure_ssl = false
   # }]
 }
+
+variable "secrets" {
+  description = "Configuring actions secrets. For details please check: https://www.terraform.io/docs/providers/github/r/actions_secret.html"
+  type = list(object({
+    name            = string
+    plaintext_value = string
+  }))
+
+  # Example:
+  # secrets = [
+  #   {
+  #     name            = "MYSECRET"
+  #     plaintext_value = "42"
+  #   }
+  # ]
+
+  default = []
+}

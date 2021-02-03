@@ -27,6 +27,7 @@ and is compatible with the Terraform Github Provider v3 as well as v2.6 and abov
     - [Issue Labels Configuration](#issue-labels-configuration)
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
+    - [Secrets Configuration](#secrets-configuration)
     - [`defaults` Object Attributes](#defaults-object-attributes)
     - [`template` Object Attributes](#template-object-attributes)
     - [`deploy_key` Object Attributes](#deploy_key-object-attributes)
@@ -37,6 +38,7 @@ and is compatible with the Terraform Github Provider v3 as well as v2.6 and abov
     - [`issue_label` Object Attributes](#issue_label-object-attributes)
     - [`project` Object Attributes](#project-object-attributes)
     - [`webhook` Object Attributes](#webhook-object-attributes)
+    - [`secret` Object Attributes](#secret-objects-attributes)
 - [Module Attributes Reference](#module-attributes-reference)
 - [External Documentation](#external-documentation)
 - [Module Versioning](#module-versioning)
@@ -387,6 +389,15 @@ removed thislimitation.
   can also be configured
   Default is `[]`.
 
+#### Secrets Configuration
+
+- **[`secrets`](#secrets-object-attributes)**: _(Optional `list(secret)`)_
+
+  This resource allows you to create and manage secrets for repositories in your organization.
+  When applied, a secret with the given key and value will be created in the repositories.
+  The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
+  Default is `[]`.
+
 #### [`defaults`](#repository-configuration) Object Attributes
 
 This is a special argument to set various defaults to be reused for multiple repositories.
@@ -604,6 +615,16 @@ Default is `{}`.
 - **`insecure_ssl`**: _(Optional `bool`)_
 
   Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
+
+#### [`secrets`](#secrets-configuration) Object Attributes
+
+- **`name`**: **_(Required `string`)_**
+
+  Name of the secret.
+
+- **`plaintext_value`**: **_(Required `string`)_**
+
+  Plaintext value of the secret to be encrypted.
 
 ## Module Attributes Reference
 
