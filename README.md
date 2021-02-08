@@ -396,6 +396,7 @@ removed thislimitation.
   This resource allows you to create and manage secrets for repositories in your organization.
   When applied, a secret with the given key and value will be created in the repositories.
   The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
+  **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
   Default is `[]`.
 
 #### [`defaults`](#repository-configuration) Object Attributes
