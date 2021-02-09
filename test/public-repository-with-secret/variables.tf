@@ -23,13 +23,13 @@ variable "name" {
 }
 
 variable "secret_name" {
-  description = "Secret name"
+  description = "The name of the secret."
   type        = string
   default     = "MYSECRET"
 }
 
 variable "secret_text" {
-  description = "Secret value in plain text"
+  description = "Secret value in plain text."
   type        = string
   default     = "42"
 }

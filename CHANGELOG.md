@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Remove support for Terraform Github Provider v3.1.0 as this version introduced undocumneted breaking changes. See https://github.com/integrations/terraform-provider-github/issues/566 for details.
+- Remove support for Terraform Github Provider v3.1.0 as this version introduced undocumented breaking changes. See https://github.com/integrations/terraform-provider-github/issues/566 for details.
 
 ### Changed
 
