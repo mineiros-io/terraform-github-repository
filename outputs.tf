@@ -59,3 +59,8 @@ output "webhooks" {
   value       = github_repository_webhook.repository_webhook
   description = "All attributes and arguments as returned by the github_repository_webhook resource."
 }
+
+output "secrets" {
+  value       = [for secret in github_actions_secret.repository_secret : secret.secret_name]
+  description = "List of secrets available."
+}

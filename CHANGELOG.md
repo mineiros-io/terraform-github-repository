@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+## [0.6.1]
+
+- Add support for managing github secrets via `plaintext_secrets` argument (#58/#59 kudos to @mrodm)
+
 ## [0.6.0]
 
 ### Added
@@ -17,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Remove support for Terraform Github Provider v3.1.0 as this version introduced undocumneted breaking changes. See https://github.com/terraform-providers/terraform-provider-github/issues/566 for details.
+- Remove support for Terraform Github Provider v3.1.0 as this version introduced undocumented breaking changes. See https://github.com/integrations/terraform-provider-github/issues/566 for details.
 
 ### Changed
 
@@ -184,10 +190,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <!-- markdown-link-check-disable -->
 
 [unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.0...HEAD
-[0.6.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.1...v0.6.0
+[0.6.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.0...v0.6.1
 
 <!-- markdown-link-check-enable -->
 
+[0.6.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.2...v0.5.0
 [0.4.2]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.4.1...v0.4.2
