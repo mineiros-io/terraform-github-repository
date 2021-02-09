@@ -430,10 +430,14 @@ resource "github_repository_webhook" "repository_webhook" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Action Secrets
+# ---------------------------------------------------------------------------------------------------------------------
+
 resource "github_actions_secret" "repository_secret" {
-  count = length(var.secrets)
+  for_each = var.plaintext_secrets
 
   repository      = github_repository.repository.name
-  secret_name     = var.secrets[count.index].name
-  plaintext_value = var.secrets[count.index].plaintext_value
+  secret_name     = each.key
+  plaintext_value = each.value
 }

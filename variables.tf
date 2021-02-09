@@ -445,20 +445,15 @@ variable "webhooks" {
   # }]
 }
 
-variable "secrets" {
+variable "plaintext_secrets" {
   description = "Configuring actions secrets. For details please check: https://www.terraform.io/docs/providers/github/r/actions_secret.html"
-  type = list(object({
-    name            = string
-    plaintext_value = string
-  }))
+  type        = map(string)
 
   # Example:
-  # secrets = [
-  #   {
-  #     name            = "MYSECRET"
-  #     plaintext_value = "42"
-  #   }
-  # ]
+  # secrets = {
+  #     "MY_SECRET" = "42"
+  #     "OWN_TOKEN" = "12345"
+  # }
 
-  default = []
+  default = {}
 }

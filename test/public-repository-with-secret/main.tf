@@ -13,8 +13,7 @@ module "repository" {
 
   name = var.name
 
-  secrets = [{
-    name            = var.secret_name
-    plaintext_value = var.secret_text
-  }]
+  plaintext_secrets = {
+    (var.secret_name) = var.secret_text
+  }
 }

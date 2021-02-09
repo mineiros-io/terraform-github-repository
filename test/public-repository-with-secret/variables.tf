@@ -19,7 +19,7 @@
 variable "name" {
   description = "The name of the created repository."
   type        = string
-  default     = "test-public-repository-with-collaborators"
+  default     = "test-public-repository-with-secrets"
 }
 
 variable "secret_name" {
