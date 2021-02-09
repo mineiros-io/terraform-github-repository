@@ -444,3 +444,16 @@ variable "webhooks" {
   #   insecure_ssl = false
   # }]
 }
+
+variable "plaintext_secrets" {
+  description = "Configuring actions secrets. For details please check: https://www.terraform.io/docs/providers/github/r/actions_secret.html"
+  type        = map(string)
+
+  # Example:
+  # secrets = {
+  #     "MY_SECRET" = "42"
+  #     "OWN_TOKEN" = "12345"
+  # }
+
+  default = {}
+}

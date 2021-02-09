@@ -27,6 +27,7 @@ and is compatible with the Terraform Github Provider v3 as well as v2.6 and abov
     - [Issue Labels Configuration](#issue-labels-configuration)
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
+    - [Secrets Configuration](#secrets-configuration)
     - [`defaults` Object Attributes](#defaults-object-attributes)
     - [`template` Object Attributes](#template-object-attributes)
     - [`deploy_key` Object Attributes](#deploy_key-object-attributes)
@@ -386,6 +387,24 @@ removed thislimitation.
   to receieve. Additional constraints, such as SSL verification, pre-shared secret and content type
   can also be configured
   Default is `[]`.
+
+#### Secrets Configuration
+
+- **`plaintext_secrets`**: _(Optional `map(string)`)_
+
+  This map allows you to create and manage secrets for repositories in your organization.
+  Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
+  ```
+  plaintext_secrets = {
+    SECRET_NAME_1 = "secret_value_1"
+    SECRET_NAME_2 = "secret_value_2"
+    ...
+  }
+  ```
+  When applied, a secret with the given key and value will be created in the repositories.
+  The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
+  **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
+  Default is `{}`.
 
 #### [`defaults`](#repository-configuration) Object Attributes
 
