@@ -15,7 +15,7 @@ branch protection.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.6.0"
+  version = "~> 0.7.0"
 
   module_depends_on = [
     github_team.team
@@ -24,7 +24,7 @@ module "repository" {
   name               = "my-public-repository"
   description        = "A description of the repository."
   homepage_url       = "https://github.com/mineiros-io"
-  private            = false
+  visibility         = "private"
   has_issues         = true
   has_projects       = false
   has_wiki           = true

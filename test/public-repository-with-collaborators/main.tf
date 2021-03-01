@@ -8,7 +8,7 @@ module "repository" {
   name                = var.name
   description         = var.description
   homepage_url        = var.url
-  private             = false
+  visibility          = "private"
   has_issues          = var.has_issues
   has_projects        = var.has_projects
   has_wiki            = var.has_wiki

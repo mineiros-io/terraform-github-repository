@@ -143,22 +143,29 @@ See [variables.tf] and [examples/] for details and use-cases.
 - **`description`**: _(Optional `string`)_
 
   A description of the repository.
-  Default is `""`
+  Default is `""`.
 
 - **`delete_branch_on_merge`**: _(Optional `string`)_
 
   Set to `false` to disable the automatic deletion of head branches after pull requests are merged.
-  Default is `true`
+  Default is `true`.
 
 - **`homepage_url`**: _(Optional `string`)_
 
   URL of a page describing the project.
-  Default is `""`
+  Default is `""`.
 
-- **`private`**: _(Optional `bool`)_
+- ~`private`~: _(Optional `bool`)_
 
-  Set to false to create a public repository.
-  Default is `true`
+  DEPRICATED. Please use `visibility` instead and update your code. parameter will be removed in a future version
+
+- **`visibility`**: _(Optional `string`)_
+
+  Can be `public` or `private`.
+  If your organization is associated with an enterprise account using GitHub Enterprise Cloud or GitHub Enterprise Server 2.20+, `visibility` can also be `internal`.
+  The `visibility` parameter overrides the deprecated `private` parameter.
+  Default is `private`.
+  If the deprecated `private` boolean parameter is used, the default value is adjusted to respect this setting.
 
 - **`has_issues`**: _(Optional `bool`)_
 
@@ -192,7 +199,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   after a correct reference has been created for the target branch inside the repository.
   This means a user will have to omit this parameter from the initial repository creation and
   create the target branch inside of the repository prior to setting this attribute.
-  Default is `""`
+  Default is `""`.
 
 - **`archived`**: _(Optional `bool`)_
 
@@ -411,7 +418,7 @@ removed thislimitation.
 This is a special argument to set various defaults to be reused for multiple repositories.
 The following top-level arguments can be set as defaults:
 `homepage_url`,
-`private`,
+`visibility`,
 `has_issues`,
 `has_projects`,
 `has_wiki`,

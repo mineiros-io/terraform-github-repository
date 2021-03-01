@@ -174,7 +174,7 @@ variable "repository_defaults" {
   type        = any
   default = {
     homepage_url       = "https://github.com/mineiros-io"
-    private            = false
+    visibility         = "private"
     allow_merge_commit = true
     gitignore_template = "Terraform"
     license_template   = "mit"

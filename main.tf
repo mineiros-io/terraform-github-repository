@@ -7,6 +7,8 @@
 locals {
   homepage_url           = var.homepage_url == null ? lookup(var.defaults, "homepage_url", "") : var.homepage_url
   private                = var.private == null ? lookup(var.defaults, "private", true) : var.private
+  private_visibility     = local.private ? "private" : "public"
+  visibility             = var.visibility == null ? lookup(var.defaults, "visibility", local.private_visibility) : var.visibility
   has_issues             = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
   has_projects           = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
   has_wiki               = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
@@ -86,7 +88,7 @@ resource "github_repository" "repository" {
   name                   = var.name
   description            = var.description
   homepage_url           = local.homepage_url
-  private                = local.private
+  visibility             = local.visibility
   has_issues             = local.has_issues
   has_projects           = local.has_projects
   has_wiki               = local.has_wiki

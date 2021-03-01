@@ -20,7 +20,7 @@ func TestGithubPublicRepositoryCompleteExample(t *testing.T) {
 	// We pass this map of default repository settings as a variable to Terraform
 	expectedRepositoryDefaults := map[string]interface{}{
 		"homepage_url":       "https://github.com/mineiros-io",
-		"private":            "false",
+		"visibility":         "public",
 		"allow_merge_commit": "true",
 		"gitignore_template": "Terraform",
 		"license_template":   "mit",
