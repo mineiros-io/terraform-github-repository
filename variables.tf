@@ -28,7 +28,7 @@ variable "defaults" {
   # Example:
   # defaults = {
   #   homepage_url           = "https://mineiros.io/"
-  #   private                = true
+  #   visibility             = "private"
   #   has_issues             = false
   #   has_projects           = false
   #   has_wiki               = false
@@ -60,8 +60,14 @@ variable "homepage_url" {
 }
 
 variable "private" {
-  description = "Set to false to create a public repository. (Default: true)"
+  description = "(DEPRECATED: use visibility)"
   type        = bool
+  default     = null
+}
+
+variable "visibility" {
+  description = "Can be 'public', 'private' or 'internal' (GHE only).The visibility parameter overrides the private parameter. Defaults to 'private' if neither private nor visibility are set, default to state of private parameter if it is set."
+  type        = string
   default     = null
 }
 
