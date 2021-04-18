@@ -21,7 +21,7 @@ locals {
   auto_init              = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
   gitignore_template     = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
   license_template       = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
-  default_branch         = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
+  default_branch         = var.default_branch == null ? lookup(var.defaults, "default_branch", null) : var.default_branch
   standard_topics        = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
@@ -103,7 +103,6 @@ resource "github_repository" "repository" {
   auto_init              = local.auto_init
   gitignore_template     = local.gitignore_template
   license_template       = local.license_template
-  default_branch         = local.default_branch
   archived               = var.archived
   topics                 = local.topics
 
@@ -124,6 +123,18 @@ resource "github_repository" "repository" {
       template,
     ]
   }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Set default branch
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_default
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_branch_default" "default" {
+  count = local.default_branch != null ? 1 : 0
+
+  repository = github_repository.repository.name
+  branch     = local.default_branch
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
