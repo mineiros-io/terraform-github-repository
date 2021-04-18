@@ -36,50 +36,6 @@ locals {
   issue_labels_merge_with_github_labels = local.gh_labels
 }
 
-locals {
-  branch_protections = [
-    for b in var.branch_protections : merge({
-      branch                        = null
-      enforce_admins                = null
-      require_signed_commits        = null
-      required_status_checks        = {}
-      required_pull_request_reviews = {}
-      restrictions                  = {}
-    }, b)
-  ]
-
-  required_status_checks = [
-    for b in local.branch_protections :
-    length(keys(b.required_status_checks)) > 0 ? [
-      merge({
-        strict   = null
-        contexts = []
-    }, b.required_status_checks)] : []
-  ]
-
-  required_pull_request_reviews = [
-    for b in local.branch_protections :
-    length(keys(b.required_pull_request_reviews)) > 0 ? [
-      merge({
-        dismiss_stale_reviews           = true
-        dismissal_users                 = []
-        dismissal_teams                 = []
-        require_code_owner_reviews      = null
-        required_approving_review_count = null
-    }, b.required_pull_request_reviews)] : []
-  ]
-
-  restrictions = [
-    for b in local.branch_protections :
-    length(keys(b.restrictions)) > 0 ? [
-      merge({
-        users = []
-        teams = []
-        apps  = []
-    }, b.restrictions)] : []
-  ]
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Create the repository
 # ---------------------------------------------------------------------------------------------------------------------
@@ -130,7 +86,35 @@ resource "github_repository" "repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection" "branch_protection" {
-  count = length(local.branch_protections)
+  count = length(var.branch_protections)
+
+  repository_id = github_repository.repository.node_id
+
+  pattern                = var.branch_protections[count.index].pattern
+  enforce_admins         = try(var.branch_protections[count.index].enforce_admins, null)
+  require_signed_commits = try(var.branch_protections[count.index].require_signed_commits, null)
+
+  dynamic "required_status_checks" {
+    for_each = try([var.branch_protections[count.index].required_status_checks], [])
+
+    content {
+      strict   = try(required_status_checks.value.strict, null)
+      contexts = try(required_status_checks.value.contexts, [])
+    }
+  }
+
+  dynamic "required_pull_request_reviews" {
+    for_each = try([var.branch_protections[count.index].required_pull_request_reviews], [])
+
+    content {
+      dismiss_stale_reviews           = try(required_pull_request_reviews.value.dismiss_stale_reviews, true)
+      dismissal_restrictions          = try(required_pull_request_reviews.value.dismissal_restrictions, [])
+      require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, null)
+      required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, null)
+    }
+  }
+
+  push_restrictions = try(var.branch_protections[count.index].push_restrictions, null)
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -139,43 +123,6 @@ resource "github_branch_protection" "branch_protection" {
     github_team_repository.team_repository,
     github_team_repository.team_repository_by_slug
   ]
-
-  repository             = github_repository.repository.name
-  branch                 = local.branch_protections[count.index].branch
-  enforce_admins         = local.branch_protections[count.index].enforce_admins
-  require_signed_commits = local.branch_protections[count.index].require_signed_commits
-
-  dynamic "required_status_checks" {
-    for_each = local.required_status_checks[count.index]
-
-    content {
-      strict   = required_status_checks.value.strict
-      contexts = required_status_checks.value.contexts
-    }
-  }
-
-  dynamic "required_pull_request_reviews" {
-    for_each = local.required_pull_request_reviews[count.index]
-
-    content {
-      dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
-      dismissal_users                 = required_pull_request_reviews.value.dismissal_users
-      dismissal_teams                 = required_pull_request_reviews.value.dismissal_teams
-      require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
-      required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
-    }
-  }
-
-  dynamic "restrictions" {
-    for_each = local.restrictions[count.index]
-
-    content {
-      users = restrictions.value.users
-      # TODO: try to convert teams to team-slug array
-      teams = restrictions.value.teams
-      apps  = restrictions.value.apps
-    }
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

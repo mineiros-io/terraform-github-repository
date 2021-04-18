@@ -28,6 +28,10 @@ resource "tls_private_key" "deploy" {
 # deploy keys, issue labels and projects
 # ---------------------------------------------------------------------------------------------------------------------
 
+data "github_user" "team_user" {
+  username = var.team_user
+}
+
 module "repository" {
   source = "../.."
 
@@ -60,7 +64,7 @@ module "repository" {
 
   branch_protections = [
     {
-      branch                 = "main"
+      pattern                = "main"
       enforce_admins         = true
       require_signed_commits = true
 
@@ -70,19 +74,19 @@ module "repository" {
       }
 
       required_pull_request_reviews = {
-        dismiss_stale_reviews           = true
-        dismissal_users                 = [var.team_user]
-        dismissal_teams                 = [github_team.team.slug]
+        dismiss_stale_reviews = true
+        dismissal_restrictions = [
+          data.github_user.team_user.node_id,
+          github_team.team.node_id
+        ]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
-      restrictions = {
-        users = [var.team_user]
-        teams = [
-          github_team.team.slug
-        ]
-      }
+      push_restrictions = [
+        data.github_user.team_user.node_id,
+        github_team.team.node_id
+      ]
     }
   ]
 
