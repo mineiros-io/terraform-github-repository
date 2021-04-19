@@ -469,3 +469,15 @@ variable "plaintext_secrets" {
 
   default = {}
 }
+
+variable "vulnerability_alerts" {
+  type        = bool
+  description = "(Optional) Set to `false` to disable security alerts for vulnerable dependencies. Enabling requires alerts to be enabled on the owner level."
+  default     = true
+}
+
+variable "archive_on_destroy" {
+  type        = string
+  description = "(Optional) Set to `false` to not archive the repository instead of deleting on destroy."
+  default     = true
+}

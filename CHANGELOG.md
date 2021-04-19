@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Use `github_branch_protection_v3` instead of `github_branch_protection_v3` for performance and compatibility reasons. **ATTENTION**: This Change will trigger recreation of all branch protections when upgrading to v0.8.0.
+- Use `github_branch_default` to set default branch of repositories. **ATTENTION**: This Change will trigger creation of new resource when `default_branch` argument is set.
 
 ### Removed
 

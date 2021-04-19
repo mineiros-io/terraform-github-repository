@@ -106,6 +106,9 @@ resource "github_repository" "repository" {
   archived               = var.archived
   topics                 = local.topics
 
+  archive_on_destroy   = var.archive_on_destroy
+  vulnerability_alerts = var.vulnerability_alerts
+
   dynamic "template" {
     for_each = local.template
 
