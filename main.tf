@@ -345,17 +345,11 @@ locals {
   ) : i.slug => i }
 }
 
-data "github_team" "teams" {
-  for_each = local.teams
-
-  slug = each.value.slug
-}
-
 resource "github_team_repository" "team_repository_by_slug" {
   for_each = local.teams
 
   repository = github_repository.repository.name
-  team_id    = data.github_team.teams[each.key].id
+  team_id    = each.value.slug
   permission = each.value.permission
 
   depends_on = [var.module_depends_on]
