@@ -14,6 +14,8 @@ _This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above and is
 
 _The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
 
+_Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constrains as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
+
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
 - [Module Argument Reference](#module-argument-reference)
@@ -88,7 +90,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.6.0"
+  version = "~> 0.8.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
@@ -158,7 +160,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
 - ~`private`~: _(Optional `bool`)_
 
-  DEPRICATED. Please use `visibility` instead and update your code. parameter will be removed in a future version
+  **_DEPRECATED_**: Please use `visibility` instead and update your code. parameter will be removed in a future version
 
 - **`visibility`**: _(Optional `string`)_
 
@@ -219,6 +221,15 @@ See [variables.tf] and [examples/] for details and use-cases.
   the list of `topics`. This is useful if `default.topics` are used and the list
   should be extended with more topics.
   Default is `[]`.
+
+- **`vulnerability_alerts`**: _(Optional `bool`)_
+
+  Set to `false` to disable security alerts for vulnerable dependencies.
+  Enabling requires alerts to be enabled on the owner level.
+
+- **`archive_on_destroy`**: _(Optional `bool`)_
+
+  Set to `false` to not archive the repository instead of deleting on destroy.
 
 #### Repository Creation Configuration
 
@@ -757,7 +768,7 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-[badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
+[badge-tf-gh]: https://img.shields.io/badge/GH-4-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases

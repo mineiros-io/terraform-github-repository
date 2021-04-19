@@ -9,9 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0]
 
+**_This is a BREAKING RELEASE._**
+
+Branch protection resourcess will be recreated and new fetures are added enforcing security by default.
+
+Please review plans and report regressions and issues asap so we can improve documentation for upgrading.
+
+### Upgrade path/notes:
+
+- Branch protections will be recreated in a compatible way. Alternativly all branchprotections could be manually updated using `terraform state mv` but this is not recommended as it is a manual process that can suffer from human errors.
+- If you want to opt-out of vulnerability alerts, set `vulnerability_alerts` to false in repository configurations.
+- If you do not want to archive repositoires on deletion set `archive_on_destroy` to false in repository configurations.
+
 ### Added
 
-- Add support for Github Provider v4 (Minimal compatible version is v4.3).
+- Add support for Github Provider v4 (Minimal compatible version is v4.5).
+- Add support for `archive_on_destroy` repository flag defaulting to `true`.
+- Add support for `vulnerability_alerts` repository flag defaulting to `true`.
+- Add security deny list for v4.7.0, v4.8.0, v4.9.0 and v4.9.1 due to a bug setting visibility to public for templated repository creation.
 
 ### Changed
 
@@ -215,11 +230,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdown-link-check-disable -->
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.7.0...HEAD
-[0.7.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.1...v0.7.0
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.7.0...v0.8.0
 
 <!-- markdown-link-check-enable -->
 
+[0.7.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.0...v0.5.1
