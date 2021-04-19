@@ -10,8 +10,9 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-*This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above
-and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.*
+_This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
+
+_The latest release with Terraform Github Provider v3 as well as v2.6 and above was version 0.7.0 of this module._
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -401,6 +402,7 @@ removed thislimitation.
 
   This map allows you to create and manage secrets for repositories in your organization.
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
+
   ```
   plaintext_secrets = {
     SECRET_NAME_1 = "secret_value_1"
@@ -408,6 +410,7 @@ removed thislimitation.
     ...
   }
   ```
+
   When applied, a secret with the given key and value will be created in the repositories.
   The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
   **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
@@ -526,14 +529,21 @@ Default is `{}`.
 
 - **`dismissal_users`**: _(Optional `list(string)`)_
 
-  The list of user logins with dismissal access
+  A list of user logins with dismissal access.
+  For computed values use `dismissal_restrictions` argument.
   Default is `[]`.
 
 - **`dismissal_teams`**: _(Optional `list(string)`)_
 
-  The list of team slugs with dismissal access.
+  A list of team slugs with dismissal access.
   Always use slug of the team, not its name.
   Each team already has to have access to the repository.
+  For computed values use `dismissal_restrictions` argument.
+  Default is `[]`.
+
+- **`dismissal_restrictions`**: _(Optional `list(string)`)_
+
+  A list of computed actor `node_id`s with dismissal access.
   Default is `[]`.
 
 - **`require_code_owner_reviews`**: _(Optional `bool`)_
@@ -748,7 +758,7 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-[badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
+[badge-tf-gh]: https://img.shields.io/badge/GH-4-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
