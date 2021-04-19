@@ -36,6 +36,32 @@ locals {
   issue_labels_merge_with_github_labels = local.gh_labels
 }
 
+locals {
+  dismissal_users = flatten([
+    for bp in var.branch_protections : try(tolist(bp.required_pull_request_reviews.dismissal_users), [])
+  ])
+
+  dismissal_teams = flatten([
+    for bp in var.branch_protections : try(tolist(bp.required_pull_request_reviews.dismissal_teams), [])
+  ])
+
+  teams_by_slug = local.dismissal_teams
+  users_by_name = local.dismissal_users
+}
+
+data "github_user" "user" {
+  for_each = toset(local.users_by_name)
+
+  username = each.value
+}
+
+data "github_team" "team" {
+  for_each = toset(local.teams_by_slug)
+
+  slug = each.value
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Create the repository
 # ---------------------------------------------------------------------------------------------------------------------
@@ -118,8 +144,12 @@ resource "github_branch_protection" "branch_protection" {
     for_each = try([var.branch_protections[count.index].required_pull_request_reviews], [])
 
     content {
-      dismiss_stale_reviews           = try(required_pull_request_reviews.value.dismiss_stale_reviews, true)
-      dismissal_restrictions          = try(required_pull_request_reviews.value.dismissal_restrictions, [])
+      dismiss_stale_reviews = try(required_pull_request_reviews.value.dismiss_stale_reviews, true)
+      dismissal_restrictions = setunion(
+        toset(try(required_pull_request_reviews.value.dismissal_restrictions, [])),
+        toset([for u in try(required_pull_request_reviews.value.dismissal_users, []) : data.github_user.user[u].node_id]),
+        toset([for t in try(required_pull_request_reviews.value.dismissal_teams, []) : data.github_team.team[t].node_id]),
+      )
       require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, null)
       required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, null)
     }

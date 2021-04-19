@@ -75,8 +75,8 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews = true
+        dismissal_users       = [var.team_user]
         dismissal_restrictions = [
-          data.github_user.team_user.node_id,
           github_team.team.node_id
         ]
         require_code_owner_reviews      = true
