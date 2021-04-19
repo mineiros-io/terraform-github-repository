@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0]
+
+### Added
+
+- Add support for Github Provider v4 (Minimal compatible version is v4.3).
+
+### Changed
+
+- Use `github_branch_protection_v3` instead of `github_branch_protection_v3` for performance and compatibility reasons. **ATTENTION**: This Change will trigger recreation of all branch protections when upgrading to v0.8.0.
+
+### Removed
+
+- **BREAKING CHANGE**: Removed support for Github Provider before v4.3
+
 ## [0.7.0]
 
 ### Added
