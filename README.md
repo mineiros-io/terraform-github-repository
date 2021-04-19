@@ -10,8 +10,9 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-*This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above
-and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.*
+_This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
+
+_The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -346,12 +347,18 @@ removed thislimitation.
 
 #### Branch Protections Configuration
 
-- **[`branch_protections`](#branch_protection-object-attributes)**: _(Optional `list(branch_protection)`)_
+- **[`branch_protections_v3`](#branch_protection-object-attributes)**: _(Optional `list(branch_protection)`)_
 
   This resource allows you to configure branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams,
   can also be configured.
+  Default is `[]` unless `branch_protections` is used.
+
+- **[`branch_protections`](#branch_protection-object-attributes)**: **_(DEPRECATED)_**
+
+  **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
+  This argument is ignored if `branch_protections_v3` is used.
   Default is `[]`.
 
 #### Issue Labels Configuration
@@ -401,6 +408,7 @@ removed thislimitation.
 
   This map allows you to create and manage secrets for repositories in your organization.
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
+
   ```
   plaintext_secrets = {
     SECRET_NAME_1 = "secret_value_1"
@@ -408,6 +416,7 @@ removed thislimitation.
     ...
   }
   ```
+
   When applied, a secret with the given key and value will be created in the repositories.
   The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
   **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.

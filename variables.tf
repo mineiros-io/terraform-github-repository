@@ -267,7 +267,13 @@ variable "maintain_teams" {
 }
 
 variable "branch_protections" {
-  description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
+  description = "DEPRECATED: use branch_protections_v3 instead. Default is []."
+  type        = any
+  default     = null
+}
+
+variable "branch_protections_v3" {
+  description = "A list of branch protections to apply to the repository. Default is [] unless branch_protections is set."
   type        = any
 
   # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
@@ -294,7 +300,7 @@ variable "branch_protections" {
   #   })
   # }))
 
-  default = []
+  default = null
 
   # Example:
   # branch_protections = [

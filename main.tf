@@ -26,6 +26,8 @@ locals {
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
+  branch_protections_v0  = var.branch_protections == null ? [] : var.branch_protections
+  branch_protections_v3  = var.branch_protections_v3 == null ? local.branch_protections_v0 : var.branch_protections_v3
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -38,7 +40,7 @@ locals {
 
 locals {
   branch_protections = [
-    for b in var.branch_protections : merge({
+    for b in local.branch_protections_v3 : merge({
       branch                        = null
       enforce_admins                = null
       require_signed_commits        = null
@@ -126,10 +128,10 @@ resource "github_repository" "repository" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Branch Protection
-# https://www.terraform.io/docs/providers/github/r/branch_protection.html
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "github_branch_protection" "branch_protection" {
+resource "github_branch_protection_v3" "branch_protection" {
   count = length(local.branch_protections)
 
   # ensure we have all members and collaborators added before applying
