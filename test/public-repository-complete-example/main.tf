@@ -83,8 +83,11 @@ module "repository" {
         required_approving_review_count = 1
       }
 
+      restrictions = {
+        users = [var.team_user]
+      }
+
       push_restrictions = [
-        data.github_user.team_user.node_id,
         github_team.team.node_id
       ]
     }

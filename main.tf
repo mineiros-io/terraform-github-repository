@@ -45,8 +45,20 @@ locals {
     for bp in var.branch_protections : try(tolist(bp.required_pull_request_reviews.dismissal_teams), [])
   ])
 
-  teams_by_slug = local.dismissal_teams
-  users_by_name = local.dismissal_users
+  push_users = flatten([
+    for bp in var.branch_protections : try(tolist(bp.restrictions.users), [])
+  ])
+
+  push_teams = flatten([
+    for bp in var.branch_protections : try(tolist(bp.restrictions.teams), [])
+  ])
+
+  push_apps = flatten([
+    for bp in var.branch_protections : try(tolist(bp.restrictions.apps), [])
+  ])
+
+  teams_by_slug = concat(local.dismissal_teams, local.push_teams)
+  users_by_name = concat(local.dismissal_users, local.push_users)
 }
 
 data "github_user" "user" {
@@ -155,7 +167,12 @@ resource "github_branch_protection" "branch_protection" {
     }
   }
 
-  push_restrictions = try(var.branch_protections[count.index].push_restrictions, null)
+  push_restrictions = setunion(
+    toset(try(var.branch_protections[count.index].push_restrictions, [])),
+    toset([for u in try(var.branch_protections[count.index].restrictions.users, []) : data.github_user.user[u].node_id]),
+    toset([for t in try(var.branch_protections[count.index].restrictions.teams, []) : data.github_team.team[t].node_id]),
+    toset(try(var.branch_protections[count.index].restrictions.apps, [])),
+  )
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
