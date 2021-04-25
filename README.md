@@ -14,7 +14,9 @@ _This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above and is
 
 _The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
 
-_Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constrains as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
+_Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constraints as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
+
+_Version `>= 0.8.0` of this module is compatible with `mineiros-io/team/github >= 0.4.0` and `mineiros-io/organization/github >= 0.4.0`_
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
