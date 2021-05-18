@@ -1,22 +1,18 @@
 # Set default shell to bash
 SHELL := /bin/bash -o pipefail
 
-BUILD_TOOLS_VERSION      ?= v0.7.0
+BUILD_TOOLS_VERSION      ?= v0.11.0
 BUILD_TOOLS_DOCKER_REPO  ?= mineiros/build-tools
 BUILD_TOOLS_DOCKER_IMAGE ?= ${BUILD_TOOLS_DOCKER_REPO}:${BUILD_TOOLS_VERSION}
 
+# If running in CI (e.g. GitHub Actions)
+# https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
 #
-# Some CI providers such as GitHub Actions, CircleCI, and TravisCI are setting
-# the CI environment variable to a non-empty value by default to indicate that
-# the current workflow is running in a Continuous Integration environment.
-#
-# If TF_IN_AUTOMATION is set to any non-empty value, Terraform adjusts its
-# output to avoid suggesting specific commands to run next.
+# To disable TF_IN_AUTOMATION in CI set it to empty
 # https://www.terraform.io/docs/commands/environment-variables.html#tf_in_automation
 #
 # We are using GNU style quiet commands to disable set V to non-empty e.g. V=1
 # https://www.gnu.org/software/automake/manual/html_node/Debugging-Make-Rules.html
-#
 ifdef CI
 	TF_IN_AUTOMATION ?= 1
 	export TF_IN_AUTOMATION
@@ -31,10 +27,15 @@ ifndef NOCOLOR
 	RESET  := $(shell tput -Txterm sgr0)
 endif
 
+# We are creating docker volumes for /go and /terraform that are unique per
+# repository to reuse dependencies between different docker run commands.
+VOLUME_PREFIX ?= mineiros_build_tools
+VOLUME_SUFFIX ?= $(notdir $(shell git rev-parse --show-toplevel || "build"))
+DOCKER_RUN_FLAGS += -v ${VOLUME_PREFIX}-terraform-${VOLUME_SUFFIX}:/terraform
+DOCKER_RUN_FLAGS += -v ${VOLUME_PREFIX}-go-${VOLUME_SUFFIX}:/go
+DOCKER_RUN_FLAGS += -v ${PWD}:/build
 DOCKER_RUN_FLAGS += --rm
-DOCKER_RUN_FLAGS += -v ${PWD}:/app/src
 DOCKER_RUN_FLAGS += -e TF_IN_AUTOMATION
-DOCKER_RUN_FLAGS += -e USER_UID=$(shell id -u)
 
 DOCKER_GITHUB_FLAGS += -e GITHUB_TOKEN
 DOCKER_GITHUB_FLAGS += -e GITHUB_ORGANIZATION
