@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0]
+
+### Added
+
+- Add support for Terraform v0.15
+
 ## [0.8.0]
 
 **_This is a BREAKING RELEASE._**
@@ -103,7 +109,7 @@ Please review plans and report regressions and issues asap so we can improve doc
 - Add CONTRIBUTING.md.
 - Add `phony-targets` and `markdown-link-check` hooks.
 
-### Changelog
+### Changed
 
 - Update logo and badges in README.md.
 
@@ -216,7 +222,7 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 ### Changed
 
-- Set has_issues default value to `false`.
+- Set `has_issues` default value to `false`.
 
 ## [0.0.2] - 2020-01-06
 
@@ -238,7 +244,8 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 <!-- markdown-link-check-disable -->
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.8.0...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.7.0...v0.8.0
 
 <!-- markdown-link-check-enable -->
