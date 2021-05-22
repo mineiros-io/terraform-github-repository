@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: upgrade pre-commit hooks to `v0.2.3`
 - build: upgrade build-tools hooks to `v0.11.0`
 - refactor: switch provider to integrations/github
+- feat: upgrade terratest to v0.34
 
 ## [0.7.0]
 
