@@ -17,9 +17,9 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 ### Upgrade path/notes:
 
-- Branch protections will be recreated in a compatible way. Alternativly all branchprotections could be manually updated using `terraform state mv` but this is not recommended as it is a manual process that can suffer from human errors.
+- Branch protections will be recreated in a compatible way. Alternatively, all branch protections could be manually updated using `terraform state mv` but this is not recommended as it is a manual process that can suffer from human prone errors.
 - If you want to opt-out of vulnerability alerts, set `vulnerability_alerts` to false in repository configurations.
-- If you do not want to archive repositoires on deletion set `archive_on_destroy` to false in repository configurations.
+- If you do not want to archive repositories on deletion set `archive_on_destroy` to false in repository configurations.
 
 #### Expected differences in a plan after upgrading:
 
@@ -40,7 +40,7 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 ### Changed
 
-- Use `github_branch_protection_v3` instead of `github_branch_protection_v3` for performance and compatibility reasons. **ATTENTION**: This Change will trigger recreation of all branch protections when upgrading to v0.8.0.
+- Use [`github_branch_protection_v3`](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3) instead of [`github_branch_protection`](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection) for performance and compatibility reasons. **ATTENTION**: This Change will trigger recreation of all branch protections when upgrading to v0.8.0.
 - Use `github_branch_default` to set default branch of repositories. **ATTENTION**: This Change will trigger creation of new resource when `default_branch` argument is set.
 
 ### Removed
