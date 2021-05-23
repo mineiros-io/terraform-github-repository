@@ -18,14 +18,12 @@ Please review plans and report regressions and issues asap so we can improve doc
 ### Upgrade path/notes:
 
 - Branch protections will be recreated in a compatible way. Alternatively, all branch protections could be manually updated using `terraform state mv` but this is not recommended as it is a manual process that can suffer from human prone errors.
-- If you want to opt-out of vulnerability alerts, set `vulnerability_alerts` to false in repository configurations.
 - If you do not want to archive repositories on deletion set `archive_on_destroy` to false in repository configurations.
 
 #### Expected differences in a plan after upgrading:
 
 - Addition to `module.<NAME>.github_repository.repository`:
   - Addition or changed default of argument `archive_on_destroy = true`
-  - Addition or changed default of argument `vulnerability_alerts = true`
 - Destruction of `module.<NAME>.github_branch_protection.branch_protection[*]`
 - Creation of `module.<NAME>.github_branch_protection_v3.branch_protection[*]`
 - Replacement of `module.<NAME>.github_team_repository.team_repository_by_slug[<SLUG>]`
@@ -35,7 +33,7 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 - Add support for Github Provider v4 (Minimal compatible version is v4.5).
 - Add support for `archive_on_destroy` repository flag defaulting to `true`.
-- Add support for `vulnerability_alerts` repository flag defaulting to `true`.
+- Add support for `vulnerability_alerts` repository flag.
 - Add security deny list for v4.7.0, v4.8.0, v4.9.0 and v4.9.1 due to a bug setting visibility to public for templated repository creation.
 
 ### Changed

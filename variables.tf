@@ -465,7 +465,7 @@ variable "plaintext_secrets" {
 variable "vulnerability_alerts" {
   type        = bool
   description = "(Optional) Set to `false` to disable security alerts for vulnerable dependencies. Enabling requires alerts to be enabled on the owner level."
-  default     = true
+  default     = null
 }
 
 variable "archive_on_destroy" {
