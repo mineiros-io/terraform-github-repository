@@ -21,5 +21,5 @@ jobs:
       - name: Run Unit Tests
         run: make test/unit-tests
         env:
-          GITHUB_ORGANIZATION: ${{ secrets.TEST_GITHUB_ORGANIZATION }}
+          GITHUB_OWNER: ${{ secrets.TEST_GITHUB_ORGANIZATION }}
           GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
