@@ -53,10 +53,11 @@ test/pre-commit:
 
 ## Run all Go tests inside a build-tools docker container. This is complementary to running 'go test ./test/...'.
 .PHONY: test/unit-tests
+test/unit-tests: TEST ?= "TestUnit"
 test/unit-tests: DOCKER_FLAGS += ${DOCKER_GITHUB_FLAGS}
 test/unit-tests:
 	@echo "${YELLOW}[TEST] ${GREEN}Start Running Go Tests in Docker Container.${RESET}"
-	$(call go-test,./test/...)
+	$(call go-test,./test -run $(TEST))
 
 ## Clean up cache and temporary files
 .PHONY: clean

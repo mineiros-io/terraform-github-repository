@@ -6,7 +6,8 @@
 
 terraform {
   required_providers {
-    tls = "~> 2.1.1"
+    tls    = "~> 2.1"
+    github = "~> 4.5"
   }
 }
 
@@ -54,9 +55,25 @@ module "repository" {
   archived               = false
   topics                 = var.topics
 
+  admin_collaborators = ["terraform-test-user-1"]
+
+
   admin_team_ids = [
     github_team.team.id
   ]
+
+  plaintext_secrets = {
+    (var.secret_name) = var.secret_text
+  }
+
+  webhooks = [{
+    active       = var.webhook_active
+    events       = var.webhook_events
+    url          = var.webhook_url
+    content_type = var.webhook_content_type
+    insecure_ssl = var.webhook_insecure_ssl
+    secret       = var.webhook_secret
+  }]
 
   branch_protections = [
     {
