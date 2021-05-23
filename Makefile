@@ -63,8 +63,10 @@ test/unit-tests:
 clean:
 	$(call rm-command,.terraform)
 	$(call rm-command,*.tfplan)
+	$(call rm-command,.terraform.lock.hcl)
 	$(call rm-command,examples/*/.terraform)
 	$(call rm-command,examples/*/*.tfplan)
+	$(call rm-command,examples/*/.terraform.lock.hcl)
 
 ## Display help for all targets
 .PHONY: help
