@@ -43,3 +43,6 @@ out/
 
 # local env
 .env
+
+.terraform.lock.hcl
+

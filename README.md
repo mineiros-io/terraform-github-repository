@@ -10,8 +10,13 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-*This module supports Terraform v0.14, v0.13 as well as v0.12.9 and above
-and is compatible with the Terraform Github Provider v3 as well as v2.6 and above.*
+_This module supports Terraform v0.15, v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
+
+_The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
+
+_Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constraints as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
+
+_Version `>= 0.8.0` of this module is compatible with `mineiros-io/team/github >= 0.4.0` and `mineiros-io/organization/github >= 0.4.0`_
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -87,7 +92,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.6.0"
+  version = "~> 0.9.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
@@ -157,7 +162,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
 - ~`private`~: _(Optional `bool`)_
 
-  DEPRICATED. Please use `visibility` instead and update your code. parameter will be removed in a future version
+  **_DEPRECATED_**: Please use `visibility` instead and update your code. parameter will be removed in a future version
 
 - **`visibility`**: _(Optional `string`)_
 
@@ -218,6 +223,15 @@ See [variables.tf] and [examples/] for details and use-cases.
   the list of `topics`. This is useful if `default.topics` are used and the list
   should be extended with more topics.
   Default is `[]`.
+
+- **`vulnerability_alerts`**: _(Optional `bool`)_
+
+  Set to `false` to disable security alerts for vulnerable dependencies.
+  Enabling requires alerts to be enabled on the owner level.
+
+- **`archive_on_destroy`**: _(Optional `bool`)_
+
+  Set to `false` to not archive the repository instead of deleting on destroy.
 
 #### Repository Creation Configuration
 
@@ -346,12 +360,18 @@ removed thislimitation.
 
 #### Branch Protections Configuration
 
-- **[`branch_protections`](#branch_protection-object-attributes)**: _(Optional `list(branch_protection)`)_
+- **[`branch_protections_v3`](#branch_protection-object-attributes)**: _(Optional `list(branch_protection)`)_
 
   This resource allows you to configure branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams,
   can also be configured.
+  Default is `[]` unless `branch_protections` is used.
+
+- **[`branch_protections`](#branch_protection-object-attributes)**: **_(DEPRECATED)_**
+
+  **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
+  This argument is ignored if `branch_protections_v3` is used.
   Default is `[]`.
 
 #### Issue Labels Configuration
@@ -401,6 +421,7 @@ removed thislimitation.
 
   This map allows you to create and manage secrets for repositories in your organization.
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
+
   ```
   plaintext_secrets = {
     SECRET_NAME_1 = "secret_value_1"
@@ -408,6 +429,7 @@ removed thislimitation.
     ...
   }
   ```
+
   When applied, a secret with the given key and value will be created in the repositories.
   The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
   **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
@@ -746,9 +768,9 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
+[badge-terraform]: https://img.shields.io/badge/terraform-0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-[badge-tf-gh]: https://img.shields.io/badge/GH-3%20and%202.6+-F8991D.svg?logo=terraform
+[badge-tf-gh]: https://img.shields.io/badge/GH-4-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases

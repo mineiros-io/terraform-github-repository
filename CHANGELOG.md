@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0]
+
+### Added
+
+- Add support for Terraform v0.15
+
+## [0.8.0]
+
+**_This is a BREAKING RELEASE._**
+
+Branch protection resourcess will be recreated and new fetures are added enforcing security by default.
+
+Please review plans and report regressions and issues asap so we can improve documentation for upgrading.
+
+### Upgrade path/notes:
+
+- Branch protections will be recreated in a compatible way. Alternatively, all branch protections could be manually updated using `terraform state mv` but this is not recommended as it is a manual process that can suffer from human prone errors.
+- If you do not want to archive repositories on deletion set `archive_on_destroy` to false in repository configurations.
+
+#### Expected differences in a plan after upgrading:
+
+- Addition to `module.<NAME>.github_repository.repository`:
+  - Addition or changed default of argument `archive_on_destroy = true`
+- Destruction of `module.<NAME>.github_branch_protection.branch_protection[*]`
+- Creation of `module.<NAME>.github_branch_protection_v3.branch_protection[*]`
+- Replacement of `module.<NAME>.github_team_repository.team_repository_by_slug[<SLUG>]`
+  - Triggered by change in `team_id = "<NUMBER>" -> "<SLUG>"`
+
+### Added
+
+- Add support for Github Provider v4 (Minimal compatible version is v4.5).
+- Add support for `archive_on_destroy` repository flag defaulting to `true`.
+- Add support for `vulnerability_alerts` repository flag.
+- Add security deny list for v4.7.0, v4.8.0, v4.9.0 and v4.9.1 due to a bug setting visibility to public for templated repository creation.
+
+### Changed
+
+- Use [`github_branch_protection_v3`](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3) instead of [`github_branch_protection`](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection) for performance and compatibility reasons. **ATTENTION**: This Change will trigger recreation of all branch protections when upgrading to v0.8.0.
+- Use `github_branch_default` to set default branch of repositories. **ATTENTION**: This Change will trigger creation of new resource when `default_branch` argument is set.
+
+### Removed
+
+- **BREAKING CHANGE**: Removed support for Github Provider before v4.3
+
 ## [0.7.0]
 
 ### Added
@@ -65,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add CONTRIBUTING.md.
 - Add `phony-targets` and `markdown-link-check` hooks.
 
-### Changelog
+### Changed
 
 - Update logo and badges in README.md.
 
@@ -178,7 +222,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Set has_issues default value to `false`.
+- Set `has_issues` default value to `false`.
 
 ## [0.0.2] - 2020-01-06
 
@@ -200,11 +244,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- markdown-link-check-disable -->
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.7.0...HEAD
-[0.7.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.1...v0.7.0
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.0...HEAD
+[0.9.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.7.0...v0.8.0
 
 <!-- markdown-link-check-enable -->
 
+[0.7.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.5.0...v0.5.1

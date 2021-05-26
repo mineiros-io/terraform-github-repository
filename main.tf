@@ -21,11 +21,13 @@ locals {
   auto_init              = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
   gitignore_template     = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
   license_template       = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
-  default_branch         = var.default_branch == null ? lookup(var.defaults, "default_branch", "") : var.default_branch
+  default_branch         = var.default_branch == null ? lookup(var.defaults, "default_branch", null) : var.default_branch
   standard_topics        = var.topics == null ? lookup(var.defaults, "topics", []) : var.topics
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
+  branch_protections_v0  = var.branch_protections == null ? [] : var.branch_protections
+  branch_protections_v3  = var.branch_protections_v3 == null ? local.branch_protections_v0 : var.branch_protections_v3
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -38,7 +40,7 @@ locals {
 
 locals {
   branch_protections = [
-    for b in var.branch_protections : merge({
+    for b in local.branch_protections_v3 : merge({
       branch                        = null
       enforce_admins                = null
       require_signed_commits        = null
@@ -101,9 +103,11 @@ resource "github_repository" "repository" {
   auto_init              = local.auto_init
   gitignore_template     = local.gitignore_template
   license_template       = local.license_template
-  default_branch         = local.default_branch
   archived               = var.archived
   topics                 = local.topics
+
+  archive_on_destroy   = var.archive_on_destroy
+  vulnerability_alerts = var.vulnerability_alerts
 
   dynamic "template" {
     for_each = local.template
@@ -125,11 +129,23 @@ resource "github_repository" "repository" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Branch Protection
-# https://www.terraform.io/docs/providers/github/r/branch_protection.html
+# Set default branch
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_default
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "github_branch_protection" "branch_protection" {
+resource "github_branch_default" "default" {
+  count = local.default_branch != null ? 1 : 0
+
+  repository = github_repository.repository.name
+  branch     = local.default_branch
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Branch Protection
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_branch_protection_v3" "branch_protection" {
   count = length(local.branch_protections)
 
   # ensure we have all members and collaborators added before applying
@@ -329,17 +345,11 @@ locals {
   ) : i.slug => i }
 }
 
-data "github_team" "teams" {
-  for_each = local.teams
-
-  slug = each.value.slug
-}
-
 resource "github_team_repository" "team_repository_by_slug" {
   for_each = local.teams
 
   repository = github_repository.repository.name
-  team_id    = data.github_team.teams[each.key].id
+  team_id    = each.value.slug
   permission = each.value.permission
 
   depends_on = [var.module_depends_on]

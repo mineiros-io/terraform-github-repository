@@ -1,12 +1,4 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# ENVIRONMENT VARIABLES
-# Define these secrets as environment variables.
-# ---------------------------------------------------------------------------------------------------------------------
-
-# GITHUB_ORGANIZATION
-# GITHUB_TOKEN
-
-# ---------------------------------------------------------------------------------------------------------------------
 # REQUIRED VARIABLES
 # These variables must be set when using this module.
 # ---------------------------------------------------------------------------------------------------------------------
@@ -267,7 +259,13 @@ variable "maintain_teams" {
 }
 
 variable "branch_protections" {
-  description = "Configuring protected branches. For details please check: https://www.terraform.io/docs/providers/github/r/branch_protection.html"
+  description = "DEPRECATED: use branch_protections_v3 instead. Default is []."
+  type        = any
+  default     = null
+}
+
+variable "branch_protections_v3" {
+  description = "A list of branch protections to apply to the repository. Default is [] unless branch_protections is set."
   type        = any
 
   # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
@@ -294,7 +292,7 @@ variable "branch_protections" {
   #   })
   # }))
 
-  default = []
+  default = null
 
   # Example:
   # branch_protections = [
@@ -462,4 +460,16 @@ variable "plaintext_secrets" {
   # }
 
   default = {}
+}
+
+variable "vulnerability_alerts" {
+  type        = bool
+  description = "(Optional) Set to `false` to disable security alerts for vulnerable dependencies. Enabling requires alerts to be enabled on the owner level."
+  default     = null
+}
+
+variable "archive_on_destroy" {
+  type        = string
+  description = "(Optional) Set to `false` to not archive the repository instead of deleting on destroy."
+  default     = true
 }
