@@ -35,6 +35,7 @@ _Version `>= 0.8.0` of this module is compatible with `mineiros-io/team/github >
     - [Secrets Configuration](#secrets-configuration)
     - [`defaults` Object Attributes](#defaults-object-attributes)
     - [`template` Object Attributes](#template-object-attributes)
+    - [`pages` Object Attributes](#pages-object-attributes)
     - [`deploy_key` Object Attributes](#deploy_key-object-attributes)
     - [`branch_protection` Object Attributes](#branch_protection-object-attributes)
       - [`required_status_checks` Object Attributes](#required_status_checks-object-attributes)
@@ -127,6 +128,12 @@ See [variables.tf] and [examples/] for details and use-cases.
   A object of default settings to use instead of module defaults for top-level arguments.
   See below for a list of supported arguments.
   Default is `{}` - use module defaults as described in the README.
+
+- **[`pages`](#pages-object-attributes)**: _(Optional `object`)_
+
+  A object of settings to configure GitHub Pages in this repository.
+  See below for a list of supported arguments.
+  Default is `null`.
 
 - **`allow_merge_commit`**: _(Optional `bool`)_
 
@@ -458,6 +465,26 @@ The following top-level arguments can be set as defaults:
 Module defaults are used for all arguments that are not set in `defaults`.
 Using top level arguments override defaults set by this argument.
 Default is `{}`.
+
+#### [`pages`](#pages-object-attributes) Object Attributes
+
+This block is used for configuring GitHub Pages for the repository.
+The following top-level arguments must be set to configure GitHub Pages for
+the repository:
+
+- **`branch`**: **_(Required `string`)_**
+
+  The repository branch used to publish the site's source files.
+
+- **`path`**: **_(Optional `string`)_**
+
+  The repository directory from which the site publishes.
+
+- **`cname`**: **_(Optional `string`)_**
+
+  The custom domain for the repository. This can only be set after the
+  repository has been created.
+  Default is `null`.
 
 #### [`template`](#repository-creation-configuration) Object Attributes
 
