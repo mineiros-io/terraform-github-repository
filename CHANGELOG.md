@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1]
+
+### Added
+
+- Add support for GitHub Pages configuration in repositories
+
 ## [0.9.0]
 
 ### Added
@@ -244,7 +250,8 @@ Please review plans and report regressions and issues asap so we can improve doc
 
 <!-- markdown-link-check-disable -->
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.0...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.1...HEAD
+[0.9.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.0...v0.9.1
 
 <!-- markdown-link-check-enable -->
 
