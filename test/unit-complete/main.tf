@@ -105,6 +105,11 @@ module "repository" {
           github_team.team.slug
         ]
       }
+    },
+    {
+      branch                 = "master"
+      enforce_admins         = true
+      require_signed_commits = true
     }
   ]
 
