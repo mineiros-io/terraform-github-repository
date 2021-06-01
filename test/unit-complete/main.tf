@@ -80,7 +80,7 @@ module "repository" {
     secret       = var.webhook_secret
   }]
 
-  branch_protections = [
+  branch_protections_v3 = [
     {
       branch                 = "main"
       enforce_admins         = true
