@@ -107,7 +107,7 @@ module "repository" {
       }
     },
     {
-      branch                 = "main"
+      branch                 = "development"
       enforce_admins         = true
       require_signed_commits = true
     }
@@ -125,6 +125,11 @@ module "repository" {
   ]
 
   projects = var.projects
+}
+
+resource "github_branch" "development" {
+  repository = module.repository.repository.name
+  branch     = "development"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
