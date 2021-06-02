@@ -39,7 +39,7 @@ locals {
 }
 
 locals {
-  branch_protections_count = try(length(var.branch_protections_v3), length(var.branch_protections), 0)
+  branch_protections_count = try(length(var.branch_protections_v3.*.branch), length(var.branch_protections.*.branch), 0)
 
   # branch_protections = [
   #   for b in local.branch_protections_v3 : merge({
