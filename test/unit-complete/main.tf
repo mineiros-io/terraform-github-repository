@@ -93,21 +93,21 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_users                 = [var.team_user]
+        # dismissal_users                 = [var.team_user]
         # dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
-        users = [var.team_user]
+        # users = [var.team_user]
         teams = [
           # github_team.team.slug
         ]
       }
     },
     {
-      branch                 = "main"
+      branch                 = "developer"
       enforce_admins         = true
       require_signed_commits = true
     }
