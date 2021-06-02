@@ -26,8 +26,8 @@ locals {
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
-  branch_protections_v0  = var.branch_protections == null ? [] : var.branch_protections
-  branch_protections_v3  = var.branch_protections_v3 == null ? local.branch_protections_v0 : var.branch_protections_v3
+  # branch_protections_v0  = var.branch_protections == null ? [] : var.branch_protections
+  # branch_protections_v3  = var.branch_protections_v3 == null ? local.branch_protections_v0 : var.branch_protections_v3
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -39,47 +39,49 @@ locals {
 }
 
 locals {
-  branch_protections = [
-    for b in local.branch_protections_v3 : merge({
-      branch                        = null
-      enforce_admins                = null
-      require_signed_commits        = null
-      required_status_checks        = {}
-      required_pull_request_reviews = {}
-      restrictions                  = {}
-    }, b)
-  ]
+  branch_protections_count = try(length(var.branch_protections_v3), length(var.branch_protections), 0)
 
-  required_status_checks = [
-    for b in local.branch_protections :
-    length(keys(b.required_status_checks)) > 0 ? [
-      merge({
-        strict   = null
-        contexts = []
-    }, b.required_status_checks)] : []
-  ]
+  # branch_protections = [
+  #   for b in local.branch_protections_v3 : merge({
+  #     branch                        = null
+  #     enforce_admins                = null
+  #     require_signed_commits        = null
+  #     required_status_checks        = {}
+  #     required_pull_request_reviews = {}
+  #     restrictions                  = {}
+  #   }, b)
+  # ]
 
-  required_pull_request_reviews = [
-    for b in local.branch_protections :
-    length(keys(b.required_pull_request_reviews)) > 0 ? [
-      merge({
-        dismiss_stale_reviews           = true
-        dismissal_users                 = []
-        dismissal_teams                 = []
-        require_code_owner_reviews      = null
-        required_approving_review_count = null
-    }, b.required_pull_request_reviews)] : []
-  ]
+  # required_status_checks = [
+  #   for b in local.branch_protections :
+  #   length(keys(b.required_status_checks)) > 0 ? [
+  #     merge({
+  #       strict   = null
+  #       contexts = []
+  #   }, b.required_status_checks)] : []
+  # ]
 
-  restrictions = [
-    for b in local.branch_protections :
-    length(keys(b.restrictions)) > 0 ? [
-      merge({
-        users = []
-        teams = []
-        apps  = []
-    }, b.restrictions)] : []
-  ]
+  # required_pull_request_reviews = [
+  #   for b in local.branch_protections :
+  #   length(keys(b.required_pull_request_reviews)) > 0 ? [
+  #     merge({
+  #       dismiss_stale_reviews           = true
+  #       dismissal_users                 = []
+  #       dismissal_teams                 = []
+  #       require_code_owner_reviews      = null
+  #       required_approving_review_count = null
+  #   }, b.required_pull_request_reviews)] : []
+  # ]
+
+  # restrictions = [
+  #   for b in local.branch_protections :
+  #   length(keys(b.restrictions)) > 0 ? [
+  #     merge({
+  #       users = []
+  #       teams = []
+  #       apps  = []
+  #   }, b.restrictions)] : []
+  # ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -158,7 +160,7 @@ resource "github_branch_default" "default" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection_v3" "branch_protection" {
-  count = length(local.branch_protections)
+  count = local.branch_protections_count
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -169,12 +171,12 @@ resource "github_branch_protection_v3" "branch_protection" {
   ]
 
   repository             = github_repository.repository.name
-  branch                 = local.branch_protections[count.index].branch
-  enforce_admins         = local.branch_protections[count.index].enforce_admins
-  require_signed_commits = local.branch_protections[count.index].require_signed_commits
+  branch                 = try(var.branch_protections_v3[count.index].branch, var.branch_protections[count.index].branch, null)
+  enforce_admins         = try(var.branch_protections_v3[count.index].enforce_admins, var.branch_protections[count.index].enforce_admins, null)
+  require_signed_commits = try(var.branch_protections_v3[count.index].require_signed_commits, var.branch_protections[count.index].require_signed_commits, null)
 
   dynamic "required_status_checks" {
-    for_each = local.required_status_checks[count.index]
+    for_each = try(var.branch_protections_v3[count.index].required_status_checks, var.branch_protections[count.index].required_status_checks, [])
 
     content {
       strict   = required_status_checks.value.strict
@@ -183,7 +185,7 @@ resource "github_branch_protection_v3" "branch_protection" {
   }
 
   dynamic "required_pull_request_reviews" {
-    for_each = local.required_pull_request_reviews[count.index]
+    for_each = try(var.branch_protections_v3[count.index].required_pull_request_reviews, var.branch_protections[count.index].required_pull_request_reviews, [])
 
     content {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
@@ -195,7 +197,7 @@ resource "github_branch_protection_v3" "branch_protection" {
   }
 
   dynamic "restrictions" {
-    for_each = local.restrictions[count.index]
+    for_each = try(var.branch_protections_v3[count.index].restrictions, var.branch_protections[count.index].restrictions, [])
 
     content {
       users = restrictions.value.users
