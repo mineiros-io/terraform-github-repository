@@ -94,17 +94,20 @@ module "repository" {
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
         dismissal_users                 = [var.team_user]
-        dismissal_teams                 = [github_team.team.slug]
+        dismissal_teams                 = [github_team.team.name]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
         users = [var.team_user]
-        teams = [
-          github_team.team.slug
-        ]
+        teams = [github_team.team.name]
       }
+    },
+    {
+      branch                 = github_branch.development.branch
+      enforce_admins         = true
+      require_signed_commits = true
     }
   ]
 
@@ -120,6 +123,11 @@ module "repository" {
   ]
 
   projects = var.projects
+}
+
+resource "github_branch" "development" {
+  repository = module.repository.repository.name
+  branch     = "development"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

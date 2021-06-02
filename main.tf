@@ -26,8 +26,7 @@ locals {
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
-  branch_protections_v0  = var.branch_protections == null ? [] : var.branch_protections
-  branch_protections_v3  = var.branch_protections_v3 == null ? local.branch_protections_v0 : var.branch_protections_v3
+  branch_protections_v3  = var.branch_protections_v3 == null ? var.branch_protections : var.branch_protections_v3
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -39,7 +38,7 @@ locals {
 }
 
 locals {
-  branch_protections = [
+  branch_protections = try([
     for b in local.branch_protections_v3 : merge({
       branch                        = null
       enforce_admins                = null
@@ -48,7 +47,7 @@ locals {
       required_pull_request_reviews = {}
       restrictions                  = {}
     }, b)
-  ]
+  ], [])
 
   required_status_checks = [
     for b in local.branch_protections :
@@ -188,7 +187,7 @@ resource "github_branch_protection_v3" "branch_protection" {
     content {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
       dismissal_users                 = required_pull_request_reviews.value.dismissal_users
-      dismissal_teams                 = required_pull_request_reviews.value.dismissal_teams
+      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9]/", "-")]
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
     }
@@ -199,8 +198,7 @@ resource "github_branch_protection_v3" "branch_protection" {
 
     content {
       users = restrictions.value.users
-      # TODO: try to convert teams to team-slug array
-      teams = restrictions.value.teams
+      teams = [for t in restrictions.value.teams : replace(lower(t), "/[^a-z0-9]/", "-")]
       apps  = restrictions.value.apps
     }
   }
