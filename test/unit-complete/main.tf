@@ -107,7 +107,7 @@ module "repository" {
       }
     },
     {
-      branch                 = "development"
+      branch                 = github_branch.development.branch
       enforce_admins         = true
       require_signed_commits = true
     }
