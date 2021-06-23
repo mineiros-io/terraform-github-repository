@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for Terraform `v1.0`
+
 ## [0.9.2]
 
 ### Fixed
@@ -23,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for Terraform v0.15
+- Add support for Terraform `v0.15`
 
 ## [0.8.0]
 

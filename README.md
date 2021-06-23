@@ -10,7 +10,7 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-_This module supports Terraform v0.15, v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
+_This module supports Terraform v1, v0.15, v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
 
 _The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
 
@@ -795,7 +795,7 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
+[badge-terraform]: https://img.shields.io/badge/terraform-1.x%20|0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [badge-tf-gh]: https://img.shields.io/badge/GH-4-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
