@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Set `vulnerability_alerts` per default to `true` for public repositories and
+  to `false` for private repositories if not explicitly set to avoid drifts
+  when running `terraform plan`.
+
 ## [0.10.0]
 
 ### Added
