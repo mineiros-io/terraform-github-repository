@@ -35,6 +35,8 @@ locals {
   gh_labels     = local.var_gh_labels == null ? lookup(var.defaults, "issue_labels_merge_with_github_labels", true) : local.var_gh_labels
 
   issue_labels_merge_with_github_labels = local.gh_labels
+  # Per default, GitHub activates vulnerability  alerts for public repositories and disables it for private repositories
+  vulnerability_alerts = var.vulnerability_alerts != null ? var.vulnerability_alerts : local.private ? false : true
 }
 
 locals {
@@ -106,7 +108,7 @@ resource "github_repository" "repository" {
   topics                 = local.topics
 
   archive_on_destroy   = var.archive_on_destroy
-  vulnerability_alerts = var.vulnerability_alerts
+  vulnerability_alerts = local.vulnerability_alerts
 
   dynamic "template" {
     for_each = local.template
