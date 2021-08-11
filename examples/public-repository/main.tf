@@ -98,6 +98,6 @@ resource "github_team_membership" "team_membership" {
 # ------------------------------------------------------------------------------
 # You can provide your credentials via the
 #   GITHUB_TOKEN and
-#   GITHUB_ORGANZIATION, environment variables,
+#   GITHUB_OWNER, environment variables,
 # representing your Access Token and the organization, respectively.
 # ------------------------------------------------------------------------------

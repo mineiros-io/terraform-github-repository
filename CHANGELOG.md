@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+We dropped support for Terraform pre 1.0 and GitHub Terraform Provider pre 4.0.
+In addition we changed to the `integrations/github` official GitHub Terraform Provider.
+This needs migration actions if you already used this module with the `hashicorp/github` provider and want to upgrade.
+
+Steps to upgrade will be added prior to the breaking release.
+
+### Added
+
+- Add support for Official GitHub Terraform Provider `integrations/github`
+
+### Removed
+
+- Removed support for Terraform < 1.0
+- Removed support for GitHub Provider < 4.0
+- Removed compatibility to Hashicorp GitHub Terraform Provider `hashicorp/github`
+
 ## [0.10.1]
 
 ### Fixed
