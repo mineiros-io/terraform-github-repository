@@ -46,3 +46,4 @@ out/
 
 .terraform.lock.hcl
 
+.tool-versions

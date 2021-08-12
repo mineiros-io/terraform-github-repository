@@ -4,13 +4,6 @@
 # settings. Also we create a single team and attach it to one of the repositories.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-terraform {
-  required_providers {
-    tls    = "~> 2.1"
-    github = "~> 4.5"
-  }
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # DEPENDENCIES from other providers
 # We are creating some resources for easier testing

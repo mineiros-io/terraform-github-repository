@@ -10,13 +10,11 @@
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-_This module supports Terraform v1, v0.15, v0.14, v0.13 as well as v0.12.9 and above and is compatible with the Terraform Github Provider v4._
+**_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.10 and above from `integrations/github`._**
 
-_The latest version being compatible with the Terraform Github Provider v3 as well as v2 was v0.7.0 of this module._
+**Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
 
 _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constraints as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
-
-_Version `>= 0.8.0` of this module is compatible with `mineiros-io/team/github >= 0.4.0` and `mineiros-io/organization/github >= 0.4.0`_
 
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
@@ -98,6 +96,19 @@ module "repository" {
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
   gitignore_template = "Terraform"
+}
+
+provider "github" {}
+
+terraform {
+  required_version = "~> 1.0"
+
+  required_providers {
+    github = {
+      source  = "integrations/github"
+      version = "~> 4.0"
+    }
+  }
 }
 ```
 
@@ -781,7 +792,7 @@ Run `make help` to see details on each available target.
 This module is licensed under the Apache License Version 2.0, January 2004.
 Please see [LICENSE] for full details.
 
-Copyright &copy; 2020 [Mineiros GmbH][homepage]
+Copyright &copy; 2021 [Mineiros GmbH][homepage]
 
 <!-- References -->
 
@@ -795,9 +806,9 @@ Copyright &copy; 2020 [Mineiros GmbH][homepage]
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
-[badge-terraform]: https://img.shields.io/badge/terraform-1.x%20|0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
+[badge-terraform]: https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-[badge-tf-gh]: https://img.shields.io/badge/GH-4-F8991D.svg?logo=terraform
+[badge-tf-gh]: https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
