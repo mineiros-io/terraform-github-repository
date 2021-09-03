@@ -25,6 +25,10 @@ Steps to upgrade will be added prior to the breaking release.
 - Removed support for GitHub Provider < 4.0
 - Removed compatibility to Hashicorp GitHub Terraform Provider `hashicorp/github`
 
+### Fixed
+
+- Set `webhooks` output as sensitive.
+
 ## [0.10.1]
 
 ### Fixed
