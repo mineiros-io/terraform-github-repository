@@ -57,6 +57,7 @@ output "deploy_keys" {
 
 output "webhooks" {
   value       = github_repository_webhook.repository_webhook
+  sensitive   = true
   description = "All attributes and arguments as returned by the github_repository_webhook resource."
 }
 
