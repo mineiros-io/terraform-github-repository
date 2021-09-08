@@ -28,6 +28,7 @@ Steps to upgrade will be added prior to the breaking release.
 ### Fixed
 
 - Set `webhooks` output as sensitive.
+- Add underscores in team names (special thanks to @marc-sensenich)
 
 ## [0.10.1]
 

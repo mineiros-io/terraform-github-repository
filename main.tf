@@ -189,7 +189,7 @@ resource "github_branch_protection_v3" "branch_protection" {
     content {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
       dismissal_users                 = required_pull_request_reviews.value.dismissal_users
-      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9]/", "-")]
+      dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
     }
@@ -200,7 +200,7 @@ resource "github_branch_protection_v3" "branch_protection" {
 
     content {
       users = restrictions.value.users
-      teams = [for t in restrictions.value.teams : replace(lower(t), "/[^a-z0-9]/", "-")]
+      teams = [for t in restrictions.value.teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
       apps  = restrictions.value.apps
     }
   }
@@ -342,11 +342,11 @@ resource "github_team_repository" "team_repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
-  team_admin    = [for i in var.admin_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "admin" }]
-  team_push     = [for i in var.push_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "push" }]
-  team_pull     = [for i in var.pull_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "pull" }]
-  team_triage   = [for i in var.triage_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "triage" }]
-  team_maintain = [for i in var.maintain_teams : { slug = replace(lower(i), "/[^a-z0-9]/", "-"), permission = "maintain" }]
+  team_admin    = [for i in var.admin_teams : { slug = replace(lower(i), "/[^a-z0-9_]/", "-"), permission = "admin" }]
+  team_push     = [for i in var.push_teams : { slug = replace(lower(i), "/[^a-z0-9_]/", "-"), permission = "push" }]
+  team_pull     = [for i in var.pull_teams : { slug = replace(lower(i), "/[^a-z0-9_]/", "-"), permission = "pull" }]
+  team_triage   = [for i in var.triage_teams : { slug = replace(lower(i), "/[^a-z0-9_]/", "-"), permission = "triage" }]
+  team_maintain = [for i in var.maintain_teams : { slug = replace(lower(i), "/[^a-z0-9_]/", "-"), permission = "maintain" }]
 
   teams = { for i in concat(
     local.team_admin,
