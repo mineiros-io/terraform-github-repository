@@ -582,7 +582,7 @@ the repository:
 - **`dismiss_stale_reviews`**: _(Optional `bool`)_
 
   Dismiss approved reviews automatically when a new commit is pushed.
-  Default is `false`.
+  Default is `true`.
 
 - **`dismissal_users`**: _(Optional `list(string)`)_
 
