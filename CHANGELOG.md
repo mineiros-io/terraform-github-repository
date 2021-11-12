@@ -29,6 +29,7 @@ Steps to upgrade will be added prior to the breaking release.
 
 - Set `webhooks` output as sensitive.
 - Add underscores in team names (special thanks to @marc-sensenich)
+- Fix `dismiss_stale_reviews` in README to a default value of `true`
 
 ## [0.10.1]
 
