@@ -7,7 +7,7 @@
 
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.10.0"
+  version = "~> 0.11.0"
 
   module_depends_on = [
     github_team.team
