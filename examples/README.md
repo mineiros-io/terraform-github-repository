@@ -10,7 +10,7 @@
 - [public-respository/] Create a public repository on github and set it up with access and webhooks.
 
 <!-- References -->
-[public-respository/]: https://github.com/mineiros-io/terraform-github-repository/tree/master/examples/public-repository
+[public-respository/]: https://github.com/mineiros-io/terraform-github-repository/tree/main/examples/public-repository
 
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
