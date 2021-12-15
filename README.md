@@ -818,10 +818,10 @@ Copyright &copy; 2021 [Mineiros GmbH][homepage]
 [terraform]: https://www.terraform.io
 [aws]: https://aws.amazon.com/
 [semantic versioning (semver)]: https://semver.org/
-[variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/master/variables.tf
-[examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/master/examples
+[variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/main/variables.tf
+[examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/main/examples
 [issues]: https://github.com/mineiros-io/terraform-github-repository/issues
-[license]: https://github.com/mineiros-io/terraform-github-repository/blob/master/LICENSE
-[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile
+[license]: https://github.com/mineiros-io/terraform-github-repository/blob/main/LICENSE
+[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/main/Makefile
 [pull requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
-[contribution guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/master/CONTRIBUTING.md
+[contribution guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/main/CONTRIBUTING.md

@@ -62,8 +62,8 @@ Alternatively, you can also run the tests without Docker.
 
 <!-- References -->
 
-[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/master/Makefile
-[testdirectory]: https://github.com/mineiros-io/terraform-github-repository/tree/master/test
+[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/main/Makefile
+[testdirectory]: https://github.com/mineiros-io/terraform-github-repository/tree/main/test
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [terratest]: https://github.com/gruntwork-io/terratest
 [package testing]: https://golang.org/pkg/testing/
