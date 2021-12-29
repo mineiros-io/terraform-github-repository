@@ -24,7 +24,7 @@ module "repository" {
   name               = "my-public-repository"
   description        = "A description of the repository."
   homepage_url       = "https://github.com/mineiros-io"
-  visibility         = "private"
+  visibility         = "public"
   has_issues         = true
   has_projects       = false
   has_wiki           = true
