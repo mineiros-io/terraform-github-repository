@@ -176,7 +176,7 @@ variable "template" {
     owner      = string
     repository = string
   })
-  default = {}
+  default = null
 }
 
 variable "admin_collaborators" {
