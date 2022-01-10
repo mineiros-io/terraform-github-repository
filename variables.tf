@@ -161,7 +161,7 @@ variable "archived" {
 variable "topics" {
   description = "(Optional) The list of topics of the repository.  (Default: [])"
   type        = list(string)
-  default     = []]
+  default     = []
 }
 
 variable "extra_topics" {
@@ -176,7 +176,7 @@ variable "template" {
     owner      = string
     repository = string
   })
-  default = {}}
+  default = {}
 }
 
 variable "admin_collaborators" {
