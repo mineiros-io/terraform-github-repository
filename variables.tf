@@ -125,7 +125,7 @@ variable "pages" {
   # cname  = string
   # })
   type    = any
-  default = {}
+  default = null
 }
 
 variable "gitignore_template" {
