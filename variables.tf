@@ -66,55 +66,55 @@ variable "visibility" {
 variable "has_issues" {
   description = "(Optional) Set to true to enable the GitHub Issues features on the repository. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "has_projects" {
   description = "(Optional) Set to true to enable the GitHub Projects features on the repository. Per the github documentation when in an organization that has disabled repository projects it will default to false and will otherwise default to true. If you specify true when it has been disabled it will return an error.  (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "has_wiki" {
   description = "(Optional) Set to true to enable the GitHub Wiki features on the repository. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "allow_merge_commit" {
   description = "(Optional) Set to false to disable merge commits on the repository. (Default: true)"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "allow_squash_merge" {
   description = "(Optional) Set to true to enable squash merges on the repository. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "allow_rebase_merge" {
   description = "(Optional) Set to true to enable rebase merges on the repository. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "delete_branch_on_merge" {
   description = "(Optional) Whether or not to delete the merged branch after merging a pull request. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "has_downloads" {
   description = "(Optional) Set to true to enable the (deprecated) downloads features on the repository. (Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "auto_init" {
   description = "(Optional) Wether or not to produce an initial commit in the repository. (Default: true)"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "pages" {
@@ -137,7 +137,7 @@ variable "gitignore_template" {
 variable "is_template" {
   description = "(Optional) Whether or not to tell GitHub that this is a template repository. ( Default: false)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "license_template" {
@@ -161,7 +161,7 @@ variable "archived" {
 variable "topics" {
   description = "(Optional) The list of topics of the repository.  (Default: [])"
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "extra_topics" {
