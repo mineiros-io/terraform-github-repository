@@ -108,6 +108,11 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
+## Generate README.md with Terradoc
+.PHONY: terradoc
+terradoc:
+	$(call quiet-command,terradoc -o README.md README.tfdoc.hcl)
+
 # define helper functions
 DOCKER_FLAGS   += ${DOCKER_RUN_FLAGS}
 DOCKER_RUN_CMD  = docker run ${DOCKER_FLAGS} ${BUILD_TOOLS_DOCKER_IMAGE}
