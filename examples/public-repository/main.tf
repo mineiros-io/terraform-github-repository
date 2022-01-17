@@ -10,7 +10,7 @@ module "repository" {
   version = "~> 0.11.0"
 
   module_depends_on = [
-    github_team.team
+    module.team
   ]
 
   name               = "my-public-repository"
@@ -30,7 +30,7 @@ module "repository" {
   topics             = ["terraform", "unit-test"]
 
   admin_team_ids = [
-    github_team.team.id
+    module.team.team.id
   ]
 
   webhooks = [
@@ -59,13 +59,13 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_teams                 = [github_team.team.slug]
+        dismissal_teams                 = [module.team.name]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
-        teams = [github_team.team.slug]
+        teams = [module.team.name]
       }
     }
   ]
@@ -74,23 +74,22 @@ module "repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 # TEAM
 # ---------------------------------------------------------------------------------------------------------------------
-resource "github_team" "team" {
-  name        = "My Team"
-  description = "The best Team out there."
+
+module "team" {
+  source  = "mineiros-io/team/github"
+  version = "~> 0.8.0"
+
+  name        = "DevOps"
+  description = "The DevOps Team"
   privacy     = "secret"
-}
 
-# ---------------------------------------------------------------------------------------------------------------------
-# TEAM MEMBERSHIP
-# We are adding a member to this team: "terraform-test-user-2".
-# This existing users and already member of the GitHub Organization "terraform-test" that
-# is an Organization managed by Mineiros.io to run integration tests with Terratest.
-# ---------------------------------------------------------------------------------------------------------------------
-
-resource "github_team_membership" "team_membership" {
-  team_id  = github_team.team.id
-  username = "terraform-test-user-2"
-  role     = "member"
+  # TEAM MEMBERSHIP
+  # We are adding a member to this team: "terraform-test-user-2".
+  # This existing users and already member of the GitHub Organization "terraform-test" that
+  # is an Organization managed by Mineiros.io to run integration tests with Terratest.
+  members = [
+    "terraform-test-user-2",
+  ]
 }
 
 # ------------------------------------------------------------------------------
