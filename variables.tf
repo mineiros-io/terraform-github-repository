@@ -131,13 +131,13 @@ variable "pages" {
 variable "source_repository_clone_url" {
   description = ""
   type    = string
-  default = ""
+  default = null
 }
 
 variable "source_repository_default_branch" {
   description = ""
   type    = string
-  default = ""
+  default = null
 }
 
 variable "gitignore_template" {
