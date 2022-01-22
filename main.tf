@@ -27,6 +27,7 @@ locals {
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
   branch_protections_v3  = var.branch_protections_v3 == null ? var.branch_protections : var.branch_protections_v3
+  rename_default_branch  = var.source_repository_default_branch != null ? "git branch -m ${var.source_repository_default_branch} main" : ""
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -138,6 +139,22 @@ resource "github_repository" "repository" {
       gitignore_template,
       template,
     ]
+  }
+}
+
+resource "null_resource" "clone" {
+  count = var.source_repository_clone_url == "" ?   0 : 1
+
+  provisioner "local-exec" {
+      command =  <<EOT
+      git clone --mirror ${var.source_repository_clone_url} ${github_repository.repository.name}.git
+      cd ${github_repository.repository.name}.git
+      git remote set-url origin ${github_repository.repository.ssh_clone_url}
+      ${local.rename_default_branch}
+      git push --mirror
+      cd ..
+      rm -fr ${github_repository.repository.name}.git
+  EOT
   }
 }
 

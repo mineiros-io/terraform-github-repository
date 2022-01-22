@@ -128,6 +128,18 @@ variable "pages" {
   default = null
 }
 
+variable "source_repository_clone_url" {
+  description = ""
+  type    = string
+  default = ""
+}
+
+variable "source_repository_default_branch" {
+  description = ""
+  type    = string
+  default = ""
+}
+
 variable "gitignore_template" {
   description = "(Optional) Use the name of the template without the extension. For example, Haskell. Available templates: https://github.com/github/gitignore"
   type        = string
