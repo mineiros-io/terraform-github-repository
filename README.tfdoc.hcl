@@ -147,6 +147,7 @@ section {
           `allow_merge_commit`,
           `allow_rebase_merge`,
           `allow_squash_merge`,
+          `allow_auto_merge`,
           `has_downloads`,
           `auto_init`,
           `gitignore_template`,
@@ -216,6 +217,17 @@ section {
         default     = false
         description = <<-END
           Set to `true` to enable rebase merges on the repository.
+        END
+      }
+
+      variable "allow_auto_merge" {
+        type        = bool
+        default     = false
+        description = <<-END
+          Set to `true`  to allow [auto-merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request)
+          pull requests on the repository. If you enable auto-merge for a pull
+          request, the pull request will merge automatically when all required
+          reviews are met and status checks have passed.
         END
       }
 
