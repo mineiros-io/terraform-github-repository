@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### BREAKING CHANGES
+
+Bumped the minimum supported version of the GitHub Terraform Provider to `v4.19.2`
+since it contains a critical bugfix to support `required_approving_review_count = 0`
+on branch protection rules. Also, `allow_auto_merge` has been added in `v4.17.0`.
+
+### Added
+
+- Add support for `allow_auto_merge`
+
 ## [0.11.0]
 
 ### BREAKING CHANGES

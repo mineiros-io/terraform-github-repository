@@ -129,6 +129,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   `allow_merge_commit`,
   `allow_rebase_merge`,
   `allow_squash_merge`,
+  `allow_auto_merge`,
   `has_downloads`,
   `auto_init`,
   `gitignore_template`,
@@ -182,6 +183,15 @@ See [variables.tf] and [examples/] for details and use-cases.
 - [**`allow_rebase_merge`**](#var-allow_rebase_merge): *(Optional `bool`)*<a name="var-allow_rebase_merge"></a>
 
   Set to `true` to enable rebase merges on the repository.
+
+  Default is `false`.
+
+- [**`allow_auto_merge`**](#var-allow_auto_merge): *(Optional `bool`)*<a name="var-allow_auto_merge"></a>
+
+  Set to `true`  to allow [auto-merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request)
+  pull requests on the repository. If you enable auto-merge for a pull
+  request, the pull request will merge automatically when all required
+  reviews are met and status checks have passed.
 
   Default is `false`.
 

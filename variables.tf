@@ -28,6 +28,7 @@ variable "defaults" {
   #   allow_merge_commit     = true
   #   allow_rebase_merge     = false
   #   allow_squash_merge     = false
+  #   allow_auto_merge       = false
   #   has_downloads          = false
   #   auto_init              = true
   #   gitignore_template     = "terraform"
@@ -95,6 +96,12 @@ variable "allow_squash_merge" {
 
 variable "allow_rebase_merge" {
   description = "(Optional) Set to true to enable rebase merges on the repository. (Default: false)"
+  type        = bool
+  default     = null
+}
+
+variable "allow_auto_merge" {
+  description = "(Optional) Set to true to allow auto-merging pull requests on the repository. If enabled for a pull request, the pull request will merge automatically when all required reviews are met and status checks have passed. (Default: false)"
   type        = bool
   default     = null
 }
