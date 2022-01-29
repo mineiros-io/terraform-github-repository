@@ -147,9 +147,11 @@ resource "null_resource" "clone" {
 
   provisioner "local-exec" {
       command =  <<EOT
+      #!/bin/bash
+      set -e
       git clone --mirror ${var.source_repository_clone_url} ${github_repository.repository.name}.git
       cd ${github_repository.repository.name}.git
-      git remote set-url origin ${github_repository.repository.ssh_clone_url}
+      git remote set-url origin ${var.target_repository_clone_url}
       ${local.rename_default_branch}
       git push --mirror
       cd ..

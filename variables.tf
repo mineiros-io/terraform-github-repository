@@ -134,6 +134,12 @@ variable "source_repository_clone_url" {
   default = null
 }
 
+variable "target_repository_clone_url" {
+  description = ""
+  type    = string
+  default = null
+}
+
 variable "source_repository_default_branch" {
   description = ""
   type    = string
