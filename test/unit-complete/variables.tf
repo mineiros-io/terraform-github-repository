@@ -64,6 +64,13 @@ variable "allow_rebase_merge" {
   default     = true
 }
 
+variable "allow_auto_merge" {
+  description = "Set to true to allow auto-merging pull requests on the repository."
+  type        = bool
+  default     = true
+}
+
+
 variable "has_downloads" {
   description = "Set to true to enable the (deprecated) downloads features on the repository."
   type        = bool

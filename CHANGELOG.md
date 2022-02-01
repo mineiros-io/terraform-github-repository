@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0]
+
+### BREAKING CHANGES
+
+Bumped the minimum supported version of the GitHub Terraform Provider to `v4.19.2`
+since it contains a critical bugfix to support `required_approving_review_count = 0`
+on branch protection rules. Also, `allow_auto_merge` has been added in `v4.17.0`.
+
+### Added
+
+- Add support for `allow_auto_merge`
+
 ## [0.11.0]
 
 ### BREAKING CHANGES
@@ -322,13 +334,9 @@ Please review plans and report regressions and issues asap so we can improve doc
 - This is the initial release of our GitHub Repository module with support for
   creating and managing GitHub Repositories for Organizations.
 
-<!-- markdown-link-check-disable -->
-
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.11.0...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.10.1...v0.11.0
-
-<!-- markdown-link-check-enable -->
-
 [0.10.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.9.1...v0.9.2
