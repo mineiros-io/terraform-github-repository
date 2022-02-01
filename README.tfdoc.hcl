@@ -1103,56 +1103,100 @@ section {
     title   = "Module Outputs"
     content = <<-END
       The following attributes are exported by the module:
-
-      - **`repository`**
-
-        All repository attributes as returned by the [`github_repository`] resource containing all arguments as specified above and the other attributes as specified below.
-
-        - **`full_name`**
-
-          A string of the form "orgname/reponame".
-
-        - **`html_url`**
-
-          URL to the repository on the web.
-
-        - **`ssh_clone_url`**
-
-          URL that can be provided to git clone to clone the repository via SSH.
-
-        - **`http_clone_url`**
-
-          URL that can be provided to git clone to clone the repository via HTTPS.
-
-        - **`git_clone_url`**
-
-          URL that can be provided to git clone to clone the repository anonymously via the git protocol.
-
-      - **`collaborators`**
-
-        A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
-        [`github_repository_collaborator`] resource.
-
-      - **`deploy_keys`**
-
-        A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the [`github_repository_deploy_key`] resource keyed by the input `id` of the key.
-
-      - **`projects`**
-
-        A map of Project objects keyed by the `id` of the project as returned by the [`github_repository_project`] resource
-
-      - **`issue_labels`**
-
-        A map of issue labels keyed by label input id or name.
-
-      - **`webhooks`**
-
-        All attributes and arguments as returned by the github_repository_webhook resource.
-
-      - **`secrets`**
-
-        List of secrets available.
     END
+
+    output "repository" {
+      type        = object(repository)
+      description = <<-END
+        All repository attributes as returned by the [`github_repository`]
+        resource containing all arguments as specified above and the other
+        attributes as specified below.
+      END
+    }
+
+    output "full_name" {
+      type        = string
+      description = <<-END
+        A string of the form "orgname/reponame".
+      END
+    }
+
+    output "html_url" {
+      type        = string
+      description = <<-END
+        URL to the repository on the web.
+      END
+    }
+
+    output "ssh_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository via SSH.
+      END
+    }
+
+    output "http_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository via HTTPS.
+      END
+    }
+
+    output "git_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository
+        anonymously via the git protocol.
+      END
+    }
+
+    output "collaborators" {
+      type        = object(collaborators)
+      description = <<-END
+        A map of Collaborator objects keyed by the `name` of the collaborator as
+        returned by the [`github_repository_collaborator`] resource.
+      END
+    }
+
+    output "deploy_keys" {
+      type        = object(deploy_keys)
+      description = <<-END
+        A merged map of deploy key objects for the keys originally passed via
+        `deploy_keys` and `deploy_keys_computed` as returned by the
+        [`github_repository_deploy_key`] resource keyed by the input `id` of the
+        key.
+      END
+    }
+
+    output "projects" {
+      type        = object(project)
+      description = <<-END
+        A map of Project objects keyed by the `id` of the project as returned by
+        the [`github_repository_project`] resource
+      END
+    }
+
+    output "issue_labels" {
+      type        = object(issue_label)
+      description = <<-END
+        A map of issue labels keyed by label input id or name.
+      END
+    }
+
+    output "webhooks" {
+      type        = object(webhook)
+      description = <<-END
+        All attributes and arguments as returned by the
+        `github_repository_webhook` resource.
+      END
+    }
+
+    output "secrets" {
+      type        = object(secret)
+      description = <<-END
+        List of secrets available.
+      END
+    }
   }
 
   section {

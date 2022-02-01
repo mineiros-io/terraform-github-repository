@@ -117,9 +117,9 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   A object of default settings to use instead of module defaults for top-level arguments.
   See below for a list of supported arguments.
-  
+
   This is a special argument to set various defaults to be reused for multiple repositories.
-  
+
   The following top-level arguments can be set as defaults:
   `homepage_url`,
   `visibility`,
@@ -138,7 +138,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   `topics`,
   `issue_labels_create`,
   `issue_labels_merge_with_github_labels`.
-  
+
   Module defaults are used for all arguments that are not set in `defaults`.
   Using top level arguments override defaults set by this argument.
 
@@ -809,7 +809,7 @@ This is due to some terraform limitation and we will update the module once terr
 
   This map allows you to create and manage secrets for repositories in your organization.
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
-  
+
   ```
   plaintext_secrets = {
   SECRET_NAME_1 = "secret_value_1"
@@ -817,7 +817,7 @@ This is due to some terraform limitation and we will update the module once terr
   ...
   }
   ```
-  
+
   When applied, a secret with the given key and value will be created in the repositories.
   The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
   **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
@@ -846,52 +846,60 @@ This is due to some terraform limitation and we will update the module once terr
 
 The following attributes are exported by the module:
 
-- **`repository`**
+- [**`repository`**](#output-repository): *(`object(repository)`)*<a name="output-repository"></a>
 
-  All repository attributes as returned by the [`github_repository`] resource containing all arguments as specified above and the other attributes as specified below.
+  All repository attributes as returned by the [`github_repository`]
+  resource containing all arguments as specified above and the other
+  attributes as specified below.
 
-  - **`full_name`**
+- [**`full_name`**](#output-full_name): *(`string`)*<a name="output-full_name"></a>
 
-    A string of the form "orgname/reponame".
+  A string of the form "orgname/reponame".
 
-  - **`html_url`**
+- [**`html_url`**](#output-html_url): *(`string`)*<a name="output-html_url"></a>
 
-    URL to the repository on the web.
+  URL to the repository on the web.
 
-  - **`ssh_clone_url`**
+- [**`ssh_clone_url`**](#output-ssh_clone_url): *(`string`)*<a name="output-ssh_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository via SSH.
+  URL that can be provided to git clone to clone the repository via SSH.
 
-  - **`http_clone_url`**
+- [**`http_clone_url`**](#output-http_clone_url): *(`string`)*<a name="output-http_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository via HTTPS.
+  URL that can be provided to git clone to clone the repository via HTTPS.
 
-  - **`git_clone_url`**
+- [**`git_clone_url`**](#output-git_clone_url): *(`string`)*<a name="output-git_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+  URL that can be provided to git clone to clone the repository
+  anonymously via the git protocol.
 
-- **`collaborators`**
+- [**`collaborators`**](#output-collaborators): *(`object(collaborators)`)*<a name="output-collaborators"></a>
 
-  A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
-  [`github_repository_collaborator`] resource.
+  A map of Collaborator objects keyed by the `name` of the collaborator as
+  returned by the [`github_repository_collaborator`] resource.
 
-- **`deploy_keys`**
+- [**`deploy_keys`**](#output-deploy_keys): *(`object(deploy_keys)`)*<a name="output-deploy_keys"></a>
 
-  A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the [`github_repository_deploy_key`] resource keyed by the input `id` of the key.
+  A merged map of deploy key objects for the keys originally passed via
+  `deploy_keys` and `deploy_keys_computed` as returned by the
+  [`github_repository_deploy_key`] resource keyed by the input `id` of the
+  key.
 
-- **`projects`**
+- [**`projects`**](#output-projects): *(`object(project)`)*<a name="output-projects"></a>
 
-  A map of Project objects keyed by the `id` of the project as returned by the [`github_repository_project`] resource
+  A map of Project objects keyed by the `id` of the project as returned by
+  the [`github_repository_project`] resource
 
-- **`issue_labels`**
+- [**`issue_labels`**](#output-issue_labels): *(`object(issue_label)`)*<a name="output-issue_labels"></a>
 
   A map of issue labels keyed by label input id or name.
 
-- **`webhooks`**
+- [**`webhooks`**](#output-webhooks): *(`object(webhook)`)*<a name="output-webhooks"></a>
 
-  All attributes and arguments as returned by the github_repository_webhook resource.
+  All attributes and arguments as returned by the
+  `github_repository_webhook` resource.
 
-- **`secrets`**
+- [**`secrets`**](#output-secrets): *(`object(secret)`)*<a name="output-secrets"></a>
 
   List of secrets available.
 
