@@ -230,3 +230,16 @@ variable "webhook_events" {
   type        = list(string)
   default     = ["issues"]
 }
+
+variable "autolink_references" {
+  description = "A list of autolink references"
+  type = list(object({
+    key_prefix          = string
+    target_url_template = string
+  }))
+
+  default = [{
+    key_prefix          = "TICKET-"
+    target_url_template = "https://hello.there/TICKET?query=<num>"
+  }]
+}

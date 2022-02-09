@@ -117,6 +117,8 @@ module "repository" {
   ]
 
   projects = var.projects
+
+  autolink_references = var.autolink_references
 }
 
 resource "github_branch" "development" {

@@ -31,6 +31,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
     - [Secrets Configuration](#secrets-configuration)
+    - [Autolink References](#autolink-references-configuration)
   - [Module Configuration](#module-configuration)
 - [Module Outputs](#module-outputs)
 - [External Documentation](#external-documentation)
@@ -830,6 +831,24 @@ This is due to some terraform limitation and we will update the module once terr
   If this is specified it must be a number between 1-6.
   This requirement matches Github's API, see the upstream documentation for more information.
   Default is no approving reviews are required.
+
+#### Autolink References Configuration
+
+- [**`autolink_references`**](#var-autolink-references): *(Optional `list(autolink_references)`)*<a name="var-autolink-references"></a>
+
+  This resource allows you to create and manage autolink references for GitHub repository. 
+
+  Default is `[]`.
+
+  Each `autolink_reference` object in the list accepts the following attributes:
+
+  - [**`key_prefix`**](#attr-autolink-references-key_prefix): *(**Required** `string`)*<a name="attr-autolink-references-key_prefix"></a>
+
+    The prefix of the autolink reference.
+
+  - [**`target_url_template`**](#attr-autolink-references-target_url_template): *(**Required** `string`)*<a name="attr-autolink-references-target_url_template"></a>
+
+    The target url template of the autolink reference.
 
 ### Module Configuration
 

@@ -467,3 +467,21 @@ resource "github_actions_secret" "repository_secret" {
   secret_name     = each.key
   plaintext_value = each.value
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Autolink References
+# ---------------------------------------------------------------------------------------------------------------------
+
+locals {
+  autolink_references = { for i in var.autolink_references : lookup(i, "id", lower(i.key_prefix)) => merge({
+    target_url_template = null
+  }, i) }
+}
+
+resource "github_repository_autolink_reference" "repository_autolink_reference" {
+  for_each = local.autolink_references
+
+  repository          = github_repository.repository.name
+  key_prefix          = each.value.key_prefix
+  target_url_template = each.value.target_url_template
+}
