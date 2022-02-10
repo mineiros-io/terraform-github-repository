@@ -31,6 +31,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
     - [Secrets Configuration](#secrets-configuration)
+    - [Autolink References Configuration](#autolink-references-configuration)
   - [Module Configuration](#module-configuration)
 - [Module Outputs](#module-outputs)
 - [External Documentation](#external-documentation)
@@ -82,7 +83,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.11.0"
+  version = "~> 0.13.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
@@ -831,6 +832,24 @@ This is due to some terraform limitation and we will update the module once terr
   This requirement matches Github's API, see the upstream documentation for more information.
   Default is no approving reviews are required.
 
+#### Autolink References Configuration
+
+- [**`autolink_references`**](#var-autolink_references): *(Optional `list(autolink_reference)`)*<a name="var-autolink_references"></a>
+
+  This resource allows you to create and manage autolink references for GitHub repository.
+
+  Default is `[]`.
+
+  Each `autolink_reference` object in the list accepts the following attributes:
+
+  - [**`key_prefix`**](#attr-autolink_references-key_prefix): *(**Required** `string`)*<a name="attr-autolink_references-key_prefix"></a>
+
+    This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
+
+  - [**`target_url_template`**](#attr-autolink_references-target_url_template): *(**Required** `string`)*<a name="attr-autolink_references-target_url_template"></a>
+
+    The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
+
 ### Module Configuration
 
 - [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(any)`)*<a name="var-module_depends_on"></a>
@@ -911,6 +930,7 @@ The following attributes are exported by the module:
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project
+- https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference
 
 ## Module Versioning
 
@@ -970,6 +990,7 @@ Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
 [`github_repository_collaborator`]: https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference
 [`github_repository_deploy_key`]: https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference
 [`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
+[`github_repository_autolink_reference`]: https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [hello@mineiros.io]: mailto:hello@mineiros.io
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg

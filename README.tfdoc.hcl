@@ -89,7 +89,7 @@ section {
       ```hcl
       module "repository" {
         source  = "mineiros-io/repository/github"
-        version = "~> 0.11.0"
+        version = "~> 0.13.0"
 
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
@@ -1081,6 +1081,34 @@ section {
           END
         }
       }
+
+      section {
+        title = "Autolink References Configuration"
+
+        variable "autolink_references" {
+          type        = list(autolink_reference)
+          default     = []
+          description = <<-END
+              This resource allows you to create and manage autolink references for GitHub repository.
+            END
+
+          attribute "key_prefix" {
+            required    = true
+            type        = string
+            description = <<-END
+                This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
+              END
+          }
+
+          attribute "target_url_template" {
+            required    = true
+            type        = string
+            description = <<-END
+                The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
+              END
+          }
+        }
+      }
     }
 
     section {
@@ -1209,6 +1237,7 @@ section {
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project
+        - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference
       END
     }
   }
@@ -1300,6 +1329,9 @@ references {
   }
   ref "`github_repository_project`" {
     value = "https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference"
+  }
+  ref "`github_repository_autolink_reference`" {
+    value = "https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference"
   }
   ref "homepage" {
     value = "https://mineiros.io/?ref=terraform-github-repository"

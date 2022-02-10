@@ -474,6 +474,24 @@ variable "plaintext_secrets" {
   default = {}
 }
 
+variable "autolink_references" {
+  description = "(Optional) Configuring autolink references. For details please check: https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference"
+  type = list(object({
+    key_prefix          = string
+    target_url_template = string
+  }))
+
+  # Example:
+  # autolink_references = [
+  #   {
+  #     key_prefix          = "TICKET-"
+  #     target_url_template = "https://hello.there/TICKET?query=<num>"
+  #   }
+  # ]
+
+  default = []
+}
+
 variable "vulnerability_alerts" {
   type        = bool
   description = "(Optional) Set to `false` to disable security alerts for vulnerable dependencies. Enabling requires alerts to be enabled on the owner level."
