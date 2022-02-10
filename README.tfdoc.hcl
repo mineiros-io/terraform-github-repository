@@ -1096,15 +1096,15 @@ section {
             required    = true
             type        = string
             description = <<-END
-                The key prefix of the autolink reference.
+                This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
               END
           }
 
           attribute "target_url_template" {
+            required    = true
             type        = string
-            default     = ""
             description = <<-END
-                The target url template of the autolink reference.
+                The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
               END
           }
         }

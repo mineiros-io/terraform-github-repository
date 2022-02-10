@@ -844,13 +844,11 @@ This is due to some terraform limitation and we will update the module once terr
 
   - [**`key_prefix`**](#attr-autolink_references-key_prefix): *(**Required** `string`)*<a name="attr-autolink_references-key_prefix"></a>
 
-    The key prefix of the autolink reference.
+    This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
 
-  - [**`target_url_template`**](#attr-autolink_references-target_url_template): *(Optional `string`)*<a name="attr-autolink_references-target_url_template"></a>
+  - [**`target_url_template`**](#attr-autolink_references-target_url_template): *(**Required** `string`)*<a name="attr-autolink_references-target_url_template"></a>
 
-    The target url template of the autolink reference.
-
-    Default is `""`.
+    The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
 
 ### Module Configuration
 
