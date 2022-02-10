@@ -1081,32 +1081,32 @@ section {
           END
         }
       }
-    }
 
-    section {
-      title = "Autolink References Configuration"
+      section {
+        title = "Autolink References Configuration"
 
-      variable "autolink_references" {
-        type        = list(autolink_reference)
-        default     = []
-        description = <<-END
-            This resource allows you to create and manage autolink references for GitHub repository.
-          END
-
-        attribute "key_prefix" {
-          required    = true
-          type        = string
+        variable "autolink_references" {
+          type        = list(autolink_reference)
+          default     = []
           description = <<-END
-              The key prefix of the autolink reference.
+              This resource allows you to create and manage autolink references for GitHub repository.
             END
-        }
 
-        attribute "target_url_template" {
-          type        = string
-          default     = ""
-          description = <<-END
-              The target url template of the autolink reference.
-            END
+          attribute "key_prefix" {
+            required    = true
+            type        = string
+            description = <<-END
+                The key prefix of the autolink reference.
+              END
+          }
+
+          attribute "target_url_template" {
+            type        = string
+            default     = ""
+            description = <<-END
+                The target url template of the autolink reference.
+              END
+          }
         }
       }
     }
