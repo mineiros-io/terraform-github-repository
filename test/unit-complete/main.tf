@@ -60,6 +60,10 @@ module "repository" {
     (var.secret_name) = var.secret_text
   }
 
+  encrypted_secrets = {
+    (var.encrypted_secret_name) = var.encrypted_secret_text
+  }
+
   pages = {
     branch = "main"
     path   = "/"
