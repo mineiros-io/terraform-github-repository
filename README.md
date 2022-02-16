@@ -503,6 +503,12 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `false`.
 
+  - [**`require_conversation_resolution`**](#attr-branch_protections_v3-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v3-require_conversation_resolution"></a>
+
+    Setting this to true requires all conversations to be resolved.
+
+    Default is `false`.
+
   - [**`require_signed_commits`**](#attr-branch_protections_v3-require_signed_commits): *(Optional `bool`)*<a name="attr-branch_protections_v3-require_signed_commits"></a>
 
     Setting this to true requires all commits to be signed with GPG.
@@ -608,6 +614,12 @@ This is due to some terraform limitation and we will update the module once terr
   - [**`enforce_admins`**](#attr-branch_protections-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections-enforce_admins"></a>
 
     Setting this to true enforces status checks for repository administrators.
+
+    Default is `false`.
+
+  - [**`require_conversation_resolution`**](#attr-branch_protections-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections-require_conversation_resolution"></a>
+
+    Setting this to true requires all conversations to be resolved.
 
     Default is `false`.
 

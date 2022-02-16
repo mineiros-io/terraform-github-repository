@@ -43,12 +43,13 @@ locals {
 locals {
   branch_protections = try([
     for b in local.branch_protections_v3 : merge({
-      branch                        = null
-      enforce_admins                = null
-      require_signed_commits        = null
-      required_status_checks        = {}
-      required_pull_request_reviews = {}
-      restrictions                  = {}
+      branch                          = null
+      enforce_admins                  = null
+      require_conversation_resolution = null
+      require_signed_commits          = null
+      required_status_checks          = {}
+      required_pull_request_reviews   = {}
+      restrictions                    = {}
     }, b)
   ], [])
 
@@ -171,10 +172,11 @@ resource "github_branch_protection_v3" "branch_protection" {
     github_team_repository.team_repository_by_slug
   ]
 
-  repository             = github_repository.repository.name
-  branch                 = local.branch_protections[count.index].branch
-  enforce_admins         = local.branch_protections[count.index].enforce_admins
-  require_signed_commits = local.branch_protections[count.index].require_signed_commits
+  repository                      = github_repository.repository.name
+  branch                          = local.branch_protections[count.index].branch
+  enforce_admins                  = local.branch_protections[count.index].enforce_admins
+  require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
+  require_signed_commits          = local.branch_protections[count.index].require_signed_commits
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]

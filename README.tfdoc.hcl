@@ -646,6 +646,14 @@ section {
             END
           }
 
+          attribute "require_conversation_resolution" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to true requires all conversations to be resolved.
+            END
+          }
+
           attribute "require_signed_commits" {
             type        = bool
             default     = false

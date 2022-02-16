@@ -49,9 +49,10 @@ module "repository" {
 
   branch_protections = [
     {
-      branch                 = "main"
-      enforce_admins         = true
-      require_signed_commits = true
+      branch                          = "main"
+      enforce_admins                  = true
+      require_conversation_resolution = true
+      require_signed_commits          = true
 
       required_status_checks = {
         strict   = true
