@@ -622,7 +622,7 @@ section {
         title = "Branch Protections Configuration"
 
         variable "branch_protections_v3" {
-          type        = list(branch_protection)
+          type        = list(branch_protection_v3)
           default     = []
           description = <<-END
             This resource allows you to configure branch protection for repositories in your organization.
@@ -765,137 +765,12 @@ section {
         }
 
         variable "branch_protections" {
-          type        = list(branch_protection)
+          type        = list(branch_protection_v3)
           default     = []
           description = <<-END
             **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-            This argument is ignored if `branch_protections_v3` is used.
+            This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
           END
-
-          attribute "branch" {
-            required    = true
-            type        = string
-            description = <<-END
-              The Git branch to protect.
-            END
-          }
-
-          attribute "enforce_admins" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to true enforces status checks for repository administrators.
-            END
-          }
-
-          attribute "require_signed_commits" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to true requires all commits to be signed with GPG.
-            END
-          }
-
-          attribute "required_status_checks" {
-            type        = object(required_status_checks)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for required status checks.
-              See Required Status Checks below for details.
-            END
-
-            attribute "strict" {
-              type        = bool
-              description = <<-END
-                Require branches to be up to date before merging.
-                Defaults is `false`.
-              END
-            }
-
-            attribute "contexts" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
-              END
-            }
-          }
-
-          attribute "required_pull_request_reviews" {
-            type        = object(required_pull_request_reviews)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for pull request reviews.
-            END
-
-            attribute "dismiss_stale_reviews" {
-              type        = bool
-              default     = true
-              description = <<-END
-                Dismiss approved reviews automatically when a new commit is pushed.
-              END
-            }
-
-            attribute "dismissal_users" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of user logins with dismissal access
-              END
-            }
-
-            attribute "dismissal_teams" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of team slugs with dismissal access.
-                Always use slug of the team, not its name.
-                Each team already has to have access to the repository.
-              END
-            }
-
-            attribute "require_code_owner_reviews" {
-              type        = bool
-              default     = false
-              description = <<-END
-                Require an approved review in pull requests including files with a designated code owner.
-              END
-            }
-          }
-
-          attribute "restrictions" {
-            type        = object(restrictions)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for the users and teams that may push to the branch - only available for organization-owned repositories. See Restrictions below for details.
-            END
-
-            attribute "users" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of user logins with push access.
-              END
-            }
-
-            attribute "teams" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of team slugs with push access.
-                Always use slug of the team, not its name.
-                Each team already has to have access to the repository.
-              END
-            }
-
-            attribute "apps" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of app slugs with push access.
-              END
-            }
-          }
         }
       }
 
