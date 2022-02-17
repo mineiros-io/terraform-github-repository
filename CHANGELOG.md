@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0]
+
+### Added
+
+- Add suport for `require_conversation_resolution` for Branch Protection (thanks to @0x46616c6b)
+
+### Changed
+
+- BREAKING: update to provider `~> 4.20` fixing an issue that was just supporting `v4.19.x`
+
 ## [0.13.0]
 
 ### Added
@@ -340,7 +350,8 @@ Please review plans and report regressions and issues asap so we can improve doc
 - This is the initial release of our GitHub Repository module with support for
   creating and managing GitHub Repositories for Organizations.
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.13.0...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.10.1...v0.11.0
