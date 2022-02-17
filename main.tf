@@ -153,7 +153,10 @@ resource "null_resource" "clone" {
       cd ${github_repository.repository.name}.git
       git remote set-url origin ${var.target_repository_clone_url}
       ${local.rename_default_branch}
+      # ignore errors which occur ofter when PR branches are there
+      set +e
       git push --mirror
+      set -e
       cd ..
       rm -fr ${github_repository.repository.name}.git
   EOT
