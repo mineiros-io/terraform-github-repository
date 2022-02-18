@@ -195,6 +195,18 @@ variable "secret_text" {
   default     = "42"
 }
 
+variable "encrypted_secret_name" {
+  description = "The name of the secret."
+  type        = string
+  default     = "ENCRYPTEDSECRET"
+}
+
+variable "encrypted_secret_text" {
+  description = "Secret value in Base64 format."
+  type        = string
+  default     = "NDI="
+}
+
 variable "webhook_url" {
   description = "Send events to this URL"
   type        = string
