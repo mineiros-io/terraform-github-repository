@@ -938,19 +938,40 @@ section {
           default     = {}
           description = <<-END
             This map allows you to create and manage secrets for repositories in your organization.
+
             Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
 
-            ```
+            When applied, a secret with the given key and value will be created in the repositories.
+
+            The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
+
+            **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
+          END
+
+          readme_example = <<-END
             plaintext_secrets = {
-            SECRET_NAME_1 = "secret_value_1"
-            SECRET_NAME_2 = "secret_value_2"
-            ...
+              SECRET_NAME_1 = "plaintext_secret_value_1"
+              SECRET_NAME_2 = "plaintext_secret_value_2"
             }
-            ```
+          END
+        }
+
+        variable "encrypted_secrets" {
+          type        = map(string)
+          default     = {}
+          description = <<-END
+            This map allows you to create and manage encrypted secrets for repositories in your organization.
+
+            Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
 
             When applied, a secret with the given key and value will be created in the repositories.
-            The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
-            **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
+          END
+
+          readme_example = <<-END
+            encrypted_secrets = {
+              SECRET_NAME_1 = "c2VjcmV0X3ZhbHVlXzE="
+              SECRET_NAME_2 = "c2VjcmV0X3ZhbHVlXzI="
+            }
           END
         }
 
@@ -998,7 +1019,7 @@ section {
       title = "Module Configuration"
 
       variable "module_depends_on" {
-        type        = list(any)
+        type        = list(dependency)
         default     = []
         description = <<-END
           Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)

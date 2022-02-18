@@ -715,21 +715,44 @@ This is due to some terraform limitation and we will update the module once terr
 - [**`plaintext_secrets`**](#var-plaintext_secrets): *(Optional `map(string)`)*<a name="var-plaintext_secrets"></a>
 
   This map allows you to create and manage secrets for repositories in your organization.
+
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
 
-  ```
+  When applied, a secret with the given key and value will be created in the repositories.
+
+  The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
+
+  **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
   plaintext_secrets = {
-  SECRET_NAME_1 = "secret_value_1"
-  SECRET_NAME_2 = "secret_value_2"
-  ...
+    SECRET_NAME_1 = "plaintext_secret_value_1"
+    SECRET_NAME_2 = "plaintext_secret_value_2"
   }
   ```
 
+- [**`encrypted_secrets`**](#var-encrypted_secrets): *(Optional `map(string)`)*<a name="var-encrypted_secrets"></a>
+
+  This map allows you to create and manage encrypted secrets for repositories in your organization.
+
+  Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
+
   When applied, a secret with the given key and value will be created in the repositories.
-  The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
-  **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
 
   Default is `{}`.
+
+  Example:
+
+  ```hcl
+  encrypted_secrets = {
+    SECRET_NAME_1 = "c2VjcmV0X3ZhbHVlXzE="
+    SECRET_NAME_2 = "c2VjcmV0X3ZhbHVlXzI="
+  }
+  ```
 
 - [**`required_approving_review_count`**](#var-required_approving_review_count): *(Optional `number`)*<a name="var-required_approving_review_count"></a>
 
@@ -758,7 +781,7 @@ This is due to some terraform limitation and we will update the module once terr
 
 ### Module Configuration
 
-- [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(any)`)*<a name="var-module_depends_on"></a>
+- [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(dependency)`)*<a name="var-module_depends_on"></a>
 
   Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)
   we might hit race conditions when dealing with team names instead of ids.
