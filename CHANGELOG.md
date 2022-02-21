@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add suport for `require_conversation_resolution` for Branch Protection (thanks to @0x46616c6b)
+- Add support for `require_conversation_resolution` for Branch Protection (thanks to @0x46616c6b)
+- Add support for `encrypted_secrets`
 
 ### Changed
 
