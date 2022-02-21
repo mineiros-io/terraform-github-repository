@@ -483,7 +483,7 @@ This is due to some terraform limitation and we will update the module once terr
 
 #### Branch Protections Configuration
 
-- [**`branch_protections_v3`**](#var-branch_protections_v3): *(Optional `list(branch_protection)`)*<a name="var-branch_protections_v3"></a>
+- [**`branch_protections_v3`**](#var-branch_protections_v3): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections_v3"></a>
 
   This resource allows you to configure branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
@@ -491,7 +491,7 @@ This is due to some terraform limitation and we will update the module once terr
 
   Default is `[]`.
 
-  Each `branch_protection` object in the list accepts the following attributes:
+  Each `branch_protection_v3` object in the list accepts the following attributes:
 
   - [**`branch`**](#attr-branch_protections_v3-branch): *(**Required** `string`)*<a name="attr-branch_protections_v3-branch"></a>
 
@@ -500,6 +500,12 @@ This is due to some terraform limitation and we will update the module once terr
   - [**`enforce_admins`**](#attr-branch_protections_v3-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v3-enforce_admins"></a>
 
     Setting this to true enforces status checks for repository administrators.
+
+    Default is `false`.
+
+  - [**`require_conversation_resolution`**](#attr-branch_protections_v3-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v3-require_conversation_resolution"></a>
+
+    Setting this to true requires all conversations to be resolved.
 
     Default is `false`.
 
@@ -592,112 +598,12 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `[]`.
 
-- [**`branch_protections`**](#var-branch_protections): *(Optional `list(branch_protection)`)*<a name="var-branch_protections"></a>
+- [**`branch_protections`**](#var-branch_protections): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections"></a>
 
   **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-  This argument is ignored if `branch_protections_v3` is used.
+  This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
 
   Default is `[]`.
-
-  Each `branch_protection` object in the list accepts the following attributes:
-
-  - [**`branch`**](#attr-branch_protections-branch): *(**Required** `string`)*<a name="attr-branch_protections-branch"></a>
-
-    The Git branch to protect.
-
-  - [**`enforce_admins`**](#attr-branch_protections-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections-enforce_admins"></a>
-
-    Setting this to true enforces status checks for repository administrators.
-
-    Default is `false`.
-
-  - [**`require_signed_commits`**](#attr-branch_protections-require_signed_commits): *(Optional `bool`)*<a name="attr-branch_protections-require_signed_commits"></a>
-
-    Setting this to true requires all commits to be signed with GPG.
-
-    Default is `false`.
-
-  - [**`required_status_checks`**](#attr-branch_protections-required_status_checks): *(Optional `object(required_status_checks)`)*<a name="attr-branch_protections-required_status_checks"></a>
-
-    Enforce restrictions for required status checks.
-    See Required Status Checks below for details.
-
-    Default is `{}`.
-
-    The `required_status_checks` object accepts the following attributes:
-
-    - [**`strict`**](#attr-branch_protections-required_status_checks-strict): *(Optional `bool`)*<a name="attr-branch_protections-required_status_checks-strict"></a>
-
-      Require branches to be up to date before merging.
-      Defaults is `false`.
-
-    - [**`contexts`**](#attr-branch_protections-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections-required_status_checks-contexts"></a>
-
-      The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
-
-      Default is `[]`.
-
-  - [**`required_pull_request_reviews`**](#attr-branch_protections-required_pull_request_reviews): *(Optional `object(required_pull_request_reviews)`)*<a name="attr-branch_protections-required_pull_request_reviews"></a>
-
-    Enforce restrictions for pull request reviews.
-
-    Default is `{}`.
-
-    The `required_pull_request_reviews` object accepts the following attributes:
-
-    - [**`dismiss_stale_reviews`**](#attr-branch_protections-required_pull_request_reviews-dismiss_stale_reviews): *(Optional `bool`)*<a name="attr-branch_protections-required_pull_request_reviews-dismiss_stale_reviews"></a>
-
-      Dismiss approved reviews automatically when a new commit is pushed.
-
-      Default is `true`.
-
-    - [**`dismissal_users`**](#attr-branch_protections-required_pull_request_reviews-dismissal_users): *(Optional `list(string)`)*<a name="attr-branch_protections-required_pull_request_reviews-dismissal_users"></a>
-
-      The list of user logins with dismissal access
-
-      Default is `[]`.
-
-    - [**`dismissal_teams`**](#attr-branch_protections-required_pull_request_reviews-dismissal_teams): *(Optional `list(string)`)*<a name="attr-branch_protections-required_pull_request_reviews-dismissal_teams"></a>
-
-      The list of team slugs with dismissal access.
-      Always use slug of the team, not its name.
-      Each team already has to have access to the repository.
-
-      Default is `[]`.
-
-    - [**`require_code_owner_reviews`**](#attr-branch_protections-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections-required_pull_request_reviews-require_code_owner_reviews"></a>
-
-      Require an approved review in pull requests including files with a designated code owner.
-
-      Default is `false`.
-
-  - [**`restrictions`**](#attr-branch_protections-restrictions): *(Optional `object(restrictions)`)*<a name="attr-branch_protections-restrictions"></a>
-
-    Enforce restrictions for the users and teams that may push to the branch - only available for organization-owned repositories. See Restrictions below for details.
-
-    Default is `{}`.
-
-    The `restrictions` object accepts the following attributes:
-
-    - [**`users`**](#attr-branch_protections-restrictions-users): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-users"></a>
-
-      The list of user logins with push access.
-
-      Default is `[]`.
-
-    - [**`teams`**](#attr-branch_protections-restrictions-teams): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-teams"></a>
-
-      The list of team slugs with push access.
-      Always use slug of the team, not its name.
-      Each team already has to have access to the repository.
-
-      Default is `[]`.
-
-    - [**`apps`**](#attr-branch_protections-restrictions-apps): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-apps"></a>
-
-      The list of app slugs with push access.
-
-      Default is `[]`.
 
 #### Issue Labels Configuration
 
