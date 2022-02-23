@@ -39,6 +39,7 @@ module "repository" {
   allow_merge_commit     = var.allow_merge_commit
   allow_rebase_merge     = var.allow_rebase_merge
   allow_squash_merge     = var.allow_squash_merge
+  allow_auto_merge       = var.allow_auto_merge
   delete_branch_on_merge = var.delete_branch_on_merge
   is_template            = var.is_template
   has_downloads          = var.has_downloads
@@ -59,6 +60,10 @@ module "repository" {
     (var.secret_name) = var.secret_text
   }
 
+  encrypted_secrets = {
+    (var.encrypted_secret_name) = var.encrypted_secret_text
+  }
+
   pages = {
     branch = "main"
     path   = "/"
@@ -75,9 +80,10 @@ module "repository" {
 
   branch_protections = [
     {
-      branch                 = "main"
-      enforce_admins         = true
-      require_signed_commits = true
+      branch                          = "main"
+      enforce_admins                  = true
+      require_conversation_resolution = true
+      require_signed_commits          = true
 
       required_status_checks = {
         strict   = true
@@ -116,6 +122,8 @@ module "repository" {
   ]
 
   projects = var.projects
+
+  autolink_references = var.autolink_references
 }
 
 resource "github_branch" "development" {

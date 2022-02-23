@@ -15,6 +15,7 @@ locals {
   allow_merge_commit     = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
   allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
   allow_squash_merge     = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
+  allow_auto_merge       = var.allow_auto_merge == null ? lookup(var.defaults, "allow_auto_merge", false) : var.allow_auto_merge
   delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", true) : var.delete_branch_on_merge
   is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
   has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
@@ -43,12 +44,13 @@ locals {
 locals {
   branch_protections = try([
     for b in local.branch_protections_v3 : merge({
-      branch                        = null
-      enforce_admins                = null
-      require_signed_commits        = null
-      required_status_checks        = {}
-      required_pull_request_reviews = {}
-      restrictions                  = {}
+      branch                          = null
+      enforce_admins                  = null
+      require_conversation_resolution = null
+      require_signed_commits          = null
+      required_status_checks          = {}
+      required_pull_request_reviews   = {}
+      restrictions                    = {}
     }, b)
   ], [])
 
@@ -99,6 +101,7 @@ resource "github_repository" "repository" {
   allow_merge_commit     = local.allow_merge_commit
   allow_rebase_merge     = local.allow_rebase_merge
   allow_squash_merge     = local.allow_squash_merge
+  allow_auto_merge       = local.allow_auto_merge
   delete_branch_on_merge = local.delete_branch_on_merge
   is_template            = local.is_template
   has_downloads          = local.has_downloads
@@ -191,10 +194,11 @@ resource "github_branch_protection_v3" "branch_protection" {
     github_team_repository.team_repository_by_slug
   ]
 
-  repository             = github_repository.repository.name
-  branch                 = local.branch_protections[count.index].branch
-  enforce_admins         = local.branch_protections[count.index].enforce_admins
-  require_signed_commits = local.branch_protections[count.index].require_signed_commits
+  repository                      = github_repository.repository.name
+  branch                          = local.branch_protections[count.index].branch
+  enforce_admins                  = local.branch_protections[count.index].enforce_admins
+  require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
+  require_signed_commits          = local.branch_protections[count.index].require_signed_commits
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]
@@ -477,13 +481,19 @@ resource "github_repository_webhook" "repository_webhook" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Action Secrets
+# Autolink References
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "github_actions_secret" "repository_secret" {
-  for_each = var.plaintext_secrets
+locals {
+  autolink_references = { for i in var.autolink_references : lookup(i, "id", lower(i.key_prefix)) => merge({
+    target_url_template = null
+  }, i) }
+}
 
-  repository      = github_repository.repository.name
-  secret_name     = each.key
-  plaintext_value = each.value
+resource "github_repository_autolink_reference" "repository_autolink_reference" {
+  for_each = local.autolink_references
+
+  repository          = github_repository.repository.name
+  key_prefix          = each.value.key_prefix
+  target_url_template = each.value.target_url_template
 }

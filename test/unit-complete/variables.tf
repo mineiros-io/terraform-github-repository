@@ -64,6 +64,13 @@ variable "allow_rebase_merge" {
   default     = true
 }
 
+variable "allow_auto_merge" {
+  description = "Set to true to allow auto-merging pull requests on the repository."
+  type        = bool
+  default     = true
+}
+
+
 variable "has_downloads" {
   description = "Set to true to enable the (deprecated) downloads features on the repository."
   type        = bool
@@ -188,6 +195,18 @@ variable "secret_text" {
   default     = "42"
 }
 
+variable "encrypted_secret_name" {
+  description = "The name of the secret."
+  type        = string
+  default     = "ENCRYPTEDSECRET"
+}
+
+variable "encrypted_secret_text" {
+  description = "Secret value in Base64 format."
+  type        = string
+  default     = "NDI="
+}
+
 variable "webhook_url" {
   description = "Send events to this URL"
   type        = string
@@ -222,4 +241,17 @@ variable "webhook_events" {
   description = "The events which will trigger this webhook"
   type        = list(string)
   default     = ["issues"]
+}
+
+variable "autolink_references" {
+  description = "A list of autolink references"
+  type = list(object({
+    key_prefix          = string
+    target_url_template = string
+  }))
+
+  default = [{
+    key_prefix          = "TICKET-"
+    target_url_template = "https://hello.there/TICKET?query=<num>"
+  }]
 }

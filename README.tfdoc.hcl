@@ -89,7 +89,7 @@ section {
       ```hcl
       module "repository" {
         source  = "mineiros-io/repository/github"
-        version = "~> 0.11.0"
+        version = "~> 0.13.0"
 
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
@@ -147,6 +147,7 @@ section {
           `allow_merge_commit`,
           `allow_rebase_merge`,
           `allow_squash_merge`,
+          `allow_auto_merge`,
           `has_downloads`,
           `auto_init`,
           `gitignore_template`,
@@ -216,6 +217,17 @@ section {
         default     = false
         description = <<-END
           Set to `true` to enable rebase merges on the repository.
+        END
+      }
+
+      variable "allow_auto_merge" {
+        type        = bool
+        default     = false
+        description = <<-END
+          Set to `true`  to allow [auto-merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request)
+          pull requests on the repository. If you enable auto-merge for a pull
+          request, the pull request will merge automatically when all required
+          reviews are met and status checks have passed.
         END
       }
 
@@ -610,7 +622,7 @@ section {
         title = "Branch Protections Configuration"
 
         variable "branch_protections_v3" {
-          type        = list(branch_protection)
+          type        = list(branch_protection_v3)
           default     = []
           description = <<-END
             This resource allows you to configure branch protection for repositories in your organization.
@@ -631,6 +643,14 @@ section {
             default     = false
             description = <<-END
               Setting this to true enforces status checks for repository administrators.
+            END
+          }
+
+          attribute "require_conversation_resolution" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to true requires all conversations to be resolved.
             END
           }
 
@@ -745,137 +765,12 @@ section {
         }
 
         variable "branch_protections" {
-          type        = list(branch_protection)
+          type        = list(branch_protection_v3)
           default     = []
           description = <<-END
             **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-            This argument is ignored if `branch_protections_v3` is used.
+            This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
           END
-
-          attribute "branch" {
-            required    = true
-            type        = string
-            description = <<-END
-              The Git branch to protect.
-            END
-          }
-
-          attribute "enforce_admins" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to true enforces status checks for repository administrators.
-            END
-          }
-
-          attribute "require_signed_commits" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to true requires all commits to be signed with GPG.
-            END
-          }
-
-          attribute "required_status_checks" {
-            type        = object(required_status_checks)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for required status checks.
-              See Required Status Checks below for details.
-            END
-
-            attribute "strict" {
-              type        = bool
-              description = <<-END
-                Require branches to be up to date before merging.
-                Defaults is `false`.
-              END
-            }
-
-            attribute "contexts" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
-              END
-            }
-          }
-
-          attribute "required_pull_request_reviews" {
-            type        = object(required_pull_request_reviews)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for pull request reviews.
-            END
-
-            attribute "dismiss_stale_reviews" {
-              type        = bool
-              default     = true
-              description = <<-END
-                Dismiss approved reviews automatically when a new commit is pushed.
-              END
-            }
-
-            attribute "dismissal_users" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of user logins with dismissal access
-              END
-            }
-
-            attribute "dismissal_teams" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of team slugs with dismissal access.
-                Always use slug of the team, not its name.
-                Each team already has to have access to the repository.
-              END
-            }
-
-            attribute "require_code_owner_reviews" {
-              type        = bool
-              default     = false
-              description = <<-END
-                Require an approved review in pull requests including files with a designated code owner.
-              END
-            }
-          }
-
-          attribute "restrictions" {
-            type        = object(restrictions)
-            default     = {}
-            description = <<-END
-              Enforce restrictions for the users and teams that may push to the branch - only available for organization-owned repositories. See Restrictions below for details.
-            END
-
-            attribute "users" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of user logins with push access.
-              END
-            }
-
-            attribute "teams" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of team slugs with push access.
-                Always use slug of the team, not its name.
-                Each team already has to have access to the repository.
-              END
-            }
-
-            attribute "apps" {
-              type        = list(string)
-              default     = []
-              description = <<-END
-                The list of app slugs with push access.
-              END
-            }
-          }
         }
       }
 
@@ -1043,19 +938,40 @@ section {
           default     = {}
           description = <<-END
             This map allows you to create and manage secrets for repositories in your organization.
+
             Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
 
-            ```
+            When applied, a secret with the given key and value will be created in the repositories.
+
+            The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
+
+            **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
+          END
+
+          readme_example = <<-END
             plaintext_secrets = {
-            SECRET_NAME_1 = "secret_value_1"
-            SECRET_NAME_2 = "secret_value_2"
-            ...
+              SECRET_NAME_1 = "plaintext_secret_value_1"
+              SECRET_NAME_2 = "plaintext_secret_value_2"
             }
-            ```
+          END
+        }
+
+        variable "encrypted_secrets" {
+          type        = map(string)
+          default     = {}
+          description = <<-END
+            This map allows you to create and manage encrypted secrets for repositories in your organization.
+
+            Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
 
             When applied, a secret with the given key and value will be created in the repositories.
-            The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
-            **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
+          END
+
+          readme_example = <<-END
+            encrypted_secrets = {
+              SECRET_NAME_1 = "c2VjcmV0X3ZhbHVlXzE="
+              SECRET_NAME_2 = "c2VjcmV0X3ZhbHVlXzI="
+            }
           END
         }
 
@@ -1069,13 +985,41 @@ section {
           END
         }
       }
+
+      section {
+        title = "Autolink References Configuration"
+
+        variable "autolink_references" {
+          type        = list(autolink_reference)
+          default     = []
+          description = <<-END
+              This resource allows you to create and manage autolink references for GitHub repository.
+            END
+
+          attribute "key_prefix" {
+            required    = true
+            type        = string
+            description = <<-END
+                This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
+              END
+          }
+
+          attribute "target_url_template" {
+            required    = true
+            type        = string
+            description = <<-END
+                The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
+              END
+          }
+        }
+      }
     }
 
     section {
       title = "Module Configuration"
 
       variable "module_depends_on" {
-        type        = list(any)
+        type        = list(dependency)
         default     = []
         description = <<-END
           Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)
@@ -1091,56 +1035,100 @@ section {
     title   = "Module Outputs"
     content = <<-END
       The following attributes are exported by the module:
-
-      - **`repository`**
-
-        All repository attributes as returned by the [`github_repository`] resource containing all arguments as specified above and the other attributes as specified below.
-
-        - **`full_name`**
-
-          A string of the form "orgname/reponame".
-
-        - **`html_url`**
-
-          URL to the repository on the web.
-
-        - **`ssh_clone_url`**
-
-          URL that can be provided to git clone to clone the repository via SSH.
-
-        - **`http_clone_url`**
-
-          URL that can be provided to git clone to clone the repository via HTTPS.
-
-        - **`git_clone_url`**
-
-          URL that can be provided to git clone to clone the repository anonymously via the git protocol.
-
-      - **`collaborators`**
-
-        A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
-        [`github_repository_collaborator`] resource.
-
-      - **`deploy_keys`**
-
-        A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the [`github_repository_deploy_key`] resource keyed by the input `id` of the key.
-
-      - **`projects`**
-
-        A map of Project objects keyed by the `id` of the project as returned by the [`github_repository_project`] resource
-
-      - **`issue_labels`**
-
-        A map of issue labels keyed by label input id or name.
-
-      - **`webhooks`**
-
-        All attributes and arguments as returned by the github_repository_webhook resource.
-
-      - **`secrets`**
-
-        List of secrets available.
     END
+
+    output "repository" {
+      type        = object(repository)
+      description = <<-END
+        All repository attributes as returned by the [`github_repository`]
+        resource containing all arguments as specified above and the other
+        attributes as specified below.
+      END
+    }
+
+    output "full_name" {
+      type        = string
+      description = <<-END
+        A string of the form "orgname/reponame".
+      END
+    }
+
+    output "html_url" {
+      type        = string
+      description = <<-END
+        URL to the repository on the web.
+      END
+    }
+
+    output "ssh_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository via SSH.
+      END
+    }
+
+    output "http_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository via HTTPS.
+      END
+    }
+
+    output "git_clone_url" {
+      type        = string
+      description = <<-END
+        URL that can be provided to git clone to clone the repository
+        anonymously via the git protocol.
+      END
+    }
+
+    output "collaborators" {
+      type        = object(collaborators)
+      description = <<-END
+        A map of Collaborator objects keyed by the `name` of the collaborator as
+        returned by the [`github_repository_collaborator`] resource.
+      END
+    }
+
+    output "deploy_keys" {
+      type        = object(deploy_keys)
+      description = <<-END
+        A merged map of deploy key objects for the keys originally passed via
+        `deploy_keys` and `deploy_keys_computed` as returned by the
+        [`github_repository_deploy_key`] resource keyed by the input `id` of the
+        key.
+      END
+    }
+
+    output "projects" {
+      type        = object(project)
+      description = <<-END
+        A map of Project objects keyed by the `id` of the project as returned by
+        the [`github_repository_project`] resource
+      END
+    }
+
+    output "issue_labels" {
+      type        = object(issue_label)
+      description = <<-END
+        A map of issue labels keyed by label input id or name.
+      END
+    }
+
+    output "webhooks" {
+      type        = object(webhook)
+      description = <<-END
+        All attributes and arguments as returned by the
+        `github_repository_webhook` resource.
+      END
+    }
+
+    output "secrets" {
+      type        = object(secret)
+      description = <<-END
+        List of secrets available.
+      END
+    }
   }
 
   section {
@@ -1153,6 +1141,7 @@ section {
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project
+        - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference
       END
     }
   }
@@ -1244,6 +1233,9 @@ references {
   }
   ref "`github_repository_project`" {
     value = "https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference"
+  }
+  ref "`github_repository_autolink_reference`" {
+    value = "https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference"
   }
   ref "homepage" {
     value = "https://mineiros.io/?ref=terraform-github-repository"

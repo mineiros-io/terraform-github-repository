@@ -7,7 +7,7 @@
 
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.11.0"
+  version = "~> 0.13.0"
 
   module_depends_on = [
     module.team
@@ -23,6 +23,7 @@ module "repository" {
   allow_merge_commit = true
   allow_rebase_merge = false
   allow_squash_merge = false
+  allow_auto_merge   = true
   has_downloads      = false
   auto_init          = true
   gitignore_template = "Terraform"
@@ -48,9 +49,10 @@ module "repository" {
 
   branch_protections = [
     {
-      branch                 = "main"
-      enforce_admins         = true
-      require_signed_commits = true
+      branch                          = "main"
+      enforce_admins                  = true
+      require_conversation_resolution = true
+      require_signed_commits          = true
 
       required_status_checks = {
         strict   = true

@@ -31,6 +31,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
     - [Secrets Configuration](#secrets-configuration)
+    - [Autolink References Configuration](#autolink-references-configuration)
   - [Module Configuration](#module-configuration)
 - [Module Outputs](#module-outputs)
 - [External Documentation](#external-documentation)
@@ -82,7 +83,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.11.0"
+  version = "~> 0.13.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
@@ -117,9 +118,9 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   A object of default settings to use instead of module defaults for top-level arguments.
   See below for a list of supported arguments.
-  
+
   This is a special argument to set various defaults to be reused for multiple repositories.
-  
+
   The following top-level arguments can be set as defaults:
   `homepage_url`,
   `visibility`,
@@ -129,6 +130,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   `allow_merge_commit`,
   `allow_rebase_merge`,
   `allow_squash_merge`,
+  `allow_auto_merge`,
   `has_downloads`,
   `auto_init`,
   `gitignore_template`,
@@ -137,7 +139,7 @@ See [variables.tf] and [examples/] for details and use-cases.
   `topics`,
   `issue_labels_create`,
   `issue_labels_merge_with_github_labels`.
-  
+
   Module defaults are used for all arguments that are not set in `defaults`.
   Using top level arguments override defaults set by this argument.
 
@@ -182,6 +184,15 @@ See [variables.tf] and [examples/] for details and use-cases.
 - [**`allow_rebase_merge`**](#var-allow_rebase_merge): *(Optional `bool`)*<a name="var-allow_rebase_merge"></a>
 
   Set to `true` to enable rebase merges on the repository.
+
+  Default is `false`.
+
+- [**`allow_auto_merge`**](#var-allow_auto_merge): *(Optional `bool`)*<a name="var-allow_auto_merge"></a>
+
+  Set to `true`  to allow [auto-merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request)
+  pull requests on the repository. If you enable auto-merge for a pull
+  request, the pull request will merge automatically when all required
+  reviews are met and status checks have passed.
 
   Default is `false`.
 
@@ -472,7 +483,7 @@ This is due to some terraform limitation and we will update the module once terr
 
 #### Branch Protections Configuration
 
-- [**`branch_protections_v3`**](#var-branch_protections_v3): *(Optional `list(branch_protection)`)*<a name="var-branch_protections_v3"></a>
+- [**`branch_protections_v3`**](#var-branch_protections_v3): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections_v3"></a>
 
   This resource allows you to configure branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
@@ -480,7 +491,7 @@ This is due to some terraform limitation and we will update the module once terr
 
   Default is `[]`.
 
-  Each `branch_protection` object in the list accepts the following attributes:
+  Each `branch_protection_v3` object in the list accepts the following attributes:
 
   - [**`branch`**](#attr-branch_protections_v3-branch): *(**Required** `string`)*<a name="attr-branch_protections_v3-branch"></a>
 
@@ -489,6 +500,12 @@ This is due to some terraform limitation and we will update the module once terr
   - [**`enforce_admins`**](#attr-branch_protections_v3-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v3-enforce_admins"></a>
 
     Setting this to true enforces status checks for repository administrators.
+
+    Default is `false`.
+
+  - [**`require_conversation_resolution`**](#attr-branch_protections_v3-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v3-require_conversation_resolution"></a>
+
+    Setting this to true requires all conversations to be resolved.
 
     Default is `false`.
 
@@ -581,112 +598,12 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `[]`.
 
-- [**`branch_protections`**](#var-branch_protections): *(Optional `list(branch_protection)`)*<a name="var-branch_protections"></a>
+- [**`branch_protections`**](#var-branch_protections): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections"></a>
 
   **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-  This argument is ignored if `branch_protections_v3` is used.
+  This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
 
   Default is `[]`.
-
-  Each `branch_protection` object in the list accepts the following attributes:
-
-  - [**`branch`**](#attr-branch_protections-branch): *(**Required** `string`)*<a name="attr-branch_protections-branch"></a>
-
-    The Git branch to protect.
-
-  - [**`enforce_admins`**](#attr-branch_protections-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections-enforce_admins"></a>
-
-    Setting this to true enforces status checks for repository administrators.
-
-    Default is `false`.
-
-  - [**`require_signed_commits`**](#attr-branch_protections-require_signed_commits): *(Optional `bool`)*<a name="attr-branch_protections-require_signed_commits"></a>
-
-    Setting this to true requires all commits to be signed with GPG.
-
-    Default is `false`.
-
-  - [**`required_status_checks`**](#attr-branch_protections-required_status_checks): *(Optional `object(required_status_checks)`)*<a name="attr-branch_protections-required_status_checks"></a>
-
-    Enforce restrictions for required status checks.
-    See Required Status Checks below for details.
-
-    Default is `{}`.
-
-    The `required_status_checks` object accepts the following attributes:
-
-    - [**`strict`**](#attr-branch_protections-required_status_checks-strict): *(Optional `bool`)*<a name="attr-branch_protections-required_status_checks-strict"></a>
-
-      Require branches to be up to date before merging.
-      Defaults is `false`.
-
-    - [**`contexts`**](#attr-branch_protections-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections-required_status_checks-contexts"></a>
-
-      The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
-
-      Default is `[]`.
-
-  - [**`required_pull_request_reviews`**](#attr-branch_protections-required_pull_request_reviews): *(Optional `object(required_pull_request_reviews)`)*<a name="attr-branch_protections-required_pull_request_reviews"></a>
-
-    Enforce restrictions for pull request reviews.
-
-    Default is `{}`.
-
-    The `required_pull_request_reviews` object accepts the following attributes:
-
-    - [**`dismiss_stale_reviews`**](#attr-branch_protections-required_pull_request_reviews-dismiss_stale_reviews): *(Optional `bool`)*<a name="attr-branch_protections-required_pull_request_reviews-dismiss_stale_reviews"></a>
-
-      Dismiss approved reviews automatically when a new commit is pushed.
-
-      Default is `true`.
-
-    - [**`dismissal_users`**](#attr-branch_protections-required_pull_request_reviews-dismissal_users): *(Optional `list(string)`)*<a name="attr-branch_protections-required_pull_request_reviews-dismissal_users"></a>
-
-      The list of user logins with dismissal access
-
-      Default is `[]`.
-
-    - [**`dismissal_teams`**](#attr-branch_protections-required_pull_request_reviews-dismissal_teams): *(Optional `list(string)`)*<a name="attr-branch_protections-required_pull_request_reviews-dismissal_teams"></a>
-
-      The list of team slugs with dismissal access.
-      Always use slug of the team, not its name.
-      Each team already has to have access to the repository.
-
-      Default is `[]`.
-
-    - [**`require_code_owner_reviews`**](#attr-branch_protections-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections-required_pull_request_reviews-require_code_owner_reviews"></a>
-
-      Require an approved review in pull requests including files with a designated code owner.
-
-      Default is `false`.
-
-  - [**`restrictions`**](#attr-branch_protections-restrictions): *(Optional `object(restrictions)`)*<a name="attr-branch_protections-restrictions"></a>
-
-    Enforce restrictions for the users and teams that may push to the branch - only available for organization-owned repositories. See Restrictions below for details.
-
-    Default is `{}`.
-
-    The `restrictions` object accepts the following attributes:
-
-    - [**`users`**](#attr-branch_protections-restrictions-users): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-users"></a>
-
-      The list of user logins with push access.
-
-      Default is `[]`.
-
-    - [**`teams`**](#attr-branch_protections-restrictions-teams): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-teams"></a>
-
-      The list of team slugs with push access.
-      Always use slug of the team, not its name.
-      Each team already has to have access to the repository.
-
-      Default is `[]`.
-
-    - [**`apps`**](#attr-branch_protections-restrictions-apps): *(Optional `list(string)`)*<a name="attr-branch_protections-restrictions-apps"></a>
-
-      The list of app slugs with push access.
-
-      Default is `[]`.
 
 #### Issue Labels Configuration
 
@@ -798,21 +715,44 @@ This is due to some terraform limitation and we will update the module once terr
 - [**`plaintext_secrets`**](#var-plaintext_secrets): *(Optional `map(string)`)*<a name="var-plaintext_secrets"></a>
 
   This map allows you to create and manage secrets for repositories in your organization.
+
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
-  
-  ```
-  plaintext_secrets = {
-  SECRET_NAME_1 = "secret_value_1"
-  SECRET_NAME_2 = "secret_value_2"
-  ...
-  }
-  ```
-  
+
   When applied, a secret with the given key and value will be created in the repositories.
-  The value of the secrets must be given in plain text, github provider is in charge of encrypting it.
-  **Attention:** You might want to get secrets via a data source from a secure vault and not add them in plain text to your source files; so you do not commit plaintext secrets into the git repository managing your github account.
+
+  The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
+
+  **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
 
   Default is `{}`.
+
+  Example:
+
+  ```hcl
+  plaintext_secrets = {
+    SECRET_NAME_1 = "plaintext_secret_value_1"
+    SECRET_NAME_2 = "plaintext_secret_value_2"
+  }
+  ```
+
+- [**`encrypted_secrets`**](#var-encrypted_secrets): *(Optional `map(string)`)*<a name="var-encrypted_secrets"></a>
+
+  This map allows you to create and manage encrypted secrets for repositories in your organization.
+
+  Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
+
+  When applied, a secret with the given key and value will be created in the repositories.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
+  encrypted_secrets = {
+    SECRET_NAME_1 = "c2VjcmV0X3ZhbHVlXzE="
+    SECRET_NAME_2 = "c2VjcmV0X3ZhbHVlXzI="
+  }
+  ```
 
 - [**`required_approving_review_count`**](#var-required_approving_review_count): *(Optional `number`)*<a name="var-required_approving_review_count"></a>
 
@@ -821,9 +761,27 @@ This is due to some terraform limitation and we will update the module once terr
   This requirement matches Github's API, see the upstream documentation for more information.
   Default is no approving reviews are required.
 
+#### Autolink References Configuration
+
+- [**`autolink_references`**](#var-autolink_references): *(Optional `list(autolink_reference)`)*<a name="var-autolink_references"></a>
+
+  This resource allows you to create and manage autolink references for GitHub repository.
+
+  Default is `[]`.
+
+  Each `autolink_reference` object in the list accepts the following attributes:
+
+  - [**`key_prefix`**](#attr-autolink_references-key_prefix): *(**Required** `string`)*<a name="attr-autolink_references-key_prefix"></a>
+
+    This prefix appended by a number will generate a link any time it is found in an issue, pull request, or commit.
+
+  - [**`target_url_template`**](#attr-autolink_references-target_url_template): *(**Required** `string`)*<a name="attr-autolink_references-target_url_template"></a>
+
+    The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
+
 ### Module Configuration
 
-- [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(any)`)*<a name="var-module_depends_on"></a>
+- [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(dependency)`)*<a name="var-module_depends_on"></a>
 
   Due to the fact, that terraform does not offer `depends_on` on modules as of today (v0.12.24)
   we might hit race conditions when dealing with team names instead of ids.
@@ -836,52 +794,60 @@ This is due to some terraform limitation and we will update the module once terr
 
 The following attributes are exported by the module:
 
-- **`repository`**
+- [**`repository`**](#output-repository): *(`object(repository)`)*<a name="output-repository"></a>
 
-  All repository attributes as returned by the [`github_repository`] resource containing all arguments as specified above and the other attributes as specified below.
+  All repository attributes as returned by the [`github_repository`]
+  resource containing all arguments as specified above and the other
+  attributes as specified below.
 
-  - **`full_name`**
+- [**`full_name`**](#output-full_name): *(`string`)*<a name="output-full_name"></a>
 
-    A string of the form "orgname/reponame".
+  A string of the form "orgname/reponame".
 
-  - **`html_url`**
+- [**`html_url`**](#output-html_url): *(`string`)*<a name="output-html_url"></a>
 
-    URL to the repository on the web.
+  URL to the repository on the web.
 
-  - **`ssh_clone_url`**
+- [**`ssh_clone_url`**](#output-ssh_clone_url): *(`string`)*<a name="output-ssh_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository via SSH.
+  URL that can be provided to git clone to clone the repository via SSH.
 
-  - **`http_clone_url`**
+- [**`http_clone_url`**](#output-http_clone_url): *(`string`)*<a name="output-http_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository via HTTPS.
+  URL that can be provided to git clone to clone the repository via HTTPS.
 
-  - **`git_clone_url`**
+- [**`git_clone_url`**](#output-git_clone_url): *(`string`)*<a name="output-git_clone_url"></a>
 
-    URL that can be provided to git clone to clone the repository anonymously via the git protocol.
+  URL that can be provided to git clone to clone the repository
+  anonymously via the git protocol.
 
-- **`collaborators`**
+- [**`collaborators`**](#output-collaborators): *(`object(collaborators)`)*<a name="output-collaborators"></a>
 
-  A map of Collaborator objects keyed by the `name` of the collaborator as returned by the
-  [`github_repository_collaborator`] resource.
+  A map of Collaborator objects keyed by the `name` of the collaborator as
+  returned by the [`github_repository_collaborator`] resource.
 
-- **`deploy_keys`**
+- [**`deploy_keys`**](#output-deploy_keys): *(`object(deploy_keys)`)*<a name="output-deploy_keys"></a>
 
-  A merged map of deploy key objects for the keys originally passed via `deploy_keys` and `deploy_keys_computed` as returned by the [`github_repository_deploy_key`] resource keyed by the input `id` of the key.
+  A merged map of deploy key objects for the keys originally passed via
+  `deploy_keys` and `deploy_keys_computed` as returned by the
+  [`github_repository_deploy_key`] resource keyed by the input `id` of the
+  key.
 
-- **`projects`**
+- [**`projects`**](#output-projects): *(`object(project)`)*<a name="output-projects"></a>
 
-  A map of Project objects keyed by the `id` of the project as returned by the [`github_repository_project`] resource
+  A map of Project objects keyed by the `id` of the project as returned by
+  the [`github_repository_project`] resource
 
-- **`issue_labels`**
+- [**`issue_labels`**](#output-issue_labels): *(`object(issue_label)`)*<a name="output-issue_labels"></a>
 
   A map of issue labels keyed by label input id or name.
 
-- **`webhooks`**
+- [**`webhooks`**](#output-webhooks): *(`object(webhook)`)*<a name="output-webhooks"></a>
 
-  All attributes and arguments as returned by the github_repository_webhook resource.
+  All attributes and arguments as returned by the
+  `github_repository_webhook` resource.
 
-- **`secrets`**
+- [**`secrets`**](#output-secrets): *(`object(secret)`)*<a name="output-secrets"></a>
 
   List of secrets available.
 
@@ -893,6 +859,7 @@ The following attributes are exported by the module:
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project
+- https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference
 
 ## Module Versioning
 
@@ -952,6 +919,7 @@ Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
 [`github_repository_collaborator`]: https://www.terraform.io/docs/providers/github/r/repository_collaborator.html#attribute-reference
 [`github_repository_deploy_key`]: https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference
 [`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
+[`github_repository_autolink_reference`]: https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [hello@mineiros.io]: mailto:hello@mineiros.io
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
