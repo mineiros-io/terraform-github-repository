@@ -420,7 +420,7 @@ This is due to some terraform limitation and we will update the module once terr
 
 - [**`deploy_keys`**](#var-deploy_keys): *(Optional `list(deploy_key)`)*<a name="var-deploy_keys"></a>
 
-  Can also be type `string`. Specifies deploy keys and access-level of deploy keys used in this repository.
+  Can also be type `list(string)`. Specifies deploy keys and access-level of deploy keys used in this repository.
   Every `string` in the list will be converted internally into the `object` representation with the `key` argument being set to the `string`. `object` details are explained below.
 
   Default is `[]`.

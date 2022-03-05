@@ -536,7 +536,7 @@ section {
           type        = list(deploy_key)
           default     = []
           description = <<-END
-            Can also be type `string`. Specifies deploy keys and access-level of deploy keys used in this repository.
+            Can also be type `list(string)`. Specifies deploy keys and access-level of deploy keys used in this repository.
             Every `string` in the list will be converted internally into the `object` representation with the `key` argument being set to the `string`. `object` details are explained below.
           END
 
