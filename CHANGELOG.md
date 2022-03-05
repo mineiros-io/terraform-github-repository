@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Set correct alternative type for `deploy_keys` in README
 
+### Added
+
+- Add support for `github_branches`
+
 ## [0.14.0]
 
 ### Added

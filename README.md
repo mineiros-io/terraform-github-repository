@@ -25,6 +25,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
     - [Repository Creation Configuration](#repository-creation-configuration)
     - [Teams Configuration](#teams-configuration)
     - [Collaborator Configuration](#collaborator-configuration)
+    - [Branches Configuration](#branches-configuration)
     - [Deploy Keys Configuration](#deploy-keys-configuration)
     - [Branch Protections Configuration](#branch-protections-configuration)
     - [Issue Labels Configuration](#issue-labels-configuration)
@@ -62,6 +63,7 @@ features like Branch Protection or Collaborator Management.
   Template Repository
 
 - **Extended Repository Features**:
+  Branches,
   Branch Protection,
   Issue Labels,
   Handle Github Default Issue Labels,
@@ -259,8 +261,10 @@ See [variables.tf] and [examples/] for details and use-cases.
 - [**`default_branch`**](#var-default_branch): *(Optional `string`)*<a name="var-default_branch"></a>
 
   The name of the default branch of the repository.
-  NOTE: This can only be set after a repository has already been created, and after a correct reference has been created for the target branch inside the repository.
-  This means a user will have to omit this parameter from the initial repository creation and create the target branch inside of the repository prior to setting this attribute.
+  NOTE: The configured default branch must exist in the repository.
+  If the branch doesn't exist yet, or if you are creating a new
+  repository, please add the desired default branch to the `branches`
+  variable, which will cause Terraform to create it for you.
 
   Default is `""`.
 
@@ -415,6 +419,32 @@ This is due to some terraform limitation and we will update the module once terr
   Recommended for people who need full access to the project, including sensitive and destructive actions like managing security or deleting a repository.
 
   Default is `[]`.
+
+#### Branches Configuration
+
+- [**`branches`**](#var-branches): *(Optional `list(branch)`)*<a name="var-branches"></a>
+
+  Can also be type `list(string)`. Create and manage branches within your repository.
+  Additional constraints can be applied to ensure your branch is created from another branch or commit.
+  Every `string` in the list will be converted internally into the `object` representation with the `key` argument being set to the `string`. `object` details are explained below.
+
+  Default is `[]`.
+
+  Each `branch` object in the list accepts the following attributes:
+
+  - [**`name`**](#attr-branches-name): *(**Required** `string`)*<a name="attr-branches-name"></a>
+
+    The name of the branch to create.
+
+  - [**`source_branch`**](#attr-branches-source_branch): *(Optional `string`)*<a name="attr-branches-source_branch"></a>
+
+    The branch name to start from. Uses the configured default branch per default.
+
+  - [**`source_sha`**](#attr-branches-source_sha): *(Optional `bool`)*<a name="attr-branches-source_sha"></a>
+
+    The commit hash to start from. Defaults to the tip of `source_branch`. If provided, `source_branch` is ignored.
+
+    Default is `true`.
 
 #### Deploy Keys Configuration
 
@@ -800,6 +830,12 @@ The following attributes are exported by the module:
   resource containing all arguments as specified above and the other
   attributes as specified below.
 
+- [**`branches`**](#output-branches): *(`object(branches)`)*<a name="output-branches"></a>
+
+  All repository attributes as returned by the [`github_branch`]
+  resource containing all arguments as specified above and the other
+  attributes as specified below.
+
 - [**`full_name`**](#output-full_name): *(`string`)*<a name="output-full_name"></a>
 
   A string of the form "orgname/reponame".
@@ -856,6 +892,7 @@ The following attributes are exported by the module:
 ### Terraform Github Provider Documentation
 
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository
+- https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch 
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project

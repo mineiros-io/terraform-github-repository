@@ -49,8 +49,16 @@ module "repository" {
   archived               = false
   topics                 = var.topics
 
-  admin_collaborators = ["terraform-test-user-1"]
+  branches = [
+    {
+      name = "develop"
+    },
+    {
+      name = "staging"
+    },
+  ]
 
+  admin_collaborators = ["terraform-test-user-1"]
 
   admin_team_ids = [
     github_team.team.id
@@ -140,9 +148,15 @@ resource "github_branch" "development" {
 module "repository-with-defaults" {
   source = "../.."
 
-  name        = var.repository_with_defaults_name
-  description = var.repository_with_defaults_description
-  defaults    = var.repository_defaults
+  name           = var.repository_with_defaults_name
+  description    = var.repository_with_defaults_description
+  defaults       = var.repository_defaults
+  default_branch = "development"
+
+  branches = [
+    "development",
+    "prod",
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

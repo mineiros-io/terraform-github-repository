@@ -13,6 +13,17 @@ variable "name" {
 # These variables have defaults, but may be overridden.
 # ---------------------------------------------------------------------------------------------------------------------
 
+variable "branches" {
+  description = "(Optional) A list of branches to be created in this repository."
+  type        = any
+  # type = list(object({
+  #   name          = string
+  #   source_branch = optional(string)
+  #   source_sha    = optional(string)
+  # }))
+  default = []
+}
+
 variable "defaults" {
   description = "(Optional) Overwrite defaults for various repository settings"
   type        = any
