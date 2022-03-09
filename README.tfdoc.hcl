@@ -88,7 +88,8 @@ section {
 
       ```hcl
       module "repository" {
-        source  = "git@github.com:mineiros-io/terraform-github-repository.git?ref=v0.14.0"
+        source  = "mineiros-io/repository/github"
+        version = "~> 0.14.0"
 
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
