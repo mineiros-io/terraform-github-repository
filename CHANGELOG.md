@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Set correct alternative type for `deploy_keys` in README
+
 ## [0.14.0]
 
 ### Added
