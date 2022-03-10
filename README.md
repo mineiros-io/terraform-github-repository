@@ -426,7 +426,7 @@ This is due to some terraform limitation and we will update the module once terr
 
   Can also be type `list(string)`. Create and manage branches within your repository.
   Additional constraints can be applied to ensure your branch is created from another branch or commit.
-  Every `string` in the list will be converted internally into the `object` representation with the `key` argument being set to the `string`. `object` details are explained below.
+  Every `string` in the list will be converted internally into the `object` representation with the `name` argument being set to the `string`. `object` details are explained below.
 
   Default is `[]`.
 
