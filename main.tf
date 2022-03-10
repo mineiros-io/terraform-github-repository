@@ -145,6 +145,30 @@ resource "github_repository" "repository" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Manage branches
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch
+# ---------------------------------------------------------------------------------------------------------------------
+
+locals {
+  branches_temp = [
+    for b in var.branches : try({ name = tostring(b) }, b)
+  ]
+
+  branches = {
+    for b in local.branches_temp : b.name => b
+  }
+}
+
+resource "github_branch" "branch" {
+  for_each = local.branches
+
+  repository    = github_repository.repository.name
+  branch        = each.value.name
+  source_branch = try(each.value.source_branch, null)
+  source_sha    = try(each.value.source_sha, null)
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Set default branch
 # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_default
 # ---------------------------------------------------------------------------------------------------------------------
@@ -154,6 +178,8 @@ resource "github_branch_default" "default" {
 
   repository = github_repository.repository.name
   branch     = local.default_branch
+
+  depends_on = [github_branch.branch]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

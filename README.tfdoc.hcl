@@ -65,6 +65,7 @@ section {
         Template Repository
 
       - **Extended Repository Features**:
+        Branches,
         Branch Protection,
         Issue Labels,
         Handle Github Default Issue Labels,
@@ -317,8 +318,10 @@ section {
         default     = ""
         description = <<-END
           The name of the default branch of the repository.
-          NOTE: This can only be set after a repository has already been created, and after a correct reference has been created for the target branch inside the repository.
-          This means a user will have to omit this parameter from the initial repository creation and create the target branch inside of the repository prior to setting this attribute.
+          NOTE: The configured default branch must exist in the repository.
+          If the branch doesn't exist yet, or if you are creating a new
+          repository, please add the desired default branch to the `branches`
+          variable, which will cause Terraform to create it for you.
         END
       }
 
@@ -526,6 +529,43 @@ section {
             A list of user names to add as collaborators granting them admin (full) permission.
             Recommended for people who need full access to the project, including sensitive and destructive actions like managing security or deleting a repository.
           END
+        }
+      }
+
+      section {
+        title = "Branches Configuration"
+
+        variable "branches" {
+          type        = list(branch)
+          default     = []
+          description = <<-END
+            Can also be type `list(string)`. Create and manage branches within your repository.
+            Additional constraints can be applied to ensure your branch is created from another branch or commit.
+            Every `string` in the list will be converted internally into the `object` representation with the `name` argument being set to the `string`. `object` details are explained below.
+          END
+
+          attribute "name" {
+            required    = true
+            type        = string
+            description = <<-END
+              The name of the branch to create.
+            END
+          }
+
+          attribute "source_branch" {
+            type        = string
+            description = <<-END
+              The branch name to start from. Uses the configured default branch per default.
+            END
+          }
+
+          attribute "source_sha" {
+            type        = bool
+            default     = true
+            description = <<-END
+             The commit hash to start from. Defaults to the tip of `source_branch`. If provided, `source_branch` is ignored.
+            END
+          }
         }
       }
 
@@ -1046,6 +1086,15 @@ section {
       END
     }
 
+    output "branches" {
+      type        = object(branches)
+      description = <<-END
+        All repository attributes as returned by the [`github_branch`]
+        resource containing all arguments as specified above and the other
+        attributes as specified below.
+      END
+    }
+
     output "full_name" {
       type        = string
       description = <<-END
@@ -1138,6 +1187,7 @@ section {
       title   = "Terraform Github Provider Documentation"
       content = <<-END
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository
+        - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch 
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
         - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project

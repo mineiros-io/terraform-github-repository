@@ -1,7 +1,6 @@
-output "repository" {
-  value       = github_repository.repository
-  description = "All attributes and arguments as returned by the github_repository resource."
-}
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT CALCULATED VARIABLES (prefer full objects)
+# ----------------------------------------------------------------------------------------------------------------------
 
 output "full_name" {
   value       = github_repository.repository.full_name
@@ -26,6 +25,20 @@ output "http_clone_url" {
 output "git_clone_url" {
   value       = github_repository.repository.git_clone_url
   description = "URL that can be provided to git clone to clone the repository anonymously via the git protocol."
+}
+
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT ALL RESOURCES AS FULL OBJECTS
+# ----------------------------------------------------------------------------------------------------------------------
+
+output "repository" {
+  value       = github_repository.repository
+  description = "All attributes and arguments as returned by the github_repository resource."
+}
+
+output "branches" {
+  value       = github_branch.branch
+  description = "A map of branch objects keyed by branch name."
 }
 
 output "collaborators" {
@@ -65,3 +78,7 @@ output "secrets" {
   value       = [for secret in github_actions_secret.repository_secret : secret.secret_name]
   description = "List of secrets available."
 }
+
+# ----------------------------------------------------------------------------------------------------------------------
+# OUTPUT MODULE CONFIGURATION
+# ----------------------------------------------------------------------------------------------------------------------
