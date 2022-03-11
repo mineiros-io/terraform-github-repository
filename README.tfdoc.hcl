@@ -242,7 +242,7 @@ section {
 
       variable "delete_branch_on_merge" {
         type        = bool
-        default     = false
+        default     = true
         description = <<-END
           Set to `false` to disable the automatic deletion of head branches after pull requests are merged.
         END

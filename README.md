@@ -208,7 +208,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   Set to `false` to disable the automatic deletion of head branches after pull requests are merged.
 
-  Default is `false`.
+  Default is `true`.
 
 - [**`homepage_url`**](#var-homepage_url): *(Optional `string`)*<a name="var-homepage_url"></a>
 
