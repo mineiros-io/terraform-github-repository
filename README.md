@@ -424,9 +424,8 @@ This is due to some terraform limitation and we will update the module once terr
 
 - [**`branches`**](#var-branches): *(Optional `list(branch)`)*<a name="var-branches"></a>
 
-  Can also be type `list(string)`. Create and manage branches within your repository.
+  Create and manage branches within your repository.
   Additional constraints can be applied to ensure your branch is created from another branch or commit.
-  Every `string` in the list will be converted internally into the `object` representation with the `name` argument being set to the `string`. `object` details are explained below.
 
   Default is `[]`.
 
@@ -892,7 +891,7 @@ The following attributes are exported by the module:
 ### Terraform Github Provider Documentation
 
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository
-- https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch 
+- https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_collaborator
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_deploy_key
 - https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_project

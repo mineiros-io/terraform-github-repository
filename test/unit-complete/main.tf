@@ -112,7 +112,7 @@ module "repository" {
       }
     },
     {
-      branch                 = github_branch.development.branch
+      branch                 = "develop"
       enforce_admins         = true
       require_signed_commits = true
     }
@@ -134,11 +134,6 @@ module "repository" {
   autolink_references = var.autolink_references
 }
 
-resource "github_branch" "development" {
-  repository = module.repository.repository.name
-  branch     = "development"
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # TEST B
 # We are creating a repository using some defaults defined in
@@ -154,8 +149,7 @@ module "repository-with-defaults" {
   default_branch = "development"
 
   branches = [
-    "development",
-    "prod",
+    { name = "development" },
   ]
 }
 
