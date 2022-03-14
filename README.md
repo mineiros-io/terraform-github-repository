@@ -85,7 +85,7 @@ Most basic usage creating a new private github repository.
 ```hcl
 module "repository" {
   source  = "mineiros-io/repository/github"
-  version = "~> 0.14.0"
+  version = "~> 0.16.0"
 
   name               = "terraform-github-repository"
   license_template   = "apache-2.0"
