@@ -369,7 +369,8 @@ Please review plans and report regressions and issues asap so we can improve doc
 - This is the initial release of our GitHub Repository module with support for
   creating and managing GitHub Repositories for Organizations.
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.15.0...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.12.0...v0.13.0
