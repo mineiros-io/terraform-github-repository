@@ -150,20 +150,14 @@ resource "github_repository" "repository" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
-  branches_temp = [
-    for b in var.branches : try({ name = tostring(b) }, b)
-  ]
-
-  branches = {
-    for b in local.branches_temp : b.name => b
-  }
+  branches_map = { for b in var.branches : b.name => b }
 }
 
 resource "github_branch" "branch" {
-  for_each = local.branches
+  for_each = local.branches_map
 
   repository    = github_repository.repository.name
-  branch        = each.value.name
+  branch        = each.key
   source_branch = try(each.value.source_branch, null)
   source_sha    = try(each.value.source_sha, null)
 }
@@ -195,7 +189,8 @@ resource "github_branch_protection_v3" "branch_protection" {
   depends_on = [
     github_repository_collaborator.collaborator,
     github_team_repository.team_repository,
-    github_team_repository.team_repository_by_slug
+    github_team_repository.team_repository_by_slug,
+    github_branch.branch,
   ]
 
   repository                      = github_repository.repository.name

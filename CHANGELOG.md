@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.16.0]
+
 ### Fixed
 
-- Set correct default value for `delete_branch_on_merge` in docs 
+- Set correct default value for `delete_branch_on_merge` in docs
+- BREAKING CHANGE: Remove support for multi-type variable `branches` (removed `list(string)` support)
 
 ## [0.15.0]
 
