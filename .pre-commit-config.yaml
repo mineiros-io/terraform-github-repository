@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/mineiros-io/pre-commit-hooks
-    rev: v0.3.1
+    rev: v0.3.2
     hooks:
       - id: terraform-fmt
       - id: terraform-validate
@@ -8,6 +8,8 @@ repos:
       - id: tflint
       - id: golangci-lint
       - id: phony-targets
+      - id: terradoc-fmt
+      - id: terradoc-generate
       - id: markdown-link-check
         args: ['-p']   # When adding the -p flag, markdown-link-check will always with an exit code 0, even if dead links are found
         verbose: true  # Forces the output of the hook to be printed even when the hook passes.
