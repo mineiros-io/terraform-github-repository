@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run pre-commit
-        run: make test/pre-commit
+        run: make test/docker/pre-commit
 
   unit-tests:
     needs: pre-commit
@@ -45,8 +45,7 @@ jobs:
 
       - name: Run Unit Tests
         if: steps.changes.outputs.terraform == 'true'
-        run: make test/unit-tests
+        run: make test/docker/unit-tests
         env:
           GITHUB_OWNER: ${{ secrets.TEST_GITHUB_ORGANIZATION }}
           GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
-          TF_VAR_app_installations: ${{ secrets.TEST_GITHUB_APP_INSTALLATIONS }}
