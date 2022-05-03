@@ -502,7 +502,7 @@ resource "github_repository_autolink_reference" "repository_autolink_reference" 
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_app_installation_repository" "app_installation_repository" {
-  for_each = { for a in var.app_installations : a => a }
+  for_each = var.app_installations
 
   repository      = github_repository.repository.name
   installation_id = each.value
