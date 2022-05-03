@@ -49,3 +49,4 @@ jobs:
         env:
           GITHUB_OWNER: ${{ secrets.TEST_GITHUB_ORGANIZATION }}
           GITHUB_TOKEN: ${{ secrets.TEST_GITHUB_TOKEN }}
+          TF_VAR_app_installations: ${{ secrets.TEST_GITHUB_APP_INSTALLATIONS }}

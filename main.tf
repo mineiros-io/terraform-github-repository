@@ -496,3 +496,14 @@ resource "github_repository_autolink_reference" "repository_autolink_reference" 
   key_prefix          = each.value.key_prefix
   target_url_template = each.value.target_url_template
 }
+
+# ---------------------------------------------------------------------------------------------------------------------
+# App installation
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_app_installation_repository" "app_installation_repository" {
+  for_each = { for a in var.app_installations : a => a }
+
+  repository      = github_repository.repository.name
+  installation_id = each.value
+}

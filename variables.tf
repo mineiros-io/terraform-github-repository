@@ -528,6 +528,12 @@ variable "archive_on_destroy" {
   default     = true
 }
 
+variable "app_installations" {
+  type        = set(number)
+  description = "(Optional) A list of GitHub App IDs to be installed in this repository."
+  default     = []
+}
+
 # ------------------------------------------------------------------------------
 # MODULE CONFIGURATION PARAMETERS
 # These variables are used to configure the module.
