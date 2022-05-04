@@ -33,6 +33,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
     - [Webhooks Configuration](#webhooks-configuration)
     - [Secrets Configuration](#secrets-configuration)
     - [Autolink References Configuration](#autolink-references-configuration)
+    - [App Installations](#app-installations)
   - [Module Configuration](#module-configuration)
 - [Module Outputs](#module-outputs)
 - [External Documentation](#external-documentation)
@@ -808,6 +809,20 @@ This is due to some terraform limitation and we will update the module once terr
 
     The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
 
+#### App Installations
+
+- [**`app_installations`**](#var-app_installations): *(Optional `set(number)`)*<a name="var-app_installations"></a>
+
+  A set of GitHub App IDs to be installed in this repository.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
+  app_installations = [25405144, 12556423]
+  ```
+
 ### Module Configuration
 
 - [**`module_depends_on`**](#var-module_depends_on): *(Optional `list(dependency)`)*<a name="var-module_depends_on"></a>
@@ -885,6 +900,10 @@ The following attributes are exported by the module:
 - [**`secrets`**](#output-secrets): *(`object(secret)`)*<a name="output-secrets"></a>
 
   List of secrets available.
+
+- [**`app_installations`**](#output-app_installations): *(`set(number)`)*<a name="output-app_installations"></a>
+
+  A map of deploy app installations keyed by installation id.
 
 ## External Documentation
 

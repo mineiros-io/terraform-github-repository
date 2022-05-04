@@ -79,6 +79,11 @@ output "secrets" {
   description = "List of secrets available."
 }
 
+output "app_installations" {
+  value       = github_app_installation_repository.app_installation_repository
+  description = "A map of deploy app installations keyed by installation id."
+}
+
 # ----------------------------------------------------------------------------------------------------------------------
 # OUTPUT MODULE CONFIGURATION
 # ----------------------------------------------------------------------------------------------------------------------

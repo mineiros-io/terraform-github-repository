@@ -132,6 +132,8 @@ module "repository" {
   projects = var.projects
 
   autolink_references = var.autolink_references
+
+  app_installations = var.app_installations
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

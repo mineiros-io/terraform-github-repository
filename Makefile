@@ -1,7 +1,7 @@
 # Set default shell to bash
 SHELL := /bin/bash -o pipefail
 
-BUILD_TOOLS_VERSION      ?= v0.12.0
+BUILD_TOOLS_VERSION      ?= v0.15.2
 BUILD_TOOLS_DOCKER_REPO  ?= mineiros/build-tools
 BUILD_TOOLS_DOCKER_IMAGE ?= ${BUILD_TOOLS_DOCKER_REPO}:${BUILD_TOOLS_VERSION}
 
@@ -32,29 +32,45 @@ endif
 
 GIT_TOPLEVEl = $(shell git rev-parse --show-toplevel)
 
-# generic docker run flags
+# Generic docker run flags
 DOCKER_RUN_FLAGS += -v ${GIT_TOPLEVEl}:/build
 DOCKER_RUN_FLAGS += --rm
 DOCKER_RUN_FLAGS += -e TF_IN_AUTOMATION
+# If TF_VERSION is defined, TFSwitch will switch to the desired version on
+# container startup. If TF_VERSION is omitted, the default version installed
+# inside the docker image will be used.
+DOCKER_RUN_FLAGS += -e TF_VERSION
 
-# if SSH_AUTH_SOCK is defined we are likely referencing private repositories
-# for depending terrfaorm modules or other depdendencies
-# so we pass credentials to the docker container when running tests or pre-commit hooks
+# If SSH_AUTH_SOCK is set, we forward the SSH agent of the host system into
+# the docker container. This is useful when working with private repositories
+# and dependencies that might need to be cloned inside the container (e.g.
+# private Terraform modules).
 ifdef SSH_AUTH_SOCK
   DOCKER_SSH_FLAGS += -e SSH_AUTH_SOCK=/ssh-agent
   DOCKER_SSH_FLAGS += -v ${SSH_AUTH_SOCK}:/ssh-agent
 endif
 
-# if AWS_ACCESS_KEY_ID is defined we are likely running inside an AWS provider module
-# so we pass credentials to the docker container when running tests
+# If AWS_ACCESS_KEY_ID is defined, we are likely running inside an AWS provider
+# module. To enable AWS authentication inside the docker container, we inject
+# the relevant environment variables.
 ifdef AWS_ACCESS_KEY_ID
   DOCKER_AWS_FLAGS += -e AWS_ACCESS_KEY_ID
   DOCKER_AWS_FLAGS += -e AWS_SECRET_ACCESS_KEY
   DOCKER_AWS_FLAGS += -e AWS_SESSION_TOKEN
 endif
 
-# if GITHUB_OWNER is defined we are running inside a github provider module
-# so we pass credentials to the docker container when running tests
+# If GOOGLE_CREDENTIALS is defined, we are likely running inside a GCP provider
+# module. To enable GCP authentication inside the docker container, we inject
+# the relevant environment variables (service-account key file).
+ifdef GOOGLE_CREDENTIALS
+	DOCKER_GCP_FLAGS += -e GOOGLE_CREDENTIALS
+	DOCKER_GCP_FLAGS += -e TEST_GCP_PROJECT
+	DOCKER_GCP_FLAGS += -e TEST_GCP_ORG_DOMAIN
+endif
+
+# If GITHUB_OWNER is defined, we are likely running inside a GitHub provider
+# module. To enable GitHub authentication inside the docker container,
+# we inject the relevant environment variables.
 ifdef GITHUB_OWNER
   DOCKER_GITHUB_FLAGS += -e GITHUB_TOKEN
   DOCKER_GITHUB_FLAGS += -e GITHUB_OWNER
@@ -70,28 +86,58 @@ template/adjust:
 	@find . $(FILTER) -exec sed -i -e "s,terraform-module-template,$${PWD##*/},g" {} \;
 
 ## Run pre-commit hooks inside a build-tools docker container.
+.PHONY: test/docker/pre-commit
+test/docker/pre-commit: DOCKER_FLAGS += ${DOCKER_SSH_FLAGS}
+test/docker/pre-commit: DOCKER_FLAGS += -e NOCOLOR=1
+test/docker/pre-commit:
+	$(call docker-run,make test/pre-commit)
+
+## Run all Go tests inside a build-tools docker container. This is complementary to running 'go test ./test/...'.
+.PHONY: test/docker/unit-tests
+test/docker/unit-tests: DOCKER_FLAGS += ${DOCKER_SSH_FLAGS}
+test/docker/unit-tests: DOCKER_FLAGS += ${DOCKER_GITHUB_FLAGS}
+test/docker/unit-tests: DOCKER_FLAGS += ${DOCKER_AWS_FLAGS}
+test/docker/unit-tests: DOCKER_FLAGS += ${DOCKER_GCP_FLAGS}
+test/docker/unit-tests: DOCKER_FLAGS += $(shell env | grep ^TF_VAR_ | cut -d = -f 1 | xargs -i printf ' -e {}')
+test/docker/unit-tests: DOCKER_FLAGS += -e TF_DATA_DIR=.terratest
+test/docker/unit-tests: DOCKER_FLAGS += -e NOCOLOR=1
+test/docker/unit-tests: TEST ?= "TestUnit"
+test/docker/unit-tests:
+	@echo "${YELLOW}[TEST] ${GREEN}Start Running Go Tests in Docker Container.${RESET}"
+	$(call docker-run,make test/unit-tests)
+
+## Run pre-commit hooks.
 .PHONY: test/pre-commit
 test/pre-commit: DOCKER_FLAGS += ${DOCKER_SSH_FLAGS}
 test/pre-commit:
-	$(call docker-run,pre-commit run -a)
+	$(call quiet-command,pre-commit run -a)
 
-## Run all Go tests inside a build-tools docker container. This is complementary to running 'go test ./test/...'.
-.PHONY: test/unit-tests
-test/unit-tests: DOCKER_FLAGS += ${DOCKER_SSH_FLAGS}
-test/unit-tests: DOCKER_FLAGS += ${DOCKER_GITHUB_FLAGS}
-test/unit-tests: DOCKER_FLAGS += ${DOCKER_AWS_FLAGS}
+## Run all unit tests.
+.PHONY: test/docker/unit-tests
 test/unit-tests: TEST ?= "TestUnit"
 test/unit-tests:
-	@echo "${YELLOW}[TEST] ${GREEN}Start Running Go Tests in Docker Container.${RESET}"
-	$(call go-test,./test -run $(TEST))
+	@echo "${YELLOW}[TEST] ${GREEN}Start Running unit tests.${RESET}"
+	$(call quiet-command,cd test ; go test -v -count 1 -timeout 45m -parallel 128 -run $(TEST))
+
+## Generate README.md with Terradoc
+.PHONY: terradoc
+terradoc:
+	$(call quiet-command,terradoc generate -o README.md README.tfdoc.hcl)
+
+## Generate shared configuration for tests
+.PHONY: terramate
+terramate:
+	$(call quiet-command,terramate generate)
 
 ## Clean up cache and temporary files
 .PHONY: clean
 clean:
 	$(call rm-command,.terraform)
+	$(call rm-command,.terratest)
 	$(call rm-command,.terraform.lock.hcl)
 	$(call rm-command,*.tfplan)
 	$(call rm-command,*/*/.terraform)
+	$(call rm-command,*/*/.terratest)
 	$(call rm-command,*/*/*.tfplan)
 	$(call rm-command,*/*/.terraform.lock.hcl)
 
@@ -108,16 +154,10 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
-## Generate README.md with Terradoc
-.PHONY: terradoc
-terradoc:
-	$(call quiet-command,terradoc -o README.md README.tfdoc.hcl)
-
-# define helper functions
+# Define helper functions
 DOCKER_FLAGS   += ${DOCKER_RUN_FLAGS}
 DOCKER_RUN_CMD  = docker run ${DOCKER_FLAGS} ${BUILD_TOOLS_DOCKER_IMAGE}
 
 quiet-command = $(if ${V},${1},$(if ${2},@echo ${2} && ${1}, @${1}))
 docker-run    = $(call quiet-command,${DOCKER_RUN_CMD} ${1} | cat,"${YELLOW}[DOCKER RUN] ${GREEN}${1}${RESET}")
-go-test       = $(call quiet-command,${DOCKER_RUN_CMD} go test -v -count 1 -timeout 45m -parallel 128 ${1} | cat,"${YELLOW}[TEST] ${GREEN}${1}${RESET}")
 rm-command    = $(call quiet-command,rm -rf ${1},"${YELLOW}[CLEAN] ${GREEN}${1}${RESET}")

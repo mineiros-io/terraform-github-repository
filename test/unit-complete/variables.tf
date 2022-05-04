@@ -255,3 +255,9 @@ variable "autolink_references" {
     target_url_template = "https://hello.there/TICKET?query=<num>"
   }]
 }
+
+variable "app_installations" {
+  type        = set(number)
+  description = "A list of GitHub App IDs to be installed in this repository."
+  default     = []
+}
