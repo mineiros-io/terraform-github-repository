@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `var.app_installations` should be a of type `set(string)` instead of `set(number)`
+
 ## [0.16.1]
 
 ### Added

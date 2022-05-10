@@ -257,7 +257,7 @@ variable "autolink_references" {
 }
 
 variable "app_installations" {
-  type        = set(number)
+  type        = set(string)
   description = "A list of GitHub App IDs to be installed in this repository."
   default     = []
 }
