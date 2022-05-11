@@ -1057,14 +1057,14 @@ section {
         title = "App Installations"
 
         variable "app_installations" {
-          type        = set(number)
+          type        = set(string)
           default     = {}
           description = <<-END
             A set of GitHub App IDs to be installed in this repository.
           END
 
           readme_example = <<-END
-            app_installations = [25405144, 12556423]
+            app_installations = ["05405144", "12556423"]
           END
         }
       }

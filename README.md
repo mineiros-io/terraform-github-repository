@@ -811,7 +811,7 @@ This is due to some terraform limitation and we will update the module once terr
 
 #### App Installations
 
-- [**`app_installations`**](#var-app_installations): *(Optional `set(number)`)*<a name="var-app_installations"></a>
+- [**`app_installations`**](#var-app_installations): *(Optional `set(string)`)*<a name="var-app_installations"></a>
 
   A set of GitHub App IDs to be installed in this repository.
 
@@ -820,7 +820,7 @@ This is due to some terraform limitation and we will update the module once terr
   Example:
 
   ```hcl
-  app_installations = [25405144, 12556423]
+  app_installations = ["05405144", "12556423"]
   ```
 
 ### Module Configuration

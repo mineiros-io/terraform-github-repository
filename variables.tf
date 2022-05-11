@@ -529,7 +529,7 @@ variable "archive_on_destroy" {
 }
 
 variable "app_installations" {
-  type        = set(number)
+  type        = set(string)
   description = "(Optional) A list of GitHub App IDs to be installed in this repository."
   default     = []
 }
