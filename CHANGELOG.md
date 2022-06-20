@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.3]
+
+### Changed
+
+- Ignore `branches` attribute in `github_repository`.
+
 ## [0.16.2]
 
 ### Fixed
@@ -78,8 +84,7 @@ This needs migration actions if you already used this module with the `hashicorp
 To migrate from a previous version, please ensure that you are using the
 `integrations/github` official GitHub Terraform Provider.
 
-
-``` hcl
+```hcl
 terraform {
   required_version = "~> 1.0"
 
@@ -96,7 +101,7 @@ Once you've updated the provider, a manual state migration is required to
 migrate existing resources to the new provider.
 The following command will replace the provider in the state.
 
-``` bash
+```bash
 terraform state replace-provider registry.terraform.io/hashicorp/github registry.terraform.io/integrations/github
 ```
 
