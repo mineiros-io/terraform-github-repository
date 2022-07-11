@@ -1240,6 +1240,20 @@ section {
   }
 
   section {
+    title   = "GitHub as Code"
+    content = <<-END
+      [GitHub as Code][github-as-code] is a commercial solution built on top of
+      our open-source Terraform modules for GitHub. It helps our customers to
+      manage their GitHub organization more efficiently by enabling anyone in
+      their organization to self-service manage on- and offboarding of users,
+      repositories, and settings such as branch protections, secrets, and more
+      through code.
+
+      For details please see [https://mineiros.io/github-as-code][github-as-code].
+    END
+  }
+
+  section {
     title   = "About Mineiros"
     content = <<-END
       [Mineiros][homepage] is a remote-first company headquartered in Berlin, Germany
@@ -1311,6 +1325,9 @@ references {
   }
   ref "homepage" {
     value = "https://mineiros.io/?ref=terraform-github-repository"
+  }
+  ref "github-as-code" {
+    value = "https://mineiros.io/github-as-code?ref=terraform-github-repository"
   }
   ref "hello@mineiros.io" {
     value = "mailto:hello@mineiros.io"
