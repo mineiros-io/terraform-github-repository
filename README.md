@@ -40,6 +40,7 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
   - [Terraform Github Provider Documentation](#terraform-github-provider-documentation)
 - [Module Versioning](#module-versioning)
   - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
+- [GitHub as Code](#github-as-code)
 - [About Mineiros](#about-mineiros)
 - [Reporting Issues](#reporting-issues)
 - [Contributing](#contributing)
@@ -931,6 +932,17 @@ Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 - Backwards compatibility in versions `0.0.z` is **not guaranteed** when `z` is increased. (Initial development)
 - Backwards compatibility in versions `0.y.z` is **not guaranteed** when `y` is increased. (Pre-release)
 
+## GitHub as Code
+
+[GitHub as Code][github-as-code] is a commercial solution built on top of
+our open-source Terraform modules for GitHub. It helps our customers to
+manage their GitHub organization more efficiently by enabling anyone in
+their organization to self-service manage on- and offboarding of users,
+repositories, and settings such as branch protections, secrets, and more
+through code.
+
+For details please see [https://mineiros.io/github-as-code][github-as-code].
+
 ## About Mineiros
 
 [Mineiros][homepage] is a remote-first company headquartered in Berlin, Germany
@@ -976,6 +988,7 @@ Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
 [`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
 [`github_repository_autolink_reference`]: https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
+[github-as-code]: https://mineiros.io/github-as-code?ref=terraform-github-repository
 [hello@mineiros.io]: mailto:hello@mineiros.io
 [badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
 [badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
