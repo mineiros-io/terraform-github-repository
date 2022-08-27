@@ -94,7 +94,7 @@ module "repository" {
       require_signed_commits          = true
 
       required_status_checks = {
-        strict   = true
+        strict   = false
         contexts = ["ci/travis"]
       }
 

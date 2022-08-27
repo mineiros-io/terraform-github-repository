@@ -18,7 +18,7 @@ module "repository" {
   homepage_url       = "https://github.com/mineiros-io"
   visibility         = "public"
   has_issues         = true
-  has_projects       = false
+  has_projects       = true
   has_wiki           = true
   allow_merge_commit = true
   allow_rebase_merge = false
@@ -55,8 +55,7 @@ module "repository" {
       require_signed_commits          = true
 
       required_status_checks = {
-        strict   = true
-        contexts = ["ci/travis"]
+        strict = true
       }
 
       required_pull_request_reviews = {
