@@ -351,6 +351,53 @@ variable "branch_protections_v3" {
   # ]
 }
 
+variable "branch_protections_v4" {
+  description = "(Optional) A list of v4 branch protections to apply to the repository. Default is {}."
+  type = map(
+    object(
+      {
+        allows_deletions                = optional(bool, false)
+        allows_force_pushes             = optional(bool, false)
+        blocks_creations                = optional(bool, false)
+        enforce_admins                  = optional(bool, false)
+        push_restrictions               = optional(list(string), [])
+        require_conversation_resolution = optional(bool, false)
+        require_signed_commits          = optional(bool, false)
+        required_linear_history         = optional(bool, false)
+        required_pull_request_reviews = optional(object(
+          {
+            dismiss_stale_reviews           = optional(bool, false)
+            dismissal_restrictions          = optional(list(string), [])
+            pull_request_bypassers          = optional(list(string), [])
+            require_code_owner_reviews      = optional(bool, false)
+            required_approving_review_count = optional(number, 0)
+          }
+        ))
+        required_status_checks = optional(object(
+          {
+            strict   = optional(bool, false)
+            contexts = optional(list(string), [])
+          }
+        ))
+      }
+    )
+  )
+  default = null
+
+  validation {
+    condition = alltrue(
+      [
+        for cfg in coalesce(var.branch_protections_v4, {}) : try(
+          cfg.required_pull_request_reviews.required_approving_review_count >= 0
+          && cfg.required_pull_request_reviews.required_approving_review_count <= 6,
+          true
+        )
+      ]
+    )
+    error_message = "The value for branch_protections_v4.required_pull_request_reviews.required_approving_review_count must be between 0 and 6, inclusively."
+  }
+}
+
 variable "issue_labels_merge_with_github_labels" {
   description = "(Optional) Specify if you want to merge and control githubs default set of issue labels."
   type        = bool

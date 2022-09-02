@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 terraform {
-  required_version = "~> 1.0"
+  required_version = "~> 1.3"
 
   # branch_protections_v3 are broken in >= 5.3
   required_providers {
