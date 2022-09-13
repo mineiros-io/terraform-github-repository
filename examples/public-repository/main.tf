@@ -18,7 +18,7 @@ module "repository" {
   homepage_url       = "https://github.com/mineiros-io"
   visibility         = "public"
   has_issues         = true
-  has_projects       = true
+  has_projects       = false
   has_wiki           = true
   allow_merge_commit = true
   allow_rebase_merge = false
