@@ -149,6 +149,8 @@ module "repository-with-defaults" {
   defaults       = var.repository_defaults
   default_branch = "development"
 
+  projects = []
+
   branches = [
     { name = "development" },
   ]
