@@ -94,8 +94,7 @@ module "repository" {
       require_signed_commits          = true
 
       required_status_checks = {
-        strict   = true
-        contexts = ["ci/travis"]
+        strict = true
       }
 
       required_pull_request_reviews = {
