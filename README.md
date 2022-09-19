@@ -17,6 +17,7 @@ A [Terraform] module for creating a public or private repository on [Github].
 _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terraform Github Provider are deny-listed in version constraints as a regression introduced in 4.7.0 and fixed in 4.9.2 creates public repositories from templates even if visibility is set to private._
 
 
+- [GitHub as Code](#github-as-code)
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
 - [Module Argument Reference](#module-argument-reference)
@@ -40,12 +41,27 @@ _Security related notice: Versions 4.7.0, 4.8.0, 4.9.0 and 4.9.1 of the Terrafor
   - [Terraform Github Provider Documentation](#terraform-github-provider-documentation)
 - [Module Versioning](#module-versioning)
   - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
-- [GitHub as Code](#github-as-code)
 - [About Mineiros](#about-mineiros)
 - [Reporting Issues](#reporting-issues)
 - [Contributing](#contributing)
 - [Makefile Targets](#makefile-targets)
 - [License](#license)
+
+## GitHub as Code
+
+[GitHub as Code][github-as-code] is a commercial solution built on top of
+our open-source Terraform modules for GitHub. It helps our customers to
+manage their GitHub organization more efficiently by enabling anyone in
+their organization to **self-service** manage **on- and offboarding of users**,
+**repositories**, and settings such as **branch protections**, **secrets**, and more
+through code. GitHub as Code comes with **pre-configured GitHub Actions
+pipelines** for **change pre-view in Pull Requests**, **fully automated
+rollouts** and **rollbacks**. It's a comprehensive, ready-to-use blueprint
+maintained by our team of platform engineering experts and saves
+companies such as yours tons of time by building on top of a pre-configured
+solution instead of building and maintaining it yourself.
+
+For details please see [https://mineiros.io/github-as-code][github-as-code].
 
 ## Module Features
 
@@ -931,17 +947,6 @@ Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 
 - Backwards compatibility in versions `0.0.z` is **not guaranteed** when `z` is increased. (Initial development)
 - Backwards compatibility in versions `0.y.z` is **not guaranteed** when `y` is increased. (Pre-release)
-
-## GitHub as Code
-
-[GitHub as Code][github-as-code] is a commercial solution built on top of
-our open-source Terraform modules for GitHub. It helps our customers to
-manage their GitHub organization more efficiently by enabling anyone in
-their organization to self-service manage on- and offboarding of users,
-repositories, and settings such as branch protections, secrets, and more
-through code.
-
-For details please see [https://mineiros.io/github-as-code][github-as-code].
 
 ## About Mineiros
 
