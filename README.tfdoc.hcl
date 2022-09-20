@@ -47,6 +47,25 @@ section {
   END
 
   section {
+    title   = "GitHub as Code"
+    content = <<-END
+      [GitHub as Code][github-as-code] is a commercial solution built on top of
+      our open-source Terraform modules for GitHub. It helps our customers to
+      manage their GitHub organization more efficiently by enabling anyone in
+      their organization to **self-service** manage **on- and offboarding of users**,
+      **repositories**, and settings such as **branch protections**, **secrets**, and more
+      through code. GitHub as Code comes with **pre-configured GitHub Actions
+      pipelines** for **change pre-view in Pull Requests**, **fully automated
+      rollouts** and **rollbacks**. It's a comprehensive, ready-to-use blueprint
+      maintained by our team of platform engineering experts and saves
+      companies such as yours tons of time by building on top of a pre-configured
+      solution instead of building and maintaining it yourself.
+
+      For details please see [https://mineiros.io/github-as-code][github-as-code].
+    END
+  }
+
+  section {
     title   = "Module Features"
     content = <<-END
       In contrast to the plain `github_repository` resource this module enables various other
@@ -1237,20 +1256,6 @@ section {
         - Backwards compatibility in versions `0.y.z` is **not guaranteed** when `y` is increased. (Pre-release)
       END
     }
-  }
-
-  section {
-    title   = "GitHub as Code"
-    content = <<-END
-      [GitHub as Code][github-as-code] is a commercial solution built on top of
-      our open-source Terraform modules for GitHub. It helps our customers to
-      manage their GitHub organization more efficiently by enabling anyone in
-      their organization to self-service manage on- and offboarding of users,
-      repositories, and settings such as branch protections, secrets, and more
-      through code.
-
-      For details please see [https://mineiros.io/github-as-code][github-as-code].
-    END
   }
 
   section {
