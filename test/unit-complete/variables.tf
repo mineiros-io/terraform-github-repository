@@ -101,16 +101,7 @@ variable "projects" {
     name = string,
     body = string
   }))
-  default = [
-    {
-      name = "Testproject"
-      body = "This is a fancy test project for testing"
-    },
-    {
-      name = "Another Testproject"
-      body = "This is a fancy test project for testing"
-    }
-  ]
+  default = []
 }
 
 variable "issue_labels" {

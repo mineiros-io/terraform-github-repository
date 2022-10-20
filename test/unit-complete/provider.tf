@@ -6,8 +6,11 @@ terraform {
   required_providers {
     github = {
       source  = "integrations/github"
-      version = "~> 4.19"
+      version = "~> 5.0, !=5.3.0, !=5.4.0, !=5.5.0"
     }
-    tls = "~> 2.1"
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 2.1"
+    }
   }
 }
