@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0]
+
+### Added
+
+- Add support for Terraform GitHub Provider version `5.x`
+
 ## [0.16.2]
 
 ### Fixed
@@ -78,8 +84,7 @@ This needs migration actions if you already used this module with the `hashicorp
 To migrate from a previous version, please ensure that you are using the
 `integrations/github` official GitHub Terraform Provider.
 
-
-``` hcl
+```hcl
 terraform {
   required_version = "~> 1.0"
 
@@ -96,7 +101,7 @@ Once you've updated the provider, a manual state migration is required to
 migrate existing resources to the new provider.
 The following command will replace the provider in the state.
 
-``` bash
+```bash
 terraform state replace-provider registry.terraform.io/hashicorp/github registry.terraform.io/integrations/github
 ```
 
@@ -380,7 +385,8 @@ Please review plans and report regressions and issues asap so we can improve doc
 - This is the initial release of our GitHub Repository module with support for
   creating and managing GitHub Repositories for Organizations.
 
-[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.16.2...HEAD
+[unreleased]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.17.0...HEAD
+[0.17.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.16.2...v0.17.0
 [0.16.2]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.16.1...v0.16.2
 [0.16.1]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/mineiros-io/terraform-github-repository/compare/v0.15.0...v0.16.0
