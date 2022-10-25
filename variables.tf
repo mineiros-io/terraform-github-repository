@@ -30,22 +30,32 @@ variable "defaults" {
 
   # Example:
   # defaults = {
-  #   homepage_url           = "https://mineiros.io/"
-  #   visibility             = "private"
-  #   has_issues             = false
-  #   has_projects           = false
-  #   has_wiki               = false
-  #   delete_branch_on_merge = true
-  #   allow_merge_commit     = true
-  #   allow_rebase_merge     = false
-  #   allow_squash_merge     = false
-  #   allow_auto_merge       = false
-  #   has_downloads          = false
-  #   auto_init              = true
-  #   gitignore_template     = "terraform"
-  #   license_template       = "mit"
-  #   default_branch         = "main"
-  #   topics                 = ["topic-1", "topic-2"]
+  #   homepage_url                            = "https://mineiros.io/"
+  #   visibility                              = "private"
+  #   has_issues                              = false
+  #   has_projects                            = false
+  #   has_wiki                                = false
+  #   has_downloads                           = false
+  #   delete_branch_on_merge                  = true
+  #   is_template                             = true
+  #   allow_merge_commit                      = true
+  #   allow_rebase_merge                      = false
+  #   allow_squash_merge                      = false
+  #   allow_auto_merge                        = false
+  #   auto_init                               = true
+  #   gitignore_template                      = "terraform"
+  #   license_template                        = "mit"
+  #   default_branch                          = "main"
+  #   branch_protections_v3                   = []
+  #   topics                                  = ["topic-1", "topic-2"]
+  #   template                                = "terraform-module-template"
+  #   vulnerability_alerts                    = true
+  #   ignore_vulnerability_alerts_during_read = true
+  #   issue_labels_create                     = false
+  #   squash_merge_commit_title               = "PR_TITLE"
+  #   squash_merge_commit_message             = "COMMIT_MESSAGES"
+  #   merge_commit_title                      = "PR_TITLE"
+  #   merge_commit_message                    = "PR_BODY"
   # }
 
   default = {}
@@ -522,6 +532,12 @@ variable "vulnerability_alerts" {
   default     = null
 }
 
+variable "ignore_vulnerability_alerts_during_read" {
+  type        = bool
+  description = "(Optional) Set to `true` to not call the vulnerability alerts endpoint so the resource can also be used without admin permissions during read."
+  default     = null
+}
+
 variable "archive_on_destroy" {
   type        = string
   description = "(Optional) Set to `false` to not archive the repository instead of deleting on destroy."
@@ -532,6 +548,30 @@ variable "app_installations" {
   type        = set(string)
   description = "(Optional) A list of GitHub App IDs to be installed in this repository."
   default     = []
+}
+
+variable "squash_merge_commit_title" {
+  type        = string
+  description = "(Optional) Can be `PR_BODY`, `COMMIT_MESSAGES`, or `BLANK` for a default squash merge commit message."
+  default     = "COMMIT_OR_PR_TITLE"
+}
+
+variable "squash_merge_commit_message" {
+  type        = string
+  description = "(Optional) Can be `PR_BODY`, `COMMIT_MESSAGES`, or `BLANK` for a default squash merge commit message."
+  default     = "COMMIT_MESSAGES"
+}
+
+variable "merge_commit_title" {
+  type        = string
+  description = "(Optional) Can be `PR_TITLE` or `MERGE_MESSAGE` for a default merge commit title."
+  default     = "MERGE_MESSAGE"
+}
+
+variable "merge_commit_message" {
+  type        = string
+  description = "(Optional) Can be `PR_BODY`, `PR_TITLE`, or `BLANK` for a default merge commit message."
+  default     = "PR_TITLE"
 }
 
 # ------------------------------------------------------------------------------

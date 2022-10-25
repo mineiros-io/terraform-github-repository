@@ -29,6 +29,11 @@ locals {
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
   branch_protections_v3  = var.branch_protections_v3 == null ? var.branch_protections : var.branch_protections_v3
 
+  squash_merge_commit_title   = local.allow_squash_merge ? var.squash_merge_commit_title == null ? try(var.defaults.squash_merge_commit_title, null) : var.squash_merge_commit_title : null
+  squash_merge_commit_message = local.allow_squash_merge ? var.squash_merge_commit_title == null ? try(var.defaults.squash_merge_commit_title, null) : var.squash_merge_commit_title : null
+  merge_commit_title          = local.allow_merge_commit ? var.merge_commit_title == null ? try(var.defaults.merge_commit_title, null) : var.merge_commit_title : null
+  merge_commit_message        = local.allow_merge_commit ? var.merge_commit_message == null ? try(var.merge_commit_message, null) : var.merge_commit_message : null
+
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
   # for readability
@@ -112,6 +117,11 @@ resource "github_repository" "repository" {
 
   archive_on_destroy   = var.archive_on_destroy
   vulnerability_alerts = local.vulnerability_alerts
+
+  squash_merge_commit_title   = local.squash_merge_commit_title
+  squash_merge_commit_message = local.squash_merge_commit_message
+  merge_commit_title          = local.merge_commit_title
+  merge_commit_message        = local.merge_commit_message
 
   dynamic "template" {
     for_each = local.template

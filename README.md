@@ -3,18 +3,18 @@
 [![Build Status](https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/mineiros-io/terraform-github-repository/actions)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
 [![Terraform Version](https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform)](https://github.com/hashicorp/terraform/releases)
-[![Github Provider Version](https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
+[![Github Provider Version](https://img.shields.io/badge/GH-4.31+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
 [![Join Slack](https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack)](https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg)
 
 # terraform-github-repository
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-**_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.20 and above from `integrations/github`._**
+**_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.31 and above from `integrations/github`._**
 
 **Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
 
-** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
+** Note: Versions 5.3.0, 5.4.0, 5.5.0, and 5.6.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
 
 
 - [GitHub as Code](#github-as-code)
@@ -151,6 +151,10 @@ See [variables.tf] and [examples/] for details and use-cases.
   `allow_rebase_merge`,
   `allow_squash_merge`,
   `allow_auto_merge`,
+  `squash_merge_commit_title`,
+  `squash_merge_commit_message`,
+  `merge_commit_title`,
+  `merge_commit_message`,
   `has_downloads`,
   `auto_init`,
   `gitignore_template`,
@@ -215,6 +219,30 @@ See [variables.tf] and [examples/] for details and use-cases.
   reviews are met and status checks have passed.
 
   Default is `false`.
+
+- [**`squash_merge_commit_title`**](#var-squash_merge_commit_title): *(Optional `string`)*<a name="var-squash_merge_commit_title"></a>
+
+  Set to `PR_TITLE` or `COMMIT_OR_PR_TITLE` for a default squash merge commit title.
+
+  Default is `"COMMIT_OR_PR_TITLE"`.
+
+- [**`squash_merge_commit_message`**](#var-squash_merge_commit_message): *(Optional `string`)*<a name="var-squash_merge_commit_message"></a>
+
+  Set to `PR_BODY`, `COMMIT_MESSAGES`, or `BLANK` for a default squash merge commit message.
+
+  Default is `"COMMIT_MESSAGES"`.
+
+- [**`merge_commit_title`**](#var-merge_commit_title): *(Optional `string`)*<a name="var-merge_commit_title"></a>
+
+  Set to `PR_TITLE` or `MERGE_MESSAGE` for a default merge commit title.
+
+  Default is `"MERGE_MESSAGE"`.
+
+- [**`merge_commit_message`**](#var-merge_commit_message): *(Optional `string`)*<a name="var-merge_commit_message"></a>
+
+  Set to `PR_BODY`, `PR_TITLE`, or `BLANK` for a default merge commit message.
+
+  Default is `"PR_TITLE"`.
 
 - [**`description`**](#var-description): *(Optional `string`)*<a name="var-description"></a>
 

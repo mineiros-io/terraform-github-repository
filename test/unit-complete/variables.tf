@@ -70,7 +70,6 @@ variable "allow_auto_merge" {
   default     = true
 }
 
-
 variable "has_downloads" {
   description = "Set to true to enable the (deprecated) downloads features on the repository."
   type        = bool
@@ -156,6 +155,7 @@ variable "repository_defaults" {
     homepage_url       = "https://github.com/mineiros-io"
     visibility         = "private"
     allow_merge_commit = true
+    allow_squash_merge = false
     gitignore_template = "Terraform"
     license_template   = "mit"
     topics             = ["terraform", "integration-test"]
