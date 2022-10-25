@@ -92,7 +92,8 @@ section {
         Teams,
         Deploy Keys,
         Projects,
-        Repository Webhooks
+        Repository Webhooks,
+        GitHub App Installations
 
       - _Features not yet implemented_:
         Project Columns support,
@@ -164,22 +165,28 @@ section {
           `has_issues`,
           `has_projects`,
           `has_wiki`,
+          `has_downloads`,
+          `delete_branch_on_merge`,
+          `is_template`,
           `allow_merge_commit`,
           `allow_rebase_merge`,
           `allow_squash_merge`,
           `allow_auto_merge`,
+          `auto_init`,
+          `gitignore_template`,
+          `license_template`,
           `squash_merge_commit_title`,
           `squash_merge_commit_message`,
           `merge_commit_title`,
           `merge_commit_message`,
-          `has_downloads`,
           `auto_init`,
-          `gitignore_template`,
-          `license_template`,
           `default_branch`,
           `topics`,
           `issue_labels_create`,
-          `issue_labels_merge_with_github_labels`.
+          `issue_labels_merge_with_github_labels`,
+          `vulnerability_alerts`,
+          `ignore_vulnerability_alerts_during_read`,
+          `template`.
 
           Module defaults are used for all arguments that are not set in `defaults`.
           Using top level arguments override defaults set by this argument.
