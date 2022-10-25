@@ -11,6 +11,7 @@ locals {
   visibility             = var.visibility == null ? lookup(var.defaults, "visibility", local.private_visibility) : var.visibility
   has_issues             = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
   has_projects           = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
+  has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
   has_wiki               = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
   allow_merge_commit     = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
   allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
@@ -18,7 +19,6 @@ locals {
   allow_auto_merge       = var.allow_auto_merge == null ? lookup(var.defaults, "allow_auto_merge", false) : var.allow_auto_merge
   delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", true) : var.delete_branch_on_merge
   is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
-  has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
   auto_init              = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
   gitignore_template     = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
   license_template       = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
@@ -42,7 +42,8 @@ locals {
 
   issue_labels_merge_with_github_labels = local.gh_labels
   # Per default, GitHub activates vulnerability  alerts for public repositories and disables it for private repositories
-  vulnerability_alerts = var.vulnerability_alerts != null ? var.vulnerability_alerts : local.private ? false : true
+  vulnerability_alerts                    = var.vulnerability_alerts != null ? var.vulnerability_alerts : local.private ? false : true
+  ignore_vulnerability_alerts_during_read = var.ignore_vulnerability_alerts_during_read == null ? try(var.defaults.ignore_vulnerability_alerts_during_read, null) : var.ignore_vulnerability_alerts_during_read
 }
 
 locals {

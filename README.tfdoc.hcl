@@ -413,6 +413,13 @@ section {
         END
       }
 
+      variable "ignore_vulnerability_alerts_during_read" {
+        type        = bool
+        description = <<-END
+          Set to `true` to not call the vulnerability alerts endpoint so the resource can also be used without admin permissions during read.
+        END
+      }
+
       variable "archive_on_destroy" {
         type        = bool
         default     = true

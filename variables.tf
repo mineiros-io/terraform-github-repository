@@ -46,7 +46,6 @@ variable "defaults" {
   #   gitignore_template                      = "terraform"
   #   license_template                        = "mit"
   #   default_branch                          = "main"
-  #   branch_protections_v3                   = []
   #   topics                                  = ["topic-1", "topic-2"]
   #   template                                = "terraform-module-template"
   #   vulnerability_alerts                    = true
@@ -56,6 +55,8 @@ variable "defaults" {
   #   squash_merge_commit_message             = "COMMIT_MESSAGES"
   #   merge_commit_title                      = "PR_TITLE"
   #   merge_commit_message                    = "PR_BODY"
+  #   vulnerability_alerts                    = true
+  #   ignore_vulnerability_alerts_during_read = true
   # }
 
   default = {}

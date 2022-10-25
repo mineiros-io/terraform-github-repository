@@ -338,6 +338,10 @@ See [variables.tf] and [examples/] for details and use-cases.
   Set to `false` to disable security alerts for vulnerable dependencies.
   Enabling requires alerts to be enabled on the owner level.
 
+- [**`ignore_vulnerability_alerts_during_read`**](#var-ignore_vulnerability_alerts_during_read): *(Optional `bool`)*<a name="var-ignore_vulnerability_alerts_during_read"></a>
+
+  Set to `true` to not call the vulnerability alerts endpoint so the resource can also be used without admin permissions during read.
+
 - [**`archive_on_destroy`**](#var-archive_on_destroy): *(Optional `bool`)*<a name="var-archive_on_destroy"></a>
 
   Set to `false` to not archive the repository instead of deleting on destroy.

@@ -12,11 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BREAKING: update to provider `>= 4.31` for supporting default squash and merge commit titles and messages
 
 ### Added
+
 - Add support for `squash_merge_commit_title`
 - Add support for `squash_merge_commit_message`
 - Add support for `merge_commit_title`
 - Add support for `merge_commit_message`
-
+- Add support for `ignore_vulnerability_alerts_during_read`
 
 ## [0.17.0]
 
