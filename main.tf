@@ -181,7 +181,7 @@ resource "github_branch_default" "default" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection" "this" {
-  for_each = coalesce(var.branch_protections_v4, {})
+  for_each = length(coalesce(var.branch_protections_v4, {})) > 0 ? var.branch_protections_v4 : {}
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -232,7 +232,7 @@ resource "github_branch_protection" "this" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection_v3" "branch_protection" {
-  count = var.branch_protections_v4 == null ? length(local.branch_protections_v3) : 0
+  count = length(coalesce(var.branch_protections_v4, {})) == 0 ? length(local.branch_protections_v3) : 0
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
