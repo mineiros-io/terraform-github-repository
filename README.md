@@ -28,7 +28,8 @@ A [Terraform] module for creating a public or private repository on [Github].
     - [Collaborator Configuration](#collaborator-configuration)
     - [Branches Configuration](#branches-configuration)
     - [Deploy Keys Configuration](#deploy-keys-configuration)
-    - [Branch Protections Configuration](#branch-protections-configuration)
+    - [Branch Protections v3 Configuration](#branch-protections-v3-configuration)
+    - [Branch Protections v4 Configuration](#branch-protections-v4-configuration)
     - [Issue Labels Configuration](#issue-labels-configuration)
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
@@ -528,11 +529,11 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `"md5(key)"`.
 
-#### Branch Protections Configuration
+#### Branch Protections v3 Configuration
 
 - [**`branch_protections_v3`**](#var-branch_protections_v3): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections_v3"></a>
 
-  This resource allows you to configure branch protection for repositories in your organization.
+  This resource allows you to configure v3 branch protection for repositories in your organization.
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
 
@@ -651,6 +652,135 @@ This is due to some terraform limitation and we will update the module once terr
   This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
 
   Default is `[]`.
+
+#### Branch Protections v4 Configuration
+
+- [**`branch_protections_v4`**](#var-branch_protections_v4): *(Optional `map(branch_protection_v4)`)*<a name="var-branch_protections_v4"></a>
+
+  This map allows you to configure v4 branch protection for repositories in your organization.
+
+  Each element in the map is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+
+  When applied, the branch will be protected from forced pushes and deletion.
+  Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
+
+  **_NOTE_** This will take precedence over v3 branch protections.
+
+  Default is `null`.
+
+  Each `branch_protection_v4` object in the map accepts the following attributes:
+
+  - [**`allows_deletions`**](#attr-branch_protections_v4-allows_deletions): *(Optional `bool`)*<a name="attr-branch_protections_v4-allows_deletions"></a>
+
+    Setting this to true to allow the branch to be deleted.
+
+    Default is `false`.
+
+  - [**`allows_force_pushes`**](#attr-branch_protections_v4-allows_force_pushes): *(Optional `bool`)*<a name="attr-branch_protections_v4-allows_force_pushes"></a>
+
+    Setting this to true to allow force pushes on the branch.
+
+    Default is `false`.
+
+  - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
+
+    Setting this to true will block creating the branch.
+
+    Default is `false`.
+
+  - [**`enforce_admins`**](#attr-branch_protections_v4-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v4-enforce_admins"></a>
+
+    Setting this to true enforces status checks for repository administrators.
+
+    Default is `false`.
+
+  - [**`push_restrictions`**](#attr-branch_protections_v4-push_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-push_restrictions"></a>
+
+    The list of actor Names/IDs that may push to the branch.
+    Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+
+    Default is `[]`.
+
+  - [**`require_conversation_resolution`**](#attr-branch_protections_v4-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_conversation_resolution"></a>
+
+    Setting this to true requires all conversations on code must be resolved before a pull request can be merged.
+
+    Default is `false`.
+
+  - [**`require_signed_commits`**](#attr-branch_protections_v4-require_signed_commits): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_signed_commits"></a>
+
+    Setting this to true requires all commits to be signed with GPG.
+
+    Default is `false`.
+
+  - [**`required_linear_history`**](#attr-branch_protections_v4-required_linear_history): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_linear_history"></a>
+
+    Setting this to true enforces a linear commit Git history, which prevents anyone from pushing merge commits to a branch.
+
+    Default is `false`.
+
+  - [**`required_pull_request_reviews`**](#attr-branch_protections_v4-required_pull_request_reviews): *(Optional `object(required_pull_request_reviews)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews"></a>
+
+    Enforce restrictions for pull request reviews.
+
+    Default is `null`.
+
+    The `required_pull_request_reviews` object accepts the following attributes:
+
+    - [**`dismiss_stale_reviews`**](#attr-branch_protections_v4-required_pull_request_reviews-dismiss_stale_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-dismiss_stale_reviews"></a>
+
+      Dismiss approved reviews automatically when a new commit is pushed.
+
+      Default is `true`.
+
+    - [**`dismissal_restrictions`**](#attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions"></a>
+
+      The list of actor Names/IDs with dismissal access.
+      If not empty, restrict_dismissals is ignored.
+      Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+
+      Default is `[]`.
+
+    - [**`pull_request_bypassers`**](#attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers"></a>
+
+      The list of actor Names/IDs that are allowed to bypass pull request requirements.
+      Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+
+      Default is `[]`.
+
+    - [**`require_code_owner_reviews`**](#attr-branch_protections_v4-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-require_code_owner_reviews"></a>
+
+      Require an approved review in pull requests including files with a designated code owner.
+
+      Default is `false`.
+
+    - [**`required_approving_review_count`**](#attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count): *(Optional `number`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count"></a>
+
+      Require x number of approvals to satisfy branch protection requirements.
+      If this is specified it must be a number between 0-6.
+
+      Default is `0`.
+
+  - [**`required_status_checks`**](#attr-branch_protections_v4-required_status_checks): *(Optional `object(required_status_checks)`)*<a name="attr-branch_protections_v4-required_status_checks"></a>
+
+    Enforce restrictions for required status checks.
+    See Required Status Checks below for details.
+
+    Default is `null`.
+
+    The `required_status_checks` object accepts the following attributes:
+
+    - [**`strict`**](#attr-branch_protections_v4-required_status_checks-strict): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_status_checks-strict"></a>
+
+      Require branches to be up to date before merging.
+
+      Default is `false`.
+
+    - [**`contexts`**](#attr-branch_protections_v4-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_status_checks-contexts"></a>
+
+      The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+
+      Default is `[]`.
 
 #### Issue Labels Configuration
 
