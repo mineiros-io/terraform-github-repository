@@ -353,35 +353,35 @@ variable "branch_protections_v3" {
 
 variable "branch_protections_v4" {
   description = "(Optional) A list of v4 branch protections to apply to the repository. Default is {}."
-  type = map(
-    object(
-      {
-        allows_deletions                = optional(bool, false)
-        allows_force_pushes             = optional(bool, false)
-        blocks_creations                = optional(bool, false)
-        enforce_admins                  = optional(bool, false)
-        push_restrictions               = optional(list(string), [])
-        require_conversation_resolution = optional(bool, false)
-        require_signed_commits          = optional(bool, false)
-        required_linear_history         = optional(bool, false)
-        required_pull_request_reviews = optional(object(
-          {
-            dismiss_stale_reviews           = optional(bool, false)
-            dismissal_restrictions          = optional(list(string), [])
-            pull_request_bypassers          = optional(list(string), [])
-            require_code_owner_reviews      = optional(bool, false)
-            required_approving_review_count = optional(number, 0)
-          }
-        ))
-        required_status_checks = optional(object(
-          {
-            strict   = optional(bool, false)
-            contexts = optional(list(string), [])
-          }
-        ))
-      }
-    )
-  )
+  # type = map(
+  #   object(
+  #     {
+  #       allows_deletions                = optional(bool, false)
+  #       allows_force_pushes             = optional(bool, false)
+  #       blocks_creations                = optional(bool, false)
+  #       enforce_admins                  = optional(bool, false)
+  #       push_restrictions               = optional(list(string), [])
+  #       require_conversation_resolution = optional(bool, false)
+  #       require_signed_commits          = optional(bool, false)
+  #       required_linear_history         = optional(bool, false)
+  #       required_pull_request_reviews = optional(object(
+  #         {
+  #           dismiss_stale_reviews           = optional(bool, false)
+  #           dismissal_restrictions          = optional(list(string), [])
+  #           pull_request_bypassers          = optional(list(string), [])
+  #           require_code_owner_reviews      = optional(bool, false)
+  #           required_approving_review_count = optional(number, 0)
+  #         }
+  #       ))
+  #       required_status_checks = optional(object(
+  #         {
+  #           strict   = optional(bool, false)
+  #           contexts = optional(list(string), [])
+  #         }
+  #       ))
+  #     }
+  #   )
+  # )
   default = null
 
   validation {
