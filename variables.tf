@@ -287,12 +287,6 @@ variable "maintain_teams" {
   default     = []
 }
 
-variable "branch_protections" {
-  description = "DEPRECATED: use branch_protections_v3 instead. Default is []."
-  type        = any
-  default     = null
-}
-
 variable "branch_protections_v3" {
   description = "(Optional) A list of branch protections to apply to the repository. Default is [] unless branch_protections is set."
   type        = any
@@ -321,7 +315,7 @@ variable "branch_protections_v3" {
   #   })
   # }))
 
-  default = null
+  default = []
 
   # Example:
   # branch_protections = [
@@ -352,10 +346,12 @@ variable "branch_protections_v3" {
 }
 
 variable "branch_protections_v4" {
-  description = "(Optional) A list of v4 branch protections to apply to the repository. Default is {}."
-  # type = map(
+  description = "(Optional) A list of v4 branch protections to apply to the repository. Default is []."
+  type        = any
+  # type = list(
   #   object(
   #     {
+  #       pattern                         = string
   #       allows_deletions                = optional(bool, false)
   #       allows_force_pushes             = optional(bool, false)
   #       blocks_creations                = optional(bool, false)
@@ -382,12 +378,12 @@ variable "branch_protections_v4" {
   #     }
   #   )
   # )
-  default = null
+  default = []
 
   validation {
     condition = alltrue(
       [
-        for cfg in coalesce(var.branch_protections_v4, {}) : try(
+        for cfg in var.branch_protections_v4 : try(
           cfg.required_pull_request_reviews.required_approving_review_count >= 0
           && cfg.required_pull_request_reviews.required_approving_review_count <= 6,
           true

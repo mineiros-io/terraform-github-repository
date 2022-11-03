@@ -27,17 +27,6 @@ locals {
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
-  branch_protections_v3 = [
-    for b in coalesce(var.branch_protections_v3, var.branch_protections, []) : merge({
-      branch                          = null
-      enforce_admins                  = null
-      require_conversation_resolution = null
-      require_signed_commits          = null
-      required_status_checks          = {}
-      required_pull_request_reviews   = {}
-      restrictions                    = {}
-    }, b)
-  ]
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -51,6 +40,18 @@ locals {
 }
 
 locals {
+  branch_protections_v3 = [
+    for b in var.branch_protections_v3 : merge({
+      branch                          = null
+      enforce_admins                  = null
+      require_conversation_resolution = null
+      require_signed_commits          = null
+      required_status_checks          = {}
+      required_pull_request_reviews   = {}
+      restrictions                    = {}
+    }, b)
+  ]
+
   required_status_checks = [
     for b in local.branch_protections_v3 :
     length(keys(b.required_status_checks)) > 0 ? [
@@ -179,8 +180,12 @@ resource "github_branch_default" "default" {
 # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
 # ---------------------------------------------------------------------------------------------------------------------
 
+locals {
+  branch_protections_v4_map = { for idx, e in var.branch_protections_v4 : try(e._key, e.pattern) => idx }
+}
+
 resource "github_branch_protection" "branch_protection" {
-  for_each = length(coalesce(var.branch_protections_v4, {})) > 0 ? var.branch_protections_v4 : {}
+  for_each = local.branch_protections_v4_map
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -191,36 +196,38 @@ resource "github_branch_protection" "branch_protection" {
     github_branch.branch,
   ]
 
-  repository_id                   = github_repository.repository.node_id
-  pattern                         = each.key
-  allows_deletions                = each.value.allows_deletions
-  allows_force_pushes             = each.value.allows_force_pushes
-  blocks_creations                = each.value.blocks_creations
-  enforce_admins                  = each.value.enforce_admins
-  push_restrictions               = each.value.push_restrictions
-  require_conversation_resolution = each.value.require_conversation_resolution
-  require_signed_commits          = each.value.require_signed_commits
-  required_linear_history         = each.value.required_linear_history
+  repository_id = github_repository.repository.node_id
+
+  pattern = var.branch_protections_v4[each.value].pattern
+
+  allows_deletions                = try(var.branch_protections_v4[each.value].allows_deletions, false)
+  allows_force_pushes             = try(var.branch_protections_v4[each.value].allows_force_pushes, false)
+  blocks_creations                = try(var.branch_protections_v4[each.value].blocks_creations, false)
+  enforce_admins                  = try(var.branch_protections_v4[each.value].enforce_admins, true)
+  push_restrictions               = try(var.branch_protections_v4[each.value].push_restrictions, [])
+  require_conversation_resolution = try(var.branch_protections_v4[each.value].require_conversation_resolution, false)
+  require_signed_commits          = try(var.branch_protections_v4[each.value].require_signed_commits, false)
+  required_linear_history         = try(var.branch_protections_v4[each.value].required_linear_history, false)
 
   dynamic "required_pull_request_reviews" {
-    for_each = each.value.required_pull_request_reviews != null ? [true] : []
+    for_each = try([var.branch_protections_v4[each.value].required_pull_request_reviews], [])
 
     content {
-      dismiss_stale_reviews           = each.value.required_pull_request_reviews.dismiss_stale_reviews
-      dismissal_restrictions          = each.value.required_pull_request_reviews.dismissal_restrictions
-      pull_request_bypassers          = each.value.required_pull_request_reviews.pull_request_bypassers
-      require_code_owner_reviews      = each.value.required_pull_request_reviews.require_code_owner_reviews
-      required_approving_review_count = each.value.required_pull_request_reviews.required_approving_review_count
-      restrict_dismissals             = length(each.value.required_pull_request_reviews.dismissal_restrictions) > 0
+      dismiss_stale_reviews           = try(required_pull_request_reviews.value.dismiss_stale_reviews, true)
+      restrict_dismissals             = try(required_pull_request_reviews.value.restrict_dismissals, null)
+      dismissal_restrictions          = try(required_pull_request_reviews.value.dismissal_restrictions, [])
+      pull_request_bypassers          = try(required_pull_request_reviews.value.pull_request_bypassers, [])
+      require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, true)
+      required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, 0)
     }
   }
 
   dynamic "required_status_checks" {
-    for_each = each.value.required_status_checks != null ? [true] : []
+    for_each = try([var.branch_protections_v4[each.value].required_status_checks], [])
 
     content {
-      strict   = each.value.required_status_checks.strict
-      contexts = each.value.required_status_checks.contexts
+      strict   = try(required_status_checks.value.strict, false)
+      contexts = try(required_status_checks.value.contexts, [])
     }
   }
 }
@@ -231,7 +238,7 @@ resource "github_branch_protection" "branch_protection" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection_v3" "branch_protection" {
-  count = length(coalesce(var.branch_protections_v4, {})) == 0 ? length(local.branch_protections_v3) : 0
+  count = length(local.branch_protections_v3)
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them

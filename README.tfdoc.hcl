@@ -821,39 +821,46 @@ section {
             }
           }
         }
-
-        variable "branch_protections" {
-          type        = list(branch_protection_v3)
-          default     = []
-          description = <<-END
-            **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-            This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
-          END
-        }
       }
 
       section {
         title = "Branch Protections v4 Configuration"
 
         variable "branch_protections_v4" {
-          type        = map(branch_protection_v4)
-          default     = null
+          type        = list(branch_protection_v4)
+          default     = []
           description = <<-END
-            This map allows you to configure v4 branch protection for repositories in your organization.
+            This resource allows you to configure v4 branch protection for repositories in your organization.
 
-            Each element in the map is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+            Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
 
             When applied, the branch will be protected from forced pushes and deletion.
             Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
 
-            **_NOTE_** This will take precedence over v3 branch protections.
+            **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
           END
+
+          attribute "pattern" {
+            type        = string
+            required    = true
+            description = <<-END
+              Identifies the protection rule pattern.
+            END
+          }
+
+          attribute "_key" {
+            type        = string
+            description = <<-END
+              An alternative key to use in `for_each` resource creation.
+              Defaults to the value of `var.pattern`.
+            END
+          }
 
           attribute "allows_deletions" {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true to allow the branch to be deleted.
+              Setting this to `true` to allow the branch to be deleted.
             END
           }
 
@@ -861,7 +868,7 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true to allow force pushes on the branch.
+              Setting this to `true` to allow force pushes on the branch.
             END
           }
 
@@ -869,15 +876,15 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true will block creating the branch.
+              Setting this to `true` will block creating the branch.
             END
           }
 
           attribute "enforce_admins" {
             type        = bool
-            default     = false
+            default     = true
             description = <<-END
-              Setting this to true enforces status checks for repository administrators.
+              Keeping this as `true` enforces status checks for repository administrators.
             END
           }
 
@@ -916,7 +923,6 @@ section {
 
           attribute "required_pull_request_reviews" {
             type        = object(required_pull_request_reviews)
-            default     = null
             description = <<-END
               Enforce restrictions for pull request reviews.
             END
@@ -929,13 +935,20 @@ section {
               END
             }
 
+            attribute "restrict_dismissals" {
+              type        = bool
+              description = <<-END
+                Restrict pull request review dismissals.
+              END
+            }
+
             attribute "dismissal_restrictions" {
               type        = list(string)
               default     = []
               description = <<-END
                 The list of actor Names/IDs with dismissal access.
-                If not empty, restrict_dismissals is ignored.
-                Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+                If not empty, `restrict_dismissals` is ignored
+                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
               END
             }
 
@@ -944,13 +957,13 @@ section {
               default     = []
               description = <<-END
                 The list of actor Names/IDs that are allowed to bypass pull request requirements.
-                Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
               END
             }
 
             attribute "require_code_owner_reviews" {
               type        = bool
-              default     = false
+              default     = true
               description = <<-END
                 Require an approved review in pull requests including files with a designated code owner.
               END
@@ -968,7 +981,6 @@ section {
 
           attribute "required_status_checks" {
             type        = object(required_status_checks)
-            default     = null
             description = <<-END
               Enforce restrictions for required status checks.
               See Required Status Checks below for details.

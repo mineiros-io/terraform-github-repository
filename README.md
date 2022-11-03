@@ -646,53 +646,55 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `[]`.
 
-- [**`branch_protections`**](#var-branch_protections): *(Optional `list(branch_protection_v3)`)*<a name="var-branch_protections"></a>
-
-  **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-  This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
-
-  Default is `[]`.
-
 #### Branch Protections v4 Configuration
 
-- [**`branch_protections_v4`**](#var-branch_protections_v4): *(Optional `map(branch_protection_v4)`)*<a name="var-branch_protections_v4"></a>
+- [**`branch_protections_v4`**](#var-branch_protections_v4): *(Optional `list(branch_protection_v4)`)*<a name="var-branch_protections_v4"></a>
 
-  This map allows you to configure v4 branch protection for repositories in your organization.
+  This resource allows you to configure v4 branch protection for repositories in your organization.
 
-  Each element in the map is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+  Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
 
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
 
-  **_NOTE_** This will take precedence over v3 branch protections.
+  **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
 
-  Default is `null`.
+  Default is `[]`.
 
-  Each `branch_protection_v4` object in the map accepts the following attributes:
+  Each `branch_protection_v4` object in the list accepts the following attributes:
+
+  - [**`pattern`**](#attr-branch_protections_v4-pattern): *(**Required** `string`)*<a name="attr-branch_protections_v4-pattern"></a>
+
+    Identifies the protection rule pattern.
+
+  - [**`_key`**](#attr-branch_protections_v4-_key): *(Optional `string`)*<a name="attr-branch_protections_v4-_key"></a>
+
+    An alternative key to use in `for_each` resource creation.
+    Defaults to the value of `var.pattern`.
 
   - [**`allows_deletions`**](#attr-branch_protections_v4-allows_deletions): *(Optional `bool`)*<a name="attr-branch_protections_v4-allows_deletions"></a>
 
-    Setting this to true to allow the branch to be deleted.
+    Setting this to `true` to allow the branch to be deleted.
 
     Default is `false`.
 
   - [**`allows_force_pushes`**](#attr-branch_protections_v4-allows_force_pushes): *(Optional `bool`)*<a name="attr-branch_protections_v4-allows_force_pushes"></a>
 
-    Setting this to true to allow force pushes on the branch.
+    Setting this to `true` to allow force pushes on the branch.
 
     Default is `false`.
 
   - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
 
-    Setting this to true will block creating the branch.
+    Setting this to `true` will block creating the branch.
 
     Default is `false`.
 
   - [**`enforce_admins`**](#attr-branch_protections_v4-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v4-enforce_admins"></a>
 
-    Setting this to true enforces status checks for repository administrators.
+    Keeping this as `true` enforces status checks for repository administrators.
 
-    Default is `false`.
+    Default is `true`.
 
   - [**`push_restrictions`**](#attr-branch_protections_v4-push_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-push_restrictions"></a>
 
@@ -723,8 +725,6 @@ This is due to some terraform limitation and we will update the module once terr
 
     Enforce restrictions for pull request reviews.
 
-    Default is `null`.
-
     The `required_pull_request_reviews` object accepts the following attributes:
 
     - [**`dismiss_stale_reviews`**](#attr-branch_protections_v4-required_pull_request_reviews-dismiss_stale_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-dismiss_stale_reviews"></a>
@@ -733,18 +733,22 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `true`.
 
+    - [**`restrict_dismissals`**](#attr-branch_protections_v4-required_pull_request_reviews-restrict_dismissals): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-restrict_dismissals"></a>
+
+      Restrict pull request review dismissals.
+
     - [**`dismissal_restrictions`**](#attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions"></a>
 
       The list of actor Names/IDs with dismissal access.
-      If not empty, restrict_dismissals is ignored.
-      Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+      If not empty, `restrict_dismissals` is ignored
+      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
 
       Default is `[]`.
 
     - [**`pull_request_bypassers`**](#attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers"></a>
 
       The list of actor Names/IDs that are allowed to bypass pull request requirements.
-      Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
 
       Default is `[]`.
 
@@ -752,7 +756,7 @@ This is due to some terraform limitation and we will update the module once terr
 
       Require an approved review in pull requests including files with a designated code owner.
 
-      Default is `false`.
+      Default is `true`.
 
     - [**`required_approving_review_count`**](#attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count): *(Optional `number`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count"></a>
 
@@ -765,8 +769,6 @@ This is due to some terraform limitation and we will update the module once terr
 
     Enforce restrictions for required status checks.
     See Required Status Checks below for details.
-
-    Default is `null`.
 
     The `required_status_checks` object accepts the following attributes:
 
