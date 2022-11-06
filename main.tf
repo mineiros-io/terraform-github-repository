@@ -27,7 +27,6 @@ locals {
   topics                 = concat(local.standard_topics, var.extra_topics)
   template               = var.template == null ? [] : [var.template]
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
-  branch_protections_v3  = var.branch_protections_v3 == null ? var.branch_protections : var.branch_protections_v3
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
@@ -41,8 +40,8 @@ locals {
 }
 
 locals {
-  branch_protections = try([
-    for b in local.branch_protections_v3 : merge({
+  branch_protections_v3 = [
+    for b in var.branch_protections_v3 : merge({
       branch                          = null
       enforce_admins                  = null
       require_conversation_resolution = null
@@ -51,10 +50,10 @@ locals {
       required_pull_request_reviews   = {}
       restrictions                    = {}
     }, b)
-  ], [])
+  ]
 
   required_status_checks = [
-    for b in local.branch_protections :
+    for b in local.branch_protections_v3 :
     length(keys(b.required_status_checks)) > 0 ? [
       merge({
         strict   = null
@@ -63,7 +62,7 @@ locals {
   ]
 
   required_pull_request_reviews = [
-    for b in local.branch_protections :
+    for b in local.branch_protections_v3 :
     length(keys(b.required_pull_request_reviews)) > 0 ? [
       merge({
         dismiss_stale_reviews           = true
@@ -75,7 +74,7 @@ locals {
   ]
 
   restrictions = [
-    for b in local.branch_protections :
+    for b in local.branch_protections_v3 :
     length(keys(b.restrictions)) > 0 ? [
       merge({
         users = []
@@ -177,12 +176,69 @@ resource "github_branch_default" "default" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Branch Protection
+# v4 Branch Protection
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
+# ---------------------------------------------------------------------------------------------------------------------
+
+locals {
+  branch_protections_v4_map = { for idx, e in var.branch_protections_v4 : try(e._key, e.pattern) => idx }
+}
+
+resource "github_branch_protection" "branch_protection" {
+  for_each = local.branch_protections_v4_map
+
+  # ensure we have all members and collaborators added before applying
+  # any configuration for them
+  depends_on = [
+    github_repository_collaborator.collaborator,
+    github_team_repository.team_repository,
+    github_team_repository.team_repository_by_slug,
+    github_branch.branch,
+  ]
+
+  repository_id = github_repository.repository.node_id
+
+  pattern = var.branch_protections_v4[each.value].pattern
+
+  allows_deletions                = try(var.branch_protections_v4[each.value].allows_deletions, false)
+  allows_force_pushes             = try(var.branch_protections_v4[each.value].allows_force_pushes, false)
+  blocks_creations                = try(var.branch_protections_v4[each.value].blocks_creations, false)
+  enforce_admins                  = try(var.branch_protections_v4[each.value].enforce_admins, true)
+  push_restrictions               = try(var.branch_protections_v4[each.value].push_restrictions, [])
+  require_conversation_resolution = try(var.branch_protections_v4[each.value].require_conversation_resolution, false)
+  require_signed_commits          = try(var.branch_protections_v4[each.value].require_signed_commits, false)
+  required_linear_history         = try(var.branch_protections_v4[each.value].required_linear_history, false)
+
+  dynamic "required_pull_request_reviews" {
+    for_each = try([var.branch_protections_v4[each.value].required_pull_request_reviews], [])
+
+    content {
+      dismiss_stale_reviews           = try(required_pull_request_reviews.value.dismiss_stale_reviews, true)
+      restrict_dismissals             = try(required_pull_request_reviews.value.restrict_dismissals, null)
+      dismissal_restrictions          = try(required_pull_request_reviews.value.dismissal_restrictions, [])
+      pull_request_bypassers          = try(required_pull_request_reviews.value.pull_request_bypassers, [])
+      require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, true)
+      required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, 0)
+    }
+  }
+
+  dynamic "required_status_checks" {
+    for_each = try([var.branch_protections_v4[each.value].required_status_checks], [])
+
+    content {
+      strict   = try(required_status_checks.value.strict, false)
+      contexts = try(required_status_checks.value.contexts, [])
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# v3 Branch Protection
 # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection_v3
 # ---------------------------------------------------------------------------------------------------------------------
 
 resource "github_branch_protection_v3" "branch_protection" {
-  count = length(local.branch_protections)
+  count = length(local.branch_protections_v3)
 
   # ensure we have all members and collaborators added before applying
   # any configuration for them
@@ -194,10 +250,10 @@ resource "github_branch_protection_v3" "branch_protection" {
   ]
 
   repository                      = github_repository.repository.name
-  branch                          = local.branch_protections[count.index].branch
-  enforce_admins                  = local.branch_protections[count.index].enforce_admins
-  require_conversation_resolution = local.branch_protections[count.index].require_conversation_resolution
-  require_signed_commits          = local.branch_protections[count.index].require_signed_commits
+  branch                          = local.branch_protections_v3[count.index].branch
+  enforce_admins                  = local.branch_protections_v3[count.index].enforce_admins
+  require_conversation_resolution = local.branch_protections_v3[count.index].require_conversation_resolution
+  require_signed_commits          = local.branch_protections_v3[count.index].require_signed_commits
 
   dynamic "required_status_checks" {
     for_each = local.required_status_checks[count.index]

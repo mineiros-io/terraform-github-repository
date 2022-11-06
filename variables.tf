@@ -25,30 +25,9 @@ variable "branches" {
 }
 
 variable "defaults" {
-  description = "(Optional) Overwrite defaults for various repository settings"
+  description = "(Deprecated) DEPRECATED. Please convert defaults to Terraform Module for_each"
   type        = any
-
-  # Example:
-  # defaults = {
-  #   homepage_url           = "https://mineiros.io/"
-  #   visibility             = "private"
-  #   has_issues             = false
-  #   has_projects           = false
-  #   has_wiki               = false
-  #   delete_branch_on_merge = true
-  #   allow_merge_commit     = true
-  #   allow_rebase_merge     = false
-  #   allow_squash_merge     = false
-  #   allow_auto_merge       = false
-  #   has_downloads          = false
-  #   auto_init              = true
-  #   gitignore_template     = "terraform"
-  #   license_template       = "mit"
-  #   default_branch         = "main"
-  #   topics                 = ["topic-1", "topic-2"]
-  # }
-
-  default = {}
+  default     = {}
 }
 
 variable "description" {
@@ -287,12 +266,6 @@ variable "maintain_teams" {
   default     = []
 }
 
-variable "branch_protections" {
-  description = "DEPRECATED: use branch_protections_v3 instead. Default is []."
-  type        = any
-  default     = null
-}
-
 variable "branch_protections_v3" {
   description = "(Optional) A list of branch protections to apply to the repository. Default is [] unless branch_protections is set."
   type        = any
@@ -321,7 +294,7 @@ variable "branch_protections_v3" {
   #   })
   # }))
 
-  default = null
+  default = []
 
   # Example:
   # branch_protections = [
@@ -349,6 +322,55 @@ variable "branch_protections_v3" {
   #     }
   #   }
   # ]
+}
+
+variable "branch_protections_v4" {
+  description = "(Optional) A list of v4 branch protections to apply to the repository. Default is []."
+  type        = any
+  # type = list(
+  #   object(
+  #     {
+  #       pattern                         = string
+  #       allows_deletions                = optional(bool, false)
+  #       allows_force_pushes             = optional(bool, false)
+  #       blocks_creations                = optional(bool, false)
+  #       enforce_admins                  = optional(bool, false)
+  #       push_restrictions               = optional(list(string), [])
+  #       require_conversation_resolution = optional(bool, false)
+  #       require_signed_commits          = optional(bool, false)
+  #       required_linear_history         = optional(bool, false)
+  #       required_pull_request_reviews = optional(object(
+  #         {
+  #           dismiss_stale_reviews           = optional(bool, false)
+  #           dismissal_restrictions          = optional(list(string), [])
+  #           pull_request_bypassers          = optional(list(string), [])
+  #           require_code_owner_reviews      = optional(bool, false)
+  #           required_approving_review_count = optional(number, 0)
+  #         }
+  #       ))
+  #       required_status_checks = optional(object(
+  #         {
+  #           strict   = optional(bool, false)
+  #           contexts = optional(list(string), [])
+  #         }
+  #       ))
+  #     }
+  #   )
+  # )
+  default = []
+
+  validation {
+    condition = alltrue(
+      [
+        for cfg in var.branch_protections_v4 : try(
+          cfg.required_pull_request_reviews.required_approving_review_count >= 0
+          && cfg.required_pull_request_reviews.required_approving_review_count <= 6,
+          true
+        )
+      ]
+    )
+    error_message = "The value for branch_protections_v4.required_pull_request_reviews.required_approving_review_count must be between 0 and 6, inclusively."
+  }
 }
 
 variable "issue_labels_merge_with_github_labels" {

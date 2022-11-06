@@ -86,7 +86,31 @@ module "repository" {
     secret       = var.webhook_secret
   }]
 
-  branch_protections = [
+  branch_protections_v4 = [
+    {
+      pattern = "staging"
+
+      allows_deletions                = false
+      allows_force_pushes             = false
+      blocks_creations                = false
+      enforce_admins                  = true
+      require_conversation_resolution = true
+      require_signed_commits          = true
+      required_linear_history         = true
+
+      required_pull_request_reviews = {
+        dismiss_stale_reviews           = true
+        require_code_owner_reviews      = true
+        required_approving_review_count = 1
+      }
+
+      required_status_checks = {
+        strict = true
+      }
+    }
+  ]
+
+  branch_protections_v3 = [
     {
       branch                          = "main"
       enforce_admins                  = true

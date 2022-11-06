@@ -109,24 +109,11 @@ section {
       ```hcl
       module "repository" {
         source  = "mineiros-io/repository/github"
-        version = "~> 0.16.0"
+        version = "~> 0.18.0"
 
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
         gitignore_template = "Terraform"
-      }
-
-      provider "github" {}
-
-      terraform {
-        required_version = "~> 1.0"
-
-        required_providers {
-          github = {
-            source  = "integrations/github"
-            version = "~> 4.0"
-          }
-        }
       }
       ```
     END
@@ -153,32 +140,10 @@ section {
         type        = object(defaults)
         default     = {}
         description = <<-END
-          A object of default settings to use instead of module defaults for top-level arguments.
-          See below for a list of supported arguments.
-
-          This is a special argument to set various defaults to be reused for multiple repositories.
-
-          The following top-level arguments can be set as defaults:
-          `homepage_url`,
-          `visibility`,
-          `has_issues`,
-          `has_projects`,
-          `has_wiki`,
-          `allow_merge_commit`,
-          `allow_rebase_merge`,
-          `allow_squash_merge`,
-          `allow_auto_merge`,
-          `has_downloads`,
-          `auto_init`,
-          `gitignore_template`,
-          `license_template`,
-          `default_branch`,
-          `topics`,
-          `issue_labels_create`,
-          `issue_labels_merge_with_github_labels`.
-
-          Module defaults are used for all arguments that are not set in `defaults`.
-          Using top level arguments override defaults set by this argument.
+          DEPRECATED:
+          This variable will be removed in future releases.
+          It was needed in times when Terraform Module for each was not available to provide default values for multiple repositories.
+          Please convert your code accordingly to stay compatible with future releases.
         END
       }
 
@@ -677,13 +642,13 @@ section {
       }
 
       section {
-        title = "Branch Protections Configuration"
+        title = "Branch Protections v3 Configuration"
 
         variable "branch_protections_v3" {
           type        = list(branch_protection_v3)
           default     = []
           description = <<-END
-            This resource allows you to configure branch protection for repositories in your organization.
+            This resource allows you to configure v3 branch protection for repositories in your organization.
             When applied, the branch will be protected from forced pushes and deletion.
             Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
           END
@@ -821,14 +786,187 @@ section {
             }
           }
         }
+      }
 
-        variable "branch_protections" {
-          type        = list(branch_protection_v3)
+      section {
+        title = "Branch Protections v4 Configuration"
+
+        variable "branch_protections_v4" {
+          type        = list(branch_protection_v4)
           default     = []
           description = <<-END
-            **_DEPRECATED_** To ensure compatibility with future versions of this module, please use `branch_protections_v3`.
-            This argument is ignored if `branch_protections_v3` is used. Please see `branch_protections_v3` for supported attributes.
+            This resource allows you to configure v4 branch protection for repositories in your organization.
+
+            Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+
+            When applied, the branch will be protected from forced pushes and deletion.
+            Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
+
+            **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
           END
+
+          attribute "pattern" {
+            type        = string
+            required    = true
+            description = <<-END
+              Identifies the protection rule pattern.
+            END
+          }
+
+          attribute "_key" {
+            type        = string
+            description = <<-END
+              An alternative key to use in `for_each` resource creation.
+              Defaults to the value of `var.pattern`.
+            END
+          }
+
+          attribute "allows_deletions" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to `true` to allow the branch to be deleted.
+            END
+          }
+
+          attribute "allows_force_pushes" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to `true` to allow force pushes on the branch.
+            END
+          }
+
+          attribute "blocks_creations" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to `true` will block creating the branch.
+            END
+          }
+
+          attribute "enforce_admins" {
+            type        = bool
+            default     = true
+            description = <<-END
+              Keeping this as `true` enforces status checks for repository administrators.
+            END
+          }
+
+          attribute "push_restrictions" {
+            type        = list(string)
+            default     = []
+            description = <<-END
+              The list of actor Names/IDs that may push to the branch.
+              Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+            END
+          }
+
+          attribute "require_conversation_resolution" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to true requires all conversations on code must be resolved before a pull request can be merged.
+            END
+          }
+
+          attribute "require_signed_commits" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to true requires all commits to be signed with GPG.
+            END
+          }
+
+          attribute "required_linear_history" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to true enforces a linear commit Git history, which prevents anyone from pushing merge commits to a branch.
+            END
+          }
+
+          attribute "required_pull_request_reviews" {
+            type        = object(required_pull_request_reviews)
+            description = <<-END
+              Enforce restrictions for pull request reviews.
+            END
+
+            attribute "dismiss_stale_reviews" {
+              type        = bool
+              default     = true
+              description = <<-END
+                Dismiss approved reviews automatically when a new commit is pushed.
+              END
+            }
+
+            attribute "restrict_dismissals" {
+              type        = bool
+              description = <<-END
+                Restrict pull request review dismissals.
+              END
+            }
+
+            attribute "dismissal_restrictions" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of actor Names/IDs with dismissal access.
+                If not empty, `restrict_dismissals` is ignored
+                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+              END
+            }
+
+            attribute "pull_request_bypassers" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of actor Names/IDs that are allowed to bypass pull request requirements.
+                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+              END
+            }
+
+            attribute "require_code_owner_reviews" {
+              type        = bool
+              default     = true
+              description = <<-END
+                Require an approved review in pull requests including files with a designated code owner.
+              END
+            }
+
+            attribute "required_approving_review_count" {
+              type        = number
+              default     = 0
+              description = <<-END
+                Require x number of approvals to satisfy branch protection requirements.
+                If this is specified it must be a number between 0-6.
+              END
+            }
+          }
+
+          attribute "required_status_checks" {
+            type        = object(required_status_checks)
+            description = <<-END
+              Enforce restrictions for required status checks.
+              See Required Status Checks below for details.
+            END
+
+            attribute "strict" {
+              type        = bool
+              default     = false
+              description = <<-END
+                Require branches to be up to date before merging.
+              END
+            }
+
+            attribute "contexts" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+              END
+            }
+          }
         }
       }
 
