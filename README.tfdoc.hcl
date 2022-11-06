@@ -21,7 +21,7 @@ header {
   }
 
   badge "tf-gh" {
-    image = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
+    image = "https://img.shields.io/badge/GH-4.31+-F8991D.svg?logo=terraform"
     url   = "https://github.com/terraform-providers/terraform-provider-github/releases"
     text  = "Github Provider Version"
   }
@@ -39,11 +39,11 @@ section {
   content = <<-END
     A [Terraform] module for creating a public or private repository on [Github].
 
-    **_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.20 and above from `integrations/github`._**
+    **_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.31 and above from `integrations/github`._**
 
     **Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
 
-    ** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
+    ** Note: Versions 5.3.0, 5.4.0, 5.5.0, and 5.6.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
   END
 
   section {
@@ -92,7 +92,8 @@ section {
         Teams,
         Deploy Keys,
         Projects,
-        Repository Webhooks
+        Repository Webhooks,
+        GitHub App Installations
 
       - _Features not yet implemented_:
         Project Columns support,
@@ -109,7 +110,7 @@ section {
       ```hcl
       module "repository" {
         source  = "mineiros-io/repository/github"
-        version = "~> 0.16.0"
+        version = "~> 0.18.0"
 
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
@@ -164,18 +165,28 @@ section {
           `has_issues`,
           `has_projects`,
           `has_wiki`,
+          `has_downloads`,
+          `delete_branch_on_merge`,
+          `is_template`,
           `allow_merge_commit`,
           `allow_rebase_merge`,
           `allow_squash_merge`,
           `allow_auto_merge`,
-          `has_downloads`,
           `auto_init`,
           `gitignore_template`,
           `license_template`,
+          `squash_merge_commit_title`,
+          `squash_merge_commit_message`,
+          `merge_commit_title`,
+          `merge_commit_message`,
+          `auto_init`,
           `default_branch`,
           `topics`,
           `issue_labels_create`,
-          `issue_labels_merge_with_github_labels`.
+          `issue_labels_merge_with_github_labels`,
+          `vulnerability_alerts`,
+          `ignore_vulnerability_alerts_during_read`,
+          `template`.
 
           Module defaults are used for all arguments that are not set in `defaults`.
           Using top level arguments override defaults set by this argument.
@@ -248,6 +259,38 @@ section {
           pull requests on the repository. If you enable auto-merge for a pull
           request, the pull request will merge automatically when all required
           reviews are met and status checks have passed.
+        END
+      }
+
+      variable "squash_merge_commit_title" {
+        type        = string
+        default     = "COMMIT_OR_PR_TITLE"
+        description = <<-END
+          Set to `PR_TITLE` or `COMMIT_OR_PR_TITLE` for a default squash merge commit title.
+        END
+      }
+
+      variable "squash_merge_commit_message" {
+        type        = string
+        default     = "COMMIT_MESSAGES"
+        description = <<-END
+          Set to `PR_BODY`, `COMMIT_MESSAGES`, or `BLANK` for a default squash merge commit message.
+        END
+      }
+
+      variable "merge_commit_title" {
+        type        = string
+        default     = "MERGE_MESSAGE"
+        description = <<-END
+          Set to `PR_TITLE` or `MERGE_MESSAGE` for a default merge commit title.
+        END
+      }
+
+      variable "merge_commit_message" {
+        type        = string
+        default     = "PR_TITLE"
+        description = <<-END
+          Set to `PR_BODY`, `PR_TITLE`, or `BLANK` for a default merge commit message.
         END
       }
 
@@ -374,6 +417,13 @@ section {
         description = <<-END
           Set to `false` to disable security alerts for vulnerable dependencies.
           Enabling requires alerts to be enabled on the owner level.
+        END
+      }
+
+      variable "ignore_vulnerability_alerts_during_read" {
+        type        = bool
+        description = <<-END
+          Set to `true` to not call the vulnerability alerts endpoint so the resource can also be used without admin permissions during read.
         END
       }
 
