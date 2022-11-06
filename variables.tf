@@ -25,30 +25,9 @@ variable "branches" {
 }
 
 variable "defaults" {
-  description = "(Optional) Overwrite defaults for various repository settings"
+  description = "(Deprecated) DEPRECATED. Please convert defaults to Terraform Module for_each"
   type        = any
-
-  # Example:
-  # defaults = {
-  #   homepage_url           = "https://mineiros.io/"
-  #   visibility             = "private"
-  #   has_issues             = false
-  #   has_projects           = false
-  #   has_wiki               = false
-  #   delete_branch_on_merge = true
-  #   allow_merge_commit     = true
-  #   allow_rebase_merge     = false
-  #   allow_squash_merge     = false
-  #   allow_auto_merge       = false
-  #   has_downloads          = false
-  #   auto_init              = true
-  #   gitignore_template     = "terraform"
-  #   license_template       = "mit"
-  #   default_branch         = "main"
-  #   topics                 = ["topic-1", "topic-2"]
-  # }
-
-  default = {}
+  default     = {}
 }
 
 variable "description" {

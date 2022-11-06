@@ -124,32 +124,10 @@ See [variables.tf] and [examples/] for details and use-cases.
 
 - [**`defaults`**](#var-defaults): *(Optional `object(defaults)`)*<a name="var-defaults"></a>
 
-  A object of default settings to use instead of module defaults for top-level arguments.
-  See below for a list of supported arguments.
-
-  This is a special argument to set various defaults to be reused for multiple repositories.
-
-  The following top-level arguments can be set as defaults:
-  `homepage_url`,
-  `visibility`,
-  `has_issues`,
-  `has_projects`,
-  `has_wiki`,
-  `allow_merge_commit`,
-  `allow_rebase_merge`,
-  `allow_squash_merge`,
-  `allow_auto_merge`,
-  `has_downloads`,
-  `auto_init`,
-  `gitignore_template`,
-  `license_template`,
-  `default_branch`,
-  `topics`,
-  `issue_labels_create`,
-  `issue_labels_merge_with_github_labels`.
-
-  Module defaults are used for all arguments that are not set in `defaults`.
-  Using top level arguments override defaults set by this argument.
+  DEPRECATED:
+  This variable will be removed in future releases.
+  It was needed in times when Terraform Module for each was not available to provide default values for multiple repositories.
+  Please convert your code accordingly to stay compatible with future releases.
 
   Default is `{}`.
 
