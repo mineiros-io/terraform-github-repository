@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - BREAKING CHANGE: Remove deprectated variable `branch_protections` please use `branch_protections_v3` instead.
 
+### Deprecated
+
+- Mark `var.defaults` as deprecated. This variable was introduced and used before Terraform Module `for_each` was available.
+
 ## [0.17.0]
 
 ### Added
