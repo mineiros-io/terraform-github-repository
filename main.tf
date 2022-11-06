@@ -29,10 +29,10 @@ locals {
   issue_labels_create    = var.issue_labels_create == null ? lookup(var.defaults, "issue_labels_create", local.issue_labels_create_computed) : var.issue_labels_create
   branch_protections_v3  = var.branch_protections_v3 == null ? var.branch_protections : var.branch_protections_v3
 
-  squash_merge_commit_title   = local.allow_squash_merge ? var.squash_merge_commit_title == null ? try(var.defaults.squash_merge_commit_title, null) : var.squash_merge_commit_title : null
-  squash_merge_commit_message = local.allow_squash_merge ? var.squash_merge_commit_title == null ? try(var.defaults.squash_merge_commit_title, null) : var.squash_merge_commit_title : null
-  merge_commit_title          = local.allow_merge_commit ? var.merge_commit_title == null ? try(var.defaults.merge_commit_title, null) : var.merge_commit_title : null
-  merge_commit_message        = local.allow_merge_commit ? var.merge_commit_message == null ? try(var.merge_commit_message, null) : var.merge_commit_message : null
+  squash_merge_commit_title   = var.squash_merge_commit_title == null ? try(var.defaults.squash_merge_commit_title, "COMMIT_OR_PR_TITLE") : var.squash_merge_commit_title
+  squash_merge_commit_message = var.squash_merge_commit_message == null ? try(var.defaults.squash_merge_commit_message, "COMMIT_MESSAGES") : var.squash_merge_commit_message
+  merge_commit_title          = var.merge_commit_title == null ? try(var.defaults.merge_commit_title, "MERGE_MESSAGE") : var.merge_commit_title
+  merge_commit_message        = var.merge_commit_message == null ? try(var.merge_commit_message, "PR_TITLE") : var.merge_commit_message
 
   issue_labels_create_computed = local.has_issues || length(var.issue_labels) > 0
 
