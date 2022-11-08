@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- BREAKING CHANGE: Removed deprecated `var.defaults`
+- BREAKING CHANGE: Removed deprecated `var.private`, use `var.visibility` instead
+
 ## [0.18.0]
 
 ### Added

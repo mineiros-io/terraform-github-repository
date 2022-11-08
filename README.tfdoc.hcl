@@ -136,17 +136,6 @@ section {
         END
       }
 
-      variable "defaults" {
-        type        = object(defaults)
-        default     = {}
-        description = <<-END
-          DEPRECATED:
-          This variable will be removed in future releases.
-          It was needed in times when Terraform Module for each was not available to provide default values for multiple repositories.
-          Please convert your code accordingly to stay compatible with future releases.
-        END
-      }
-
       variable "pages" {
         type        = object(pages)
         default     = {}

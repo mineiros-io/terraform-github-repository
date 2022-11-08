@@ -1,7 +1,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# CREATE TWO REPOSITORIES WITH TEAMS AND DEFAULTS
-# This example covers the whole functionality of the module. We create two different repositories and attach default
-# settings. Also we create a single team and attach it to one of the repositories.
+# CREATE A REPOSITORY
+# This example covers the whole functionality of the module.
+# Also we create a single team and attach it to one of the repositories.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ module "repository" {
   name                   = var.name
   description            = var.description
   homepage_url           = var.url
-  private                = false
+  visibility             = "public"
   has_issues             = var.has_issues
   has_projects           = var.has_projects
   has_wiki               = var.has_wiki
@@ -72,10 +72,12 @@ module "repository" {
     (var.encrypted_secret_name) = var.encrypted_secret_text
   }
 
-  pages = {
-    branch = "main"
-    path   = "/"
-  }
+  # TODO: Since we're on a free plan we can't test this anymore
+  # However, we should move on to the new Terramate testsuite soon and just plan changes
+  # pages = {
+  #   branch = "main"
+  #   path   = "/"
+  # }
 
   webhooks = [{
     active       = var.webhook_active
@@ -110,37 +112,37 @@ module "repository" {
     }
   ]
 
-  branch_protections_v3 = [
-    {
-      branch                          = "main"
-      enforce_admins                  = true
-      require_conversation_resolution = true
-      require_signed_commits          = true
+  # branch_protections_v3 = [
+  #   {
+  #     branch                          = "main"
+  #     enforce_admins                  = true
+  #     require_conversation_resolution = true
+  #     require_signed_commits          = true
 
-      required_status_checks = {
-        strict   = true
-        contexts = ["ci/travis"]
-      }
+  #     required_status_checks = {
+  #       strict   = true
+  #       contexts = ["ci/travis"]
+  #     }
 
-      required_pull_request_reviews = {
-        dismiss_stale_reviews           = true
-        dismissal_users                 = [var.team_user]
-        dismissal_teams                 = [github_team.team.name]
-        require_code_owner_reviews      = true
-        required_approving_review_count = 1
-      }
+  #     required_pull_request_reviews = {
+  #       dismiss_stale_reviews           = true
+  #       dismissal_users                 = [var.team_user]
+  #       dismissal_teams                 = [github_team.team.name]
+  #       require_code_owner_reviews      = true
+  #       required_approving_review_count = 1
+  #     }
 
-      restrictions = {
-        users = [var.team_user]
-        teams = [github_team.team.name]
-      }
-    },
-    {
-      branch                 = "develop"
-      enforce_admins         = true
-      require_signed_commits = true
-    }
-  ]
+  #     restrictions = {
+  #       users = [var.team_user]
+  #       teams = [github_team.team.name]
+  #     }
+  #   },
+  #   {
+  #     branch                 = "develop"
+  #     enforce_admins         = true
+  #     require_signed_commits = true
+  #   }
+  # ]
 
   issue_labels = var.issue_labels
 
@@ -158,25 +160,6 @@ module "repository" {
   autolink_references = var.autolink_references
 
   app_installations = var.app_installations
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# TEST B
-# We are creating a repository using some defaults defined in
-# var.repository_defaults
-# ---------------------------------------------------------------------------------------------------------------------
-
-module "repository-with-defaults" {
-  source = "../.."
-
-  name           = var.repository_with_defaults_name
-  description    = var.repository_with_defaults_description
-  defaults       = var.repository_defaults
-  default_branch = "development"
-
-  branches = [
-    { name = "development" },
-  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

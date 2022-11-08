@@ -122,15 +122,6 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   The name of the repository.
 
-- [**`defaults`**](#var-defaults): *(Optional `object(defaults)`)*<a name="var-defaults"></a>
-
-  DEPRECATED:
-  This variable will be removed in future releases.
-  It was needed in times when Terraform Module for each was not available to provide default values for multiple repositories.
-  Please convert your code accordingly to stay compatible with future releases.
-
-  Default is `{}`.
-
 - [**`pages`**](#var-pages): *(Optional `object(pages)`)*<a name="var-pages"></a>
 
   A object of settings to configure GitHub Pages in this repository.

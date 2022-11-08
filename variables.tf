@@ -24,12 +24,6 @@ variable "branches" {
   default = []
 }
 
-variable "defaults" {
-  description = "(Deprecated) DEPRECATED. Please convert defaults to Terraform Module for_each"
-  type        = any
-  default     = {}
-}
-
 variable "description" {
   description = "(Optional) A description of the repository."
   type        = string
@@ -39,87 +33,81 @@ variable "description" {
 variable "homepage_url" {
   description = "(Optional) The website of the repository."
   type        = string
-  default     = null
-}
-
-variable "private" {
-  description = "(Optional) (DEPRECATED: use visibility)"
-  type        = bool
-  default     = null
+  default     = ""
 }
 
 variable "visibility" {
-  description = "(Optional) Can be 'public', 'private' or 'internal' (GHE only).The visibility parameter overrides the private parameter. Defaults to 'private' if neither private nor visibility are set, default to state of private parameter if it is set."
+  description = "(Optional) Can be 'public', 'private' or 'internal' (GHE only)."
   type        = string
-  default     = null
+  default     = "private"
 }
 
 variable "has_issues" {
-  description = "(Optional) Set to true to enable the GitHub Issues features on the repository. (Default: false)"
+  description = "(Optional) Set to true to enable the GitHub Issues features on the repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "has_projects" {
-  description = "(Optional) Set to true to enable the GitHub Projects features on the repository. Per the github documentation when in an organization that has disabled repository projects it will default to false and will otherwise default to true. If you specify true when it has been disabled it will return an error.  (Default: false)"
+  description = "(Optional) Set to true to enable the GitHub Projects features on the repository. Per the github documentation when in an organization that has disabled repository projects it will default to false and will otherwise default to true. If you specify true when it has been disabled it will return an error."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "has_wiki" {
-  description = "(Optional) Set to true to enable the GitHub Wiki features on the repository. (Default: false)"
+  description = "(Optional) Set to true to enable the GitHub Wiki features on the repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "allow_merge_commit" {
-  description = "(Optional) Set to false to disable merge commits on the repository. (Default: true)"
+  description = "(Optional) Set to false to disable merge commits on the repository."
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "allow_squash_merge" {
-  description = "(Optional) Set to true to enable squash merges on the repository. (Default: false)"
+  description = "(Optional) Set to true to enable squash merges on the repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "allow_rebase_merge" {
-  description = "(Optional) Set to true to enable rebase merges on the repository. (Default: false)"
+  description = "(Optional) Set to true to enable rebase merges on the repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "allow_auto_merge" {
-  description = "(Optional) Set to true to allow auto-merging pull requests on the repository. If enabled for a pull request, the pull request will merge automatically when all required reviews are met and status checks have passed. (Default: false)"
+  description = "(Optional) Set to true to allow auto-merging pull requests on the repository. If enabled for a pull request, the pull request will merge automatically when all required reviews are met and status checks have passed."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "delete_branch_on_merge" {
-  description = "(Optional) Whether or not to delete the merged branch after merging a pull request. (Default: false)"
+  description = "(Optional) Whether or not to delete the merged branch after merging a pull request."
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "has_downloads" {
-  description = "(Optional) Set to true to enable the (deprecated) downloads features on the repository. (Default: false)"
+  description = "(Optional) Set to true to enable the (deprecated) downloads features on the repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "auto_init" {
-  description = "(Optional) Wether or not to produce an initial commit in the repository. (Default: true)"
+  description = "(Optional) Wether or not to produce an initial commit in the repository."
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "pages" {
-  description = "(Optional) The repository's GitHub Pages configuration. (Default: {})"
+  description = "(Optional) The repository's GitHub Pages configuration."
   # type = object({
   # branch = string
-  # path   = string
-  # cname  = string
+  # path   = optional(string)
+  # cname  = optional(string)
   # })
   type    = any
   default = null
@@ -128,19 +116,19 @@ variable "pages" {
 variable "gitignore_template" {
   description = "(Optional) Use the name of the template without the extension. For example, Haskell. Available templates: https://github.com/github/gitignore"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "is_template" {
-  description = "(Optional) Whether or not to tell GitHub that this is a template repository. ( Default: false)"
+  description = "(Optional) Whether or not to tell GitHub that this is a template repository."
   type        = bool
-  default     = null
+  default     = false
 }
 
 variable "license_template" {
   description = "(Optional) Use the name of the template without the extension. For example, 'mit' or 'mpl-2.0'. Available licences: https://github.com/github/choosealicense.com/tree/gh-pages/_licenses"
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "default_branch" {
@@ -150,25 +138,25 @@ variable "default_branch" {
 }
 
 variable "archived" {
-  description = "(Optional) Specifies if the repository should be archived. (Default: false)"
+  description = "(Optional) Specifies if the repository should be archived."
   type        = bool
   default     = false
 }
 
 variable "topics" {
-  description = "(Optional) The list of topics of the repository.  (Default: [])"
+  description = "(Optional) The list of topics of the repository."
   type        = list(string)
-  default     = null
+  default     = []
 }
 
 variable "extra_topics" {
-  description = "(Optional) The list of additional topics of the repository. (Default: [])"
+  description = "(Optional) The list of additional topics of the repository."
   type        = list(string)
   default     = []
 }
 
 variable "template" {
-  description = "(Optional) Template repository to use. (Default: {})"
+  description = "(Optional) Template repository to use."
   type = object({
     owner      = string
     repository = string
@@ -376,7 +364,7 @@ variable "branch_protections_v4" {
 variable "issue_labels_merge_with_github_labels" {
   description = "(Optional) Specify if you want to merge and control githubs default set of issue labels."
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "issue_labels_create" {
@@ -541,7 +529,7 @@ variable "autolink_references" {
 variable "vulnerability_alerts" {
   type        = bool
   description = "(Optional) Set to `false` to disable security alerts for vulnerable dependencies. Enabling requires alerts to be enabled on the owner level."
-  default     = null
+  default     = false
 }
 
 variable "archive_on_destroy" {

@@ -149,31 +149,6 @@ variable "team_user" {
   default     = "terraform-test-user"
 }
 
-variable "repository_defaults" {
-  description = "A map of default settings that can be applied to a repository."
-  type        = any
-  default = {
-    homepage_url       = "https://github.com/mineiros-io"
-    visibility         = "private"
-    allow_merge_commit = true
-    gitignore_template = "Terraform"
-    license_template   = "mit"
-    topics             = ["terraform", "integration-test"]
-  }
-}
-
-variable "repository_with_defaults_name" {
-  description = "The name of the created repository that has default settings attached to it."
-  type        = string
-  default     = "test-public-repository-complete-example-B"
-}
-
-variable "repository_with_defaults_description" {
-  description = "The description of the created repository that has default settings attached to it."
-  type        = string
-  default     = "A public repository created with terraform to test the terraform-github-repository module."
-}
-
 variable "secret_name" {
   description = "The name of the secret."
   type        = string
