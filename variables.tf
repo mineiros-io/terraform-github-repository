@@ -373,6 +373,24 @@ variable "branch_protections_v4" {
   }
 }
 
+variable "security_and_analysis" {
+  description = "(Optional) Security and analysis configuration block"
+  type = object({
+    advanced_security               = optional(string, "disabled")
+    secret_scanning                 = optional(string, "disabled")
+    secret_scanning_push_protection = optional(string, "disabled")
+  })
+  default = {}
+  validation {
+    condition = alltrue(
+      [
+        for key, value in var.security_and_analysis : contains(["enabled", "disabled"], value)
+      ]
+    )
+    error_message = "Allowed values for security_and_analysis.advanced_security, security_and_analysis.secret_scanning, security_and_analysis.secret_scanning_push_protection are \"disabled\" and \"enabled\""
+  }
+}
+
 variable "issue_labels_merge_with_github_labels" {
   description = "(Optional) Specify if you want to merge and control githubs default set of issue labels."
   type        = bool

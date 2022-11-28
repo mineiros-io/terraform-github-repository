@@ -133,6 +133,22 @@ resource "github_repository" "repository" {
     }
   }
 
+  dynamic "security_and_analysis" {
+    for_each = var.security_and_analysis != null ? [true] : []
+
+    content {
+      advanced_security {
+        status = var.security_and_analysis.advanced_security
+      }
+      secret_scanning {
+        status = var.security_and_analysis.secret_scanning
+      }
+      secret_scanning_push_protection {
+        status = var.security_and_analysis.secret_scanning_push_protection
+      }
+    }
+  }
+
   lifecycle {
     ignore_changes = [
       auto_init,

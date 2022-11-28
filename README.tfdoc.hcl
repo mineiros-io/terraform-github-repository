@@ -38,11 +38,8 @@ section {
   toc     = true
   content = <<-END
     A [Terraform] module for creating a public or private repository on [Github].
-
     **_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.20 and above from `integrations/github`._**
-
     **Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
-
     ** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
   END
 
@@ -60,7 +57,6 @@ section {
       maintained by our team of platform engineering experts and saves
       companies such as yours tons of time by building on top of a pre-configured
       solution instead of building and maintaining it yourself.
-
       For details please see [https://mineiros.io/github-as-code][github-as-code].
     END
   }
@@ -70,11 +66,9 @@ section {
     content = <<-END
       In contrast to the plain `github_repository` resource this module enables various other
       features like Branch Protection or Collaborator Management.
-
       - **Default Security Settings**:
         This module creates a `private` repository by default,
         Deploy keys are `read-only` by default
-
       - **Standard Repository Features**:
         Setting basic Metadata,
         Merge Strategy,
@@ -82,7 +76,6 @@ section {
         License Template,
         Gitignore Template,
         Template Repository
-
       - **Extended Repository Features**:
         Branches,
         Branch Protection,
@@ -93,7 +86,6 @@ section {
         Deploy Keys,
         Projects,
         Repository Webhooks
-
       - _Features not yet implemented_:
         Project Columns support,
         Actions,
@@ -105,12 +97,10 @@ section {
     title   = "Getting Started"
     content = <<-END
       Most basic usage creating a new private github repository.
-
       ```hcl
       module "repository" {
         source  = "mineiros-io/repository/github"
         version = "~> 0.18.0"
-
         name               = "terraform-github-repository"
         license_template   = "apache-2.0"
         gitignore_template = "Terraform"
@@ -796,12 +786,9 @@ section {
           default     = []
           description = <<-END
             This resource allows you to configure v4 branch protection for repositories in your organization.
-
             Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
-
             When applied, the branch will be protected from forced pushes and deletion.
             Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
-
             **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
           END
 
@@ -971,6 +958,47 @@ section {
       }
 
       section {
+        title = "Security And Analysis Configuration"
+
+        variable "security_and_analysis" {
+          type        = object(security_and_analysis)
+          default     = {}
+          description = <<-END
+            (Optional) The repository's [security and analysis](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-security-and-analysis-settings-for-your-repository) configuration.
+            See [Security and Analysis Configuration](#security-and-analysis-configuration) below for details.
+          END
+
+          attribute "advanced_security" {
+            type        = string
+            required    = true
+            default     = "disabled"
+            description = <<-END
+              The advanced security configuration for the repository. See [Advanced Security Configuration](#advanced-security-configuration) below for details.
+            END
+          }
+
+          attribute "secret_scanning" {
+            type        = string
+            required    = true
+            default     = "disabled"
+            description = <<-END
+              The secret scanning configuration for the repository. See [Secret Scanning Configuration](#secret-scanning-configuration) below for details.
+            END
+          }
+
+          attribute "secret_scanning_push_protection" {
+            type        = string
+            required    = true
+            default     = "disabled"
+            description = <<-END
+              The secret scanning push protection configuration for the repository. See [Secret Scanning Push Protection Configuration](#secret-scanning-push-protection-configuration) below for details.
+            END
+          }
+
+        }
+      }
+
+      section {
         title = "Issue Labels Configuration"
 
         variable "issue_labels" {
@@ -1134,13 +1162,9 @@ section {
           default     = {}
           description = <<-END
             This map allows you to create and manage secrets for repositories in your organization.
-
             Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
-
             When applied, a secret with the given key and value will be created in the repositories.
-
             The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
-
             **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
           END
 
@@ -1157,9 +1181,7 @@ section {
           default     = {}
           description = <<-END
             This map allows you to create and manage encrypted secrets for repositories in your organization.
-
             Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
-
             When applied, a secret with the given key and value will be created in the repositories.
           END
 
@@ -1379,9 +1401,7 @@ section {
     title   = "Module Versioning"
     content = <<-END
       This Module follows the principles of [Semantic Versioning (SemVer)].
-
       Given a version number `MAJOR.MINOR.PATCH`, we increment the:
-
       1. `MAJOR` version when we make incompatible changes,
       2. `MINOR` version when we add functionality in a backwards compatible manner, and
       3. `PATCH` version when we make backwards compatible bug fixes.
@@ -1401,10 +1421,8 @@ section {
     content = <<-END
       [Mineiros][homepage] is a remote-first company headquartered in Berlin, Germany
       that solves development, automation and security challenges in cloud infrastructure.
-
       Our vision is to massively reduce time and overhead for teams to manage and
       deploy production-grade and secure cloud infrastructure.
-
       We offer commercial support for all of our modules and encourage you to reach out
       if you have any questions or need help. Feel free to email us at [hello@mineiros.io] or join our
       [Community Slack channel][slack].
@@ -1438,10 +1456,8 @@ section {
     title   = "License"
     content = <<-END
       [![license][badge-license]][apache20]
-
       This module is licensed under the Apache License Version 2.0, January 2004.
       Please see [LICENSE] for full details.
-
       Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
     END
   }
