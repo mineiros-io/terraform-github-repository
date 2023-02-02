@@ -13,22 +13,23 @@ module "repository" {
     module.team
   ]
 
-  name               = "my-public-repository"
-  description        = "A description of the repository."
-  homepage_url       = "https://github.com/mineiros-io"
-  visibility         = "public"
-  has_issues         = true
-  has_projects       = false
-  has_wiki           = true
-  allow_merge_commit = true
-  allow_rebase_merge = false
-  allow_squash_merge = false
-  allow_auto_merge   = true
-  has_downloads      = false
-  auto_init          = true
-  gitignore_template = "Terraform"
-  license_template   = "mit"
-  topics             = ["terraform", "unit-test"]
+  name                = "my-public-repository"
+  description         = "A description of the repository."
+  homepage_url        = "https://github.com/mineiros-io"
+  visibility          = "public"
+  has_issues          = true
+  has_projects        = false
+  has_wiki            = true
+  allow_merge_commit  = true
+  allow_rebase_merge  = false
+  allow_squash_merge  = false
+  allow_auto_merge    = true
+  has_downloads       = false
+  auto_init           = true
+  gitignore_template  = "Terraform"
+  license_template    = "mit"
+  topics              = ["terraform", "unit-test"]
+  allow_update_branch = true
 
   admin_team_ids = [
     module.team.team.id

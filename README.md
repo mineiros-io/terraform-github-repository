@@ -3,7 +3,7 @@
 [![Build Status](https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/mineiros-io/terraform-github-repository/actions)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
 [![Terraform Version](https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform)](https://github.com/hashicorp/terraform/releases)
-[![Github Provider Version](https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
+[![Github Provider Version](https://img.shields.io/badge/GH-5.16+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
 [![Join Slack](https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack)](https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg)
 
 # terraform-github-repository
@@ -649,6 +649,12 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `false`.
 
+  - [**`allow_update_branch`**](#attr-branch_protections_v4-allow_update_branch): *(Optional `bool`)*<a name="attr-branch_protections_v4-allow_update_branch"></a>
+
+    Set to `true` to always suggest updating pull request branches.
+
+    Default is `false`.
+
   - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
 
     Setting this to `true` will block creating the branch.
@@ -1078,7 +1084,7 @@ Run `make help` to see details on each available target.
 This module is licensed under the Apache License Version 2.0, January 2004.
 Please see [LICENSE] for full details.
 
-Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
+Copyright &copy; 2020-2023 [Mineiros GmbH][homepage]
 
 
 <!-- References -->
@@ -1097,7 +1103,7 @@ Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform
 [badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
-[badge-tf-gh]: https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform
+[badge-tf-gh]: https://img.shields.io/badge/GH-5.16+-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
 [build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
 [releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
