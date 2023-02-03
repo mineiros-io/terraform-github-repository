@@ -701,7 +701,7 @@ section {
               END
             }
 
-            attribute "contexts" {
+            attribute "checks" {
               type        = list(string)
               default     = []
               description = <<-END
@@ -967,7 +967,7 @@ section {
               END
             }
 
-            attribute "contexts" {
+            attribute "checks" {
               type        = list(string)
               default     = []
               description = <<-END

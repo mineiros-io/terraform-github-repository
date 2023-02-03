@@ -284,8 +284,8 @@ variable "branch_protections_v3" {
   #   enforce_admins         = bool
   #   require_signed_commits = bool
   #   required_status_checks = object({
-  #     strict   = bool
-  #     contexts = list(string)
+  #     strict = bool
+  #     checks = list(string)
   #   })
   #   required_pull_request_reviews = object({
   #     dismiss_stale_reviews           = bool
@@ -311,7 +311,7 @@ variable "branch_protections_v3" {
   #
   #     required_status_checks = {
   #       strict   = false
-  #       contexts = ["ci/travis"]
+  #       checks   = ["ci/travis"]
   #     }
   #
   #     required_pull_request_reviews = {

@@ -543,7 +543,7 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `false`.
 
-    - [**`contexts`**](#attr-branch_protections_v3-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-contexts"></a>
+    - [**`checks`**](#attr-branch_protections_v3-required_status_checks-checks): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-checks"></a>
 
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
 
@@ -749,7 +749,7 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `false`.
 
-    - [**`contexts`**](#attr-branch_protections_v4-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_status_checks-contexts"></a>
+    - [**`checks`**](#attr-branch_protections_v4-required_status_checks-checks): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_status_checks-checks"></a>
 
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
 
