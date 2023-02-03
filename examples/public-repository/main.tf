@@ -48,7 +48,7 @@ module "repository" {
 
   admin_collaborators = ["terraform-test-user-1"]
 
-  branch_protections = [
+  branch_protections_v5 = [
     {
       branch                          = "main"
       enforce_admins                  = true
