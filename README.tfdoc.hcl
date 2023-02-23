@@ -950,6 +950,14 @@ section {
                 If this is specified it must be a number between 0-6.
               END
             }
+
+            attribute "require_last_push_approval" {
+              type        = bool
+              default     = false
+              description = <<-END
+                Setting this to true enforces that the most recent push must be approved by someone other than the last pusher.
+              END
+            }
           }
 
           attribute "required_status_checks" {
