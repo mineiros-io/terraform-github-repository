@@ -352,6 +352,7 @@ variable "branch_protections_v4" {
   #           pull_request_bypassers          = optional(list(string), [])
   #           require_code_owner_reviews      = optional(bool, false)
   #           required_approving_review_count = optional(number, 0)
+  #           require_last_push_approval      = optional(bool, false)
   #         }
   #       ))
   #       required_status_checks = optional(object(

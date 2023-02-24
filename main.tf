@@ -220,6 +220,7 @@ resource "github_branch_protection" "branch_protection" {
       pull_request_bypassers          = try(required_pull_request_reviews.value.pull_request_bypassers, [])
       require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, true)
       required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, 0)
+      require_last_push_approval      = try(required_pull_request_reviews.value.require_last_push_approval, false)
     }
   }
 

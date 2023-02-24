@@ -736,6 +736,12 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `0`.
 
+    - [**`require_last_push_approval`**](#attr-branch_protections_v4-required_pull_request_reviews-require_last_push_approval): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-require_last_push_approval"></a>
+
+      Setting this to true enforces that the most recent push must be approved by someone other than the last pusher.
+
+      Default is `false`.
+
   - [**`required_status_checks`**](#attr-branch_protections_v4-required_status_checks): *(Optional `object(required_status_checks)`)*<a name="attr-branch_protections_v4-required_status_checks"></a>
 
     Enforce restrictions for required status checks.
