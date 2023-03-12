@@ -280,6 +280,7 @@ variable "branch_protections_v3" {
   #   required_status_checks = object({
   #     strict   = bool
   #     contexts = list(string)
+  #     checks = list(string)
   #   })
   #   required_pull_request_reviews = object({
   #     dismiss_stale_reviews           = bool
@@ -306,6 +307,8 @@ variable "branch_protections_v3" {
   #     required_status_checks = {
   #       strict   = false
   #       contexts = ["ci/travis"]
+  #       checks   = ["ci/travis:20258468"]
+  #     }))
   #     }
   #
   #     required_pull_request_reviews = {

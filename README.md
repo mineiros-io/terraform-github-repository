@@ -545,7 +545,14 @@ This is due to some terraform limitation and we will update the module once terr
 
     - [**`contexts`**](#attr-branch_protections_v3-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-contexts"></a>
 
-      The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+      **_DEPRECATED_**: Use `checks` instead. The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+
+      Default is `[]`.
+
+    - [**`checks`**](#attr-branch_protections_v3-required_status_checks-checks): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-checks"></a>
+
+      The list of status checks to require in order to merge into this branch.
+      Checks should be strings containing the context and app_id like so "context:app_id". If default is `[]` no status checks are required.
 
       Default is `[]`.
 
@@ -616,12 +623,12 @@ This is due to some terraform limitation and we will update the module once terr
 - [**`branch_protections_v4`**](#var-branch_protections_v4): *(Optional `list(branch_protection_v4)`)*<a name="var-branch_protections_v4"></a>
 
   This resource allows you to configure v4 branch protection for repositories in your organization.
-
+  
   Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
-
+  
   When applied, the branch will be protected from forced pushes and deletion.
   Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
-
+  
   **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
 
   Default is `[]`.
@@ -859,13 +866,13 @@ This is due to some terraform limitation and we will update the module once terr
 - [**`plaintext_secrets`**](#var-plaintext_secrets): *(Optional `map(string)`)*<a name="var-plaintext_secrets"></a>
 
   This map allows you to create and manage secrets for repositories in your organization.
-
+  
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding secret in plain text:
-
+  
   When applied, a secret with the given key and value will be created in the repositories.
-
+  
   The value of the secrets must be given in plain text, GitHub provider is in charge of encrypting it.
-
+  
   **Attention:** You should treat state as sensitive always. It is also advised that you do not store plaintext values in your code but rather populate the encrypted_value using fields from a resource, data source or variable as, while encrypted in state, these will be easily accessible in your code. See below for an example of this abstraction.
 
   Default is `{}`.
@@ -882,9 +889,9 @@ This is due to some terraform limitation and we will update the module once terr
 - [**`encrypted_secrets`**](#var-encrypted_secrets): *(Optional `map(string)`)*<a name="var-encrypted_secrets"></a>
 
   This map allows you to create and manage encrypted secrets for repositories in your organization.
-
+  
   Each element in the map is considered a secret to be managed, being the key map the secret name and the value the corresponding encrypted value of the secret using the Github public key in Base64 format.b
-
+  
   When applied, a secret with the given key and value will be created in the repositories.
 
   Default is `{}`.
