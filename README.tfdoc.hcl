@@ -705,7 +705,16 @@ section {
               type        = list(string)
               default     = []
               description = <<-END
-                The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+                **_DEPRECATED_**: Use `checks` instead. The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+              END
+            }
+
+            attribute "checks" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of status checks to require in order to merge into this branch.
+                Checks should be strings containing the context and app_id like so "context:app_id". If default is `[]` no status checks are required.
               END
             }
           }
