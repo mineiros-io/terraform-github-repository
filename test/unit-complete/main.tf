@@ -119,7 +119,8 @@ module "repository" {
 
       required_status_checks = {
         strict   = true
-        contexts = ["ci/travis"]
+        contexts = ["ci/travis"],
+        checks   = ["ci/travis:20258468"]
       }
 
       required_pull_request_reviews = {

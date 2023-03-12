@@ -57,7 +57,8 @@ locals {
     length(keys(b.required_status_checks)) > 0 ? [
       merge({
         strict   = null
-        contexts = []
+        contexts = [],
+        checks   = []
     }, b.required_status_checks)] : []
   ]
 
@@ -261,6 +262,7 @@ resource "github_branch_protection_v3" "branch_protection" {
     content {
       strict   = required_status_checks.value.strict
       contexts = required_status_checks.value.contexts
+      checks   = required_status_checks.value.checks
     }
   }
 
