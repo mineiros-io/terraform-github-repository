@@ -923,6 +923,12 @@ This is due to some terraform limitation and we will update the module once terr
 
     The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
 
+  - [**`is_alphanumeric`**](#attr-autolink_references-is_alphanumeric): *(Optional `bool`)*<a name="attr-autolink_references-is_alphanumeric"></a>
+
+    Specify if your autolink reference is alphanumeric or numeric identifier.
+
+    Default is `true`.
+
 #### App Installations
 
 - [**`app_installations`**](#var-app_installations): *(Optional `set(string)`)*<a name="var-app_installations"></a>
