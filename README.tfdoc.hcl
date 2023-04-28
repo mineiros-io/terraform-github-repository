@@ -209,7 +209,7 @@ section {
         type        = bool
         default     = false
         description = <<-END
-          Set to true to suggest updating pull request branches.
+          Set to `true` to suggest updating pull request branches.
         END
       }
 

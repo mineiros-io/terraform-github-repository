@@ -175,7 +175,7 @@ See [variables.tf] and [examples/] for details and use-cases.
 
 - [**`allow_update_branch`**](#var-allow_update_branch): *(Optional `bool`)*<a name="var-allow_update_branch"></a>
 
-  Set to true to suggest updating pull request branches.
+  Set to `true` to suggest updating pull request branches.
 
   Default is `false`.
 
