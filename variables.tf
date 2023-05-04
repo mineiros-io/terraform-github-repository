@@ -96,6 +96,12 @@ variable "allow_auto_merge" {
   default     = null
 }
 
+variable "allow_update_branch" {
+  description = "(Optional) Set to true to always suggest updating pull request branches."
+  type        = bool
+  default     = false
+}
+
 variable "delete_branch_on_merge" {
   description = "(Optional) Whether or not to delete the merged branch after merging a pull request. (Default: false)"
   type        = bool
@@ -278,8 +284,8 @@ variable "branch_protections_v3" {
   #   enforce_admins         = bool
   #   require_signed_commits = bool
   #   required_status_checks = object({
-  #     strict   = bool
-  #     contexts = list(string)
+  #     strict = bool
+  #     checks = list(string)
   #   })
   #   required_pull_request_reviews = object({
   #     dismiss_stale_reviews           = bool
@@ -305,7 +311,7 @@ variable "branch_protections_v3" {
   #
   #     required_status_checks = {
   #       strict   = false
-  #       contexts = ["ci/travis"]
+  #       checks   = ["ci/travis"]
   #     }
   #
   #     required_pull_request_reviews = {

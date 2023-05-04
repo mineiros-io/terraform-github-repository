@@ -21,7 +21,7 @@ header {
   }
 
   badge "tf-gh" {
-    image = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
+    image = "https://img.shields.io/badge/GH-5.16+-F8991D.svg?logo=terraform"
     url   = "https://github.com/terraform-providers/terraform-provider-github/releases"
     text  = "Github Provider Version"
   }
@@ -701,7 +701,7 @@ section {
               END
             }
 
-            attribute "contexts" {
+            attribute "checks" {
               type        = list(string)
               default     = []
               description = <<-END
@@ -837,6 +837,14 @@ section {
             END
           }
 
+          attribute "allow_update_branch" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Set to `true` to always suggest updating pull request branches.
+            END
+          }
+
           attribute "blocks_creations" {
             type        = bool
             default     = false
@@ -959,7 +967,7 @@ section {
               END
             }
 
-            attribute "contexts" {
+            attribute "checks" {
               type        = list(string)
               default     = []
               description = <<-END
@@ -1442,7 +1450,7 @@ section {
       This module is licensed under the Apache License Version 2.0, January 2004.
       Please see [LICENSE] for full details.
 
-      Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
+      Copyright &copy; 2020-2023 [Mineiros GmbH][homepage]
     END
   }
 }
@@ -1491,7 +1499,7 @@ references {
     value = "https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack"
   }
   ref "badge-tf-gh" {
-    value = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
+    value = "https://img.shields.io/badge/GH-5.16+-F8991D.svg?logo=terraform"
   }
   ref "releases-github-provider" {
     value = "https://github.com/terraform-providers/terraform-provider-github/releases"

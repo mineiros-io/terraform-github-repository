@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for `allow_update_branch`.
+
+### Changed
+
+- BREAKING CHANGE: Bump minimum supported version of the GitHub provider to `v5.16`
+  as it contains a [critical fix](https://github.com/integrations/terraform-provider-github/pull/1415) for branch protections.
+- BREAKING CHANGE: Rename `required_status_checks.contexts` to `required_status_checks.checks` as contexts is
+  depcrecated in v3 branch protections
+
 ## [0.18.0]
 
 ### Added

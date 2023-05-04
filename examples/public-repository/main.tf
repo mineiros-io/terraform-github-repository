@@ -29,6 +29,7 @@ module "repository" {
   gitignore_template = "Terraform"
   license_template   = "mit"
   topics             = ["terraform", "unit-test"]
+  allow_update_branch = true
 
   admin_team_ids = [
     module.team.team.id

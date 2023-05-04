@@ -56,8 +56,8 @@ locals {
     for b in local.branch_protections_v3 :
     length(keys(b.required_status_checks)) > 0 ? [
       merge({
-        strict   = null
-        contexts = []
+        strict = null
+        checks = []
     }, b.required_status_checks)] : []
   ]
 
@@ -108,6 +108,7 @@ resource "github_repository" "repository" {
   license_template       = local.license_template
   archived               = var.archived
   topics                 = local.topics
+  allow_update_branch    = var.allow_update_branch
 
   archive_on_destroy   = var.archive_on_destroy
   vulnerability_alerts = local.vulnerability_alerts
@@ -259,8 +260,8 @@ resource "github_branch_protection_v3" "branch_protection" {
     for_each = local.required_status_checks[count.index]
 
     content {
-      strict   = required_status_checks.value.strict
-      contexts = required_status_checks.value.contexts
+      strict = required_status_checks.value.strict
+      checks = required_status_checks.value.checks
     }
   }
 
