@@ -1207,6 +1207,15 @@ section {
                 The template of the target URL used for the links; must be a valid URL and contain `<num>` for the reference number.
               END
           }
+
+          attribute "is_alphanumeric" {
+            required    = false
+            type        = bool
+            default     = true
+            description = <<-END
+                Specify if your autolink reference is alphanumeric or numeric identifier.
+              END
+          }
         }
       }
 
