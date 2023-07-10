@@ -205,6 +205,14 @@ section {
         END
       }
 
+      variable "allow_update_branch" {
+        type        = bool
+        default     = false
+        description = <<-END
+          Set to `true` to suggest updating pull request branches.
+        END
+      }
+
       variable "allow_auto_merge" {
         type        = bool
         default     = false

@@ -173,6 +173,12 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   Default is `false`.
 
+- [**`allow_update_branch`**](#var-allow_update_branch): *(Optional `bool`)*<a name="var-allow_update_branch"></a>
+
+  Set to `true` to suggest updating pull request branches.
+
+  Default is `false`.
+
 - [**`allow_auto_merge`**](#var-allow_auto_merge): *(Optional `bool`)*<a name="var-allow_auto_merge"></a>
 
   Set to `true`  to allow [auto-merging](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request)

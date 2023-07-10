@@ -90,6 +90,12 @@ variable "allow_rebase_merge" {
   default     = null
 }
 
+variable "allow_update_branch" {
+  description = "(Optional) Set to true to suggest updating pull request branches. (Default: false)"
+  type        = bool
+  default     = null
+}
+
 variable "allow_auto_merge" {
   description = "(Optional) Set to true to allow auto-merging pull requests on the repository. If enabled for a pull request, the pull request will merge automatically when all required reviews are met and status checks have passed. (Default: false)"
   type        = bool
