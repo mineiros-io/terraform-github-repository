@@ -11,7 +11,7 @@ variable "name" {
     # https://github.com/mineiros-io/terraform-github-repository/issues/161
     # TODO: consider remove this when the provider handles it
     # https://github.com/integrations/terraform-provider-github/issues/1215
-    condition     = can(regex("^[a-zA-Z0-9_.]+$", var.name))
+    condition     = can(regex("^[a-zA-Z0-9_.]{1,100}$", var.name))
     error_message = "The name value must be a valid GitHub repository name."
   }
 }
