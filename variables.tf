@@ -12,7 +12,7 @@ variable "name" {
     # TODO: consider remove this when the provider handles it
     # https://github.com/integrations/terraform-provider-github/issues/1215
     condition     = can(regex("^[-a-zA-Z0-9_.]{1,100}$", var.name))
-    error_message = "The name value must be a valid GitHub repository name."
+    error_message = "The name value must include only alphanumeric characters, underscores or hyphens and consist of 100 characters or less."
   }
 }
 
