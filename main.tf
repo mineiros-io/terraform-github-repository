@@ -109,6 +109,12 @@ resource "github_repository" "repository" {
   archived               = var.archived
   topics                 = local.topics
 
+  merge_commit_message = var.merge_commit_message
+  merge_commit_title   = var.merge_commit_title
+
+  squash_merge_commit_message = var.squash_merge_commit_message
+  squash_merge_commit_title   = var.squash_merge_commit_title
+
   archive_on_destroy   = var.archive_on_destroy
   vulnerability_alerts = local.vulnerability_alerts
 
