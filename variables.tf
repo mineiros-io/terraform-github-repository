@@ -555,6 +555,12 @@ variable "app_installations" {
   default     = []
 }
 
+variable "web_commit_signoff_required" {
+  type        = bool
+  description = "(Optional) Require contributors to sign off on web-based commits."
+  default     = null
+}
+
 # ------------------------------------------------------------------------------
 # MODULE CONFIGURATION PARAMETERS
 # These variables are used to configure the module.
