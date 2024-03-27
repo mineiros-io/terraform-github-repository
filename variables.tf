@@ -117,9 +117,10 @@ variable "auto_init" {
 variable "pages" {
   description = "(Optional) The repository's GitHub Pages configuration. (Default: {})"
   # type = object({
-  # branch = string
-  # path   = string
-  # cname  = string
+  # branch      = string
+  # path        = string or null
+  # cname       = string
+  # build_type  = workflow or legacy (requires branch and optional path )
   # })
   type    = any
   default = null
@@ -333,9 +334,7 @@ variable "branch_protections_v4" {
   #       pattern                         = string
   #       allows_deletions                = optional(bool, false)
   #       allows_force_pushes             = optional(bool, false)
-  #       blocks_creations                = optional(bool, false)
   #       enforce_admins                  = optional(bool, false)
-  #       push_restrictions               = optional(list(string), [])
   #       require_conversation_resolution = optional(bool, false)
   #       require_signed_commits          = optional(bool, false)
   #       required_linear_history         = optional(bool, false)
