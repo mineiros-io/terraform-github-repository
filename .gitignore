@@ -49,3 +49,4 @@ out/
 .tool-versions
 .tfenv
 .ssh/
+.bash_history

@@ -215,6 +215,166 @@ resource "github_branch_protection" "branch_protection" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Repository Rulesets
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_ruleset
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_repository_ruleset" "ruleset" {
+  for_each = var.repository_rulesets
+
+  name       = each.key
+  repository = github_repository.repository.name
+  target     = each.value.target
+  enforcement = each.value.enforcement
+
+  dynamic "bypass_actors" {
+    for_each = try(each.value.bypass_actors, [])
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = bypass_actors.value.bypass_mode
+    }
+  }
+
+  dynamic "conditions" {
+    for_each = each.value.conditions != null ? [each.value.conditions] : []
+    content {
+      ref_name {
+        include = try(conditions.value.ref_name.include, [])
+        exclude = try(conditions.value.ref_name.exclude, [])
+      }
+    }
+  }
+
+  dynamic "rules" {
+    for_each = each.value.rules
+    content {
+      creation                    = try(rules.value.creation, null)
+      update                      = try(rules.value.update, null)
+      update_allows_fetch_and_merge = try(rules.value.update_allows_fetch_and_merge, null)
+      deletion                    = try(rules.value.deletion, null)
+      required_linear_history     = try(rules.value.required_linear_history, null)
+      
+      dynamic "required_deployments" {
+        for_each = rules.value.required_deployments == null ? [] : try([rules.value.required_deployments], [])
+        content {
+          required_deployment_environments = required_deployments.value.required_deployment_environments          
+        }
+      }
+      
+      required_signatures         = try(rules.value.required_signatures, null)
+      
+      dynamic "pull_request" {
+        for_each = rules.value.pull_request == null ? [] : try([rules.value.pull_request], [])
+        content {
+          dismiss_stale_reviews_on_push    = pull_request.value.dismiss_stale_reviews_on_push
+          require_code_owner_review        =  pull_request.value.require_code_owner_review
+          require_last_push_approval       =  pull_request.value.require_last_push_approval
+          required_approving_review_count  =  pull_request.value.required_approving_review_count
+          required_review_thread_resolution = pull_request.value.required_review_thread_resolution
+        }
+      }
+      #
+
+      dynamic "required_status_checks" {
+        for_each = rules.value.required_status_checks == null ? [] : try([rules.value.required_status_checks], [])
+        content {          
+
+          dynamic "required_check" {
+            for_each = required_status_checks.value.required_check == null ? [] : try([required_status_checks.value.required_check], [])
+            content {
+              context = required_check.value.context
+              integration_id  = try(required_check.value.integration_id, 0)
+            }
+          }
+
+          strict_required_status_checks_policy = required_status_checks.value.strict_required_status_checks_policy
+          do_not_enforce_on_create            =  required_status_checks.value.do_not_enforce_on_create          
+        }
+      }
+      
+      dynamic "merge_queue" {
+        for_each = rules.value.merge_queue == null ? [] : try([rules.value.merge_queue], [])
+        content {
+          check_response_timeout_minutes =  merge_queue.value.check_response_timeout_minutes
+          grouping_strategy              =  merge_queue.value.grouping_strategy
+          max_entries_to_build           =  merge_queue.value.max_entries_to_build
+          max_entries_to_merge           = merge_queue.value.max_entries_to_merge 
+          merge_method                   =  merge_queue.value.merge_method
+          min_entries_to_merge           =  merge_queue.value.min_entries_to_merge
+          min_entries_to_merge_wait_minutes = merge_queue.value.min_entries_to_merge_wait_minutes
+        }
+      }
+      
+      non_fast_forward            = try(rules.value.non_fast_forward, null)
+      dynamic "commit_message_pattern" {
+        for_each = rules.value.commit_message_pattern == null ? [] : try([rules.value.commit_message_pattern], [])
+        content {
+          name     = commit_message_pattern.value.name
+          negate   =  commit_message_pattern.value.negate
+          operator =  commit_message_pattern.value.operator
+          pattern  =  commit_message_pattern.value.pattern
+        }
+      }
+      
+      dynamic "commit_author_email_pattern" {
+        for_each = rules.value.commit_author_email_pattern == null ? [] : try([rules.value.commit_author_email_pattern], [])
+        content {
+          name     = commit_author_email_pattern.value.name
+          negate   =  commit_author_email_pattern.value.negate
+          operator =  commit_author_email_pattern.value.operator
+          pattern  =  commit_author_email_pattern.value.pattern
+        }
+      }
+
+      dynamic "committer_email_pattern" {
+        for_each = rules.value.committer_email_pattern == null ? [] : try([rules.value.committer_email_pattern], [])
+        content {
+          name     = committer_email_pattern.value.name
+          negate   =  committer_email_pattern.value.negate
+          operator =  committer_email_pattern.value.operator
+          pattern  =  committer_email_pattern.value.pattern
+        }
+      }
+
+      dynamic "branch_name_pattern" {
+        for_each = rules.value.branch_name_pattern == null ? [] : try([rules.value.branch_name_pattern], [])
+        content {
+          name     = branch_name_pattern.value.name
+          negate   =  branch_name_pattern.value.negate
+          operator =  branch_name_pattern.value.operator
+          pattern  =  branch_name_pattern.value.pattern
+        }
+      }
+
+      dynamic "tag_name_pattern" {
+        for_each = rules.value.tag_name_pattern == null ? [] : try([rules.value.tag_name_pattern], [])
+        content {
+          name     = tag_name_pattern.value.name
+          negate   =  tag_name_pattern.value.negate
+          operator =  tag_name_pattern.value.operator
+          pattern  =  tag_name_pattern.value.pattern
+        }
+      }
+      
+      dynamic "required_code_scanning" {
+        for_each = rules.value.required_code_scanning == null ? [] : try([rules.value.required_code_scanning], [])
+        content {
+          dynamic "required_code_scanning_tool" {
+            for_each = required_code_scanning.value.required_code_scanning_tool == null ? [] : try([required_code_scanning.value.required_code_scanning_tool], [])
+            content {
+              alerts_threshold         =  required_code_scanning_tool.value.alerts_threshold
+              security_alerts_threshold =  required_code_scanning_tool.value.security_alerts_threshold
+              tool                     =  required_code_scanning_tool.value.tool
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Issue Labels
 # ---------------------------------------------------------------------------------------------------------------------
 

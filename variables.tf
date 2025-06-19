@@ -335,6 +335,8 @@ variable "branch_protections" {
   }
 }
 
+
+
 variable "issue_labels_merge_with_github_labels" {
   description = "(Optional) Specify if you want to merge and control githubs default set of issue labels."
   type        = bool
@@ -546,4 +548,100 @@ variable "module_depends_on" {
   type        = any
   description = "(Optional) Define resources this module indirectly depends_on."
   default     = []
+}
+
+variable "repository_rulesets" {
+  description = <<EOT
+(Optional) Map of repository rulesets to apply. The map key is the ruleset name. Each value is an object describing the ruleset, following the structure of the GitHub ruleset API.
+EOT
+  type = map(object({
+    target      = string # "branch" or "tag"
+    enforcement = string # "disabled", "active", "evaluate"
+    repository  = optional(string)
+    bypass_actors = optional(list(object({
+      actor_id   = number
+      actor_type = string # "RepositoryRole", "Team", "Integration", "OrganizationAdmin"
+      bypass_mode = string # "always", "pull_request"
+    })), [])
+    conditions = optional(object({
+      ref_name = object({
+        include = list(string)
+        exclude = list(string)
+      })
+    }), null)
+    rules = list(object({
+      creation                    = optional(bool)
+      update                      = optional(bool)
+      update_allows_fetch_and_merge = optional(bool)
+      deletion                    = optional(bool)
+      required_linear_history     = optional(bool)
+      required_deployments = optional(object({
+        required_deployment_environments = list(string)
+      }), null)
+      required_signatures         = optional(bool)
+      pull_request = optional(object({
+        dismiss_stale_reviews_on_push    = optional(bool)
+        require_code_owner_review        = optional(bool)
+        require_last_push_approval       = optional(bool)
+        required_approving_review_count  = optional(number)
+        required_review_thread_resolution = optional(bool)
+      }), null)
+      required_status_checks = optional(object({
+        required_check = list(object({
+          context         = string
+          integration_id  = optional(number)
+        }))
+        strict_required_status_checks_policy = optional(bool)
+        do_not_enforce_on_create            = optional(bool)
+      }), null)
+      merge_queue = optional(object({
+        check_response_timeout_minutes = optional(number)
+        grouping_strategy              = optional(string)
+        max_entries_to_build           = optional(number)
+        max_entries_to_merge           = optional(number)
+        merge_method                   = optional(string)
+        min_entries_to_merge           = optional(number)
+        min_entries_to_merge_wait_minutes = optional(number)
+      }), null)
+      non_fast_forward = optional(bool)
+      commit_message_pattern = optional(object({
+        name     = optional(string)
+        negate   = optional(bool)
+        operator = string
+        pattern  = string
+      }), null)
+      commit_author_email_pattern = optional(object({
+        name     = optional(string)
+        negate   = optional(bool)
+        operator = string
+        pattern  = string
+      }), null)
+      committer_email_pattern = optional(object({
+        name     = optional(string)
+        negate   = optional(bool)
+        operator = string
+        pattern  = string
+      }), null)
+      branch_name_pattern = optional(object({
+        name     = optional(string)
+        negate   = optional(bool)
+        operator = string
+        pattern  = string
+      }), null)
+      tag_name_pattern = optional(object({
+        name     = optional(string)
+        negate   = optional(bool)
+        operator = string
+        pattern  = string
+      }), null)
+      required_code_scanning = optional(object({
+        required_code_scanning_tool = list(object({
+          alerts_threshold         = string
+          security_alerts_threshold = string
+          tool                     = string
+        }))
+      }), null)
+    }))
+  }))
+  default = {}
 }
