@@ -122,7 +122,7 @@ test/unit-tests:
 ## Generate README.md with Terradoc
 .PHONY: terradoc
 terradoc:
-	$(call quiet-command,terradoc generate -o README.md README.tfdoc.hcl)
+	$(call quiet-command,terraform-docs .)
 
 ## Generate shared configuration for tests
 .PHONY: terramate

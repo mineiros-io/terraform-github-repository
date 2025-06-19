@@ -1,12 +1,18 @@
 repos:
-  - repo: https://github.com/mineiros-io/pre-commit-hooks
-    rev: v0.5.1
+  - repo: local
     hooks:
-      - id: terraform-fmt
-      - id: terraform-validate
-        exclude: ^examples|.terraform/
-      - id: tflint
-      - id: phony-targets
-      - id: terradoc-validate
-      - id: terradoc-fmt
-      - id: terradoc-generate
+    - id: terraform-validate
+      name: terraform-validate
+      entry: bash -c 'terraform init && terraform validate'
+      language: system
+      pass_filenames: false
+    - id: tflint
+      name: tflint
+      entry: bash -c 'tflint --init && tflint'
+      language: system
+      pass_filenames: false
+    - id: terraform-docs
+      name: terraform-docs
+      entry: terraform-docs .
+      language: system
+      pass_filenames: false
