@@ -448,7 +448,7 @@ locals {
 }
 
 resource "github_issue_label" "label" {
-  for_each = var.issue_labels_create ? local.issue_labels : {}
+  for_each = var.issue_labels_create != null ? local.issue_labels : {}
 
   repository  = github_repository.repository.name
   name        = each.value.name
