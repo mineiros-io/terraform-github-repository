@@ -96,6 +96,12 @@ variable "allow_auto_merge" {
   default     = null
 }
 
+variable "allow_update_branch" {
+  description = "(Optional) - Set to true to always suggest updating pull request branches."
+  type        = bool
+  default     = null
+}
+
 variable "delete_branch_on_merge" {
   description = "(Optional) Whether or not to delete the merged branch after merging a pull request. (Default: false)"
   type        = bool
@@ -492,6 +498,25 @@ variable "webhooks" {
   #   content_type = "form"
   #   insecure_ssl = false
   # }]
+}
+
+variable "variables" {
+  description = "(Optional) Configure action variables. For full details please check: https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_variable"
+  type        = map(string)
+
+  default = {}
+
+  validation {
+    condition     = length(var.variables) <= 500
+    error_message = "Github restricts the number of Action variables per repository to 500"
+  }
+
+  validation {
+    condition = alltrue(concat([true], [
+      for _, v in var.variables : length(v) <= 48 * 1000
+    ]))
+    error_message = "Github restricts the maximum size of a single Action variable to 48KB"
+  }
 }
 
 variable "plaintext_secrets" {

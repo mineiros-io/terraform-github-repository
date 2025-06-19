@@ -1,8 +1,7 @@
-[<img src="https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg" width="400"/>][homepage]
+[<img src="https://repository-images.githubusercontent.com/662075696/23600e8a-7d2b-4f5c-aa58-afd28d01f056" width="400"/>][homepage]
 
 [![license][badge-license]][apache20]
 [![Terraform Version][badge-terraform]][releases-terraform]
-[![Join Slack][badge-slack]][slack]
 
 # Create a public repository on Github
 
@@ -14,7 +13,7 @@ branch protection.
 
 ```hcl
 module "repository" {
-  source  = "mineiros-io/repository/github"
+  source  = "amachsoftware/repository/github"
   version = "~> 0.13.0"
 
   module_depends_on = [
@@ -23,7 +22,7 @@ module "repository" {
 
   name               = "my-public-repository"
   description        = "A description of the repository."
-  homepage_url       = "https://github.com/mineiros-io"
+  homepage_url       = "https://github.com/amachsoftware"
   visibility         = "public"
   has_issues         = true
   has_projects       = false
@@ -85,7 +84,7 @@ module "repository" {
 ### Cloning the repository
 
 ```bash
-git clone https://github.com/mineiros-io/terraform-github-repository.git
+git clone https://github.com/amachsoftware/terraform-github-repository.git
 cd terraform-github-repository/examples/public-respository
 ```
 
@@ -108,11 +107,9 @@ Run `terraform destroy` to destroy all resources again.
 
 <!-- References -->
 
-[main.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/main/examples/public-respository/main.tf
-[homepage]: https://mineiros.io/?ref=terraform-github-repository
+[main.tf]: https://github.com/amachsoftware/terraform-github-repository/blob/main/examples/public-respository/main.tf
+[homepage]: https://amach.com
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x%20|0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
-[badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [releases-terraform]: https://github.com/hashicorp/terraform/releases
 [apache20]: https://opensource.org/licenses/Apache-2.0
-[slack]: https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg

@@ -1,8 +1,7 @@
-[<img src="https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg" width="400"/>][homepage]
+[<img src="https://repository-images.githubusercontent.com/662075696/23600e8a-7d2b-4f5c-aa58-afd28d01f056" width="400"/>][homepage]
 
 [![license][badge-license]][apache20]
 [![Terraform Version][badge-terraform]][releases-terraform]
-[![Join Slack][badge-slack]][slack]
 
 # Tests
 
@@ -62,9 +61,9 @@ Alternatively, you can also run the tests without Docker.
 
 <!-- References -->
 
-[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/main/Makefile
-[testdirectory]: https://github.com/mineiros-io/terraform-github-repository/tree/main/test
-[homepage]: https://mineiros.io/?ref=terraform-github-repository
+[makefile]: https://github.com/amachsoftware/terraform-github-repository/blob/main/Makefile
+[testdirectory]: https://github.com/amachsoftware/terraform-github-repository/tree/main/test
+[homepage]: https://amach.com
 [terratest]: https://github.com/gruntwork-io/terratest
 [package testing]: https://golang.org/pkg/testing/
 [docker]: https://docs.docker.com/get-started/
@@ -72,7 +71,5 @@ Alternatively, you can also run the tests without Docker.
 [terraform]: https://www.terraform.io/downloads.html
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform
-[badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [releases-terraform]: https://github.com/hashicorp/terraform/releases
 [apache20]: https://opensource.org/licenses/Apache-2.0
-[slack]: https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg

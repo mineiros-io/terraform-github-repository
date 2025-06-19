@@ -1,10 +1,9 @@
-[<img src="https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg" width="400"/>](https://mineiros.io/?ref=terraform-github-repository)
+[<img src="https://repository-images.githubusercontent.com/662075696/23600e8a-7d2b-4f5c-aa58-afd28d01f056" width="400"/>](https://amach.com)
 
-[![Build Status](https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/mineiros-io/terraform-github-repository/actions)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
+[![Build Status](https://github.com/amachsoftware/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/amachsoftware/terraform-github-repository/actions)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/amachsoftware/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/amachsoftware/terraform-github-repository/releases)
 [![Terraform Version](https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform)](https://github.com/hashicorp/terraform/releases)
 [![Github Provider Version](https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
-[![Join Slack](https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack)](https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg)
 
 # terraform-github-repository
 
@@ -17,7 +16,6 @@ A [Terraform] module for creating a public or private repository on [Github].
 ** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
 
 
-- [GitHub as Code](#github-as-code)
 - [Module Features](#module-features)
 - [Getting Started](#getting-started)
 - [Module Argument Reference](#module-argument-reference)
@@ -33,6 +31,7 @@ A [Terraform] module for creating a public or private repository on [Github].
     - [Issue Labels Configuration](#issue-labels-configuration)
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
+    - [Variables Configuration](#variables-configuration)
     - [Secrets Configuration](#secrets-configuration)
     - [Autolink References Configuration](#autolink-references-configuration)
     - [App Installations](#app-installations)
@@ -42,27 +41,11 @@ A [Terraform] module for creating a public or private repository on [Github].
   - [Terraform Github Provider Documentation](#terraform-github-provider-documentation)
 - [Module Versioning](#module-versioning)
   - [Backwards compatibility in `0.0.z` and `0.y.z` version](#backwards-compatibility-in-00z-and-0yz-version)
-- [About Mineiros](#about-mineiros)
+- [About Amach](#about-amach)
 - [Reporting Issues](#reporting-issues)
 - [Contributing](#contributing)
 - [Makefile Targets](#makefile-targets)
 - [License](#license)
-
-## GitHub as Code
-
-[GitHub as Code][github-as-code] is a commercial solution built on top of
-our open-source Terraform modules for GitHub. It helps our customers to
-manage their GitHub organization more efficiently by enabling anyone in
-their organization to **self-service** manage **on- and offboarding of users**,
-**repositories**, and settings such as **branch protections**, **secrets**, and more
-through code. GitHub as Code comes with **pre-configured GitHub Actions
-pipelines** for **change pre-view in Pull Requests**, **fully automated
-rollouts** and **rollbacks**. It's a comprehensive, ready-to-use blueprint
-maintained by our team of platform engineering experts and saves
-companies such as yours tons of time by building on top of a pre-configured
-solution instead of building and maintaining it yourself.
-
-For details please see [https://mineiros.io/github-as-code][github-as-code].
 
 ## Module Features
 
@@ -103,7 +86,7 @@ Most basic usage creating a new private github repository.
 
 ```hcl
 module "repository" {
-  source  = "mineiros-io/repository/github"
+  source  = "amachsoftware/repository/github"
   version = "~> 0.18.0"
 
   name               = "terraform-github-repository"
@@ -615,12 +598,15 @@ This is due to some terraform limitation and we will update the module once terr
 
 - [**`branch_protections_v4`**](#var-branch_protections_v4): *(Optional `list(branch_protection_v4)`)*<a name="var-branch_protections_v4"></a>
 
-  This resource allows you to configure v4 branch protection for repositories in your organization.
+  This resource allows you to configure v4 branch protection for
+  repositories in your organization.
 
-  Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+  Each element in the list is a branch to be protected and the value
+  the corresponding to the desired configuration for the branch.
 
-  When applied, the branch will be protected from forced pushes and deletion.
-  Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
+  When applied, the branch will be protected from forced pushes and
+  deletion. Additional constraints, such as required status checks or
+  restrictions on users and teams, can also be configured.
 
   **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
 
@@ -645,13 +631,11 @@ This is due to some terraform limitation and we will update the module once terr
 
   - [**`allows_force_pushes`**](#attr-branch_protections_v4-allows_force_pushes): *(Optional `bool`)*<a name="attr-branch_protections_v4-allows_force_pushes"></a>
 
-    Setting this to `true` to allow force pushes on the branch.
+    Setting this to `true` allows force pushes on the branch to
+    everyone.
 
-    Default is `false`.
-
-  - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
-
-    Setting this to `true` will block creating the branch.
+    Should be set to false if either `force_push_bypassers` or
+    `restrict_pushes` is used.
 
     Default is `false`.
 
@@ -661,28 +645,43 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `true`.
 
-  - [**`push_restrictions`**](#attr-branch_protections_v4-push_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-push_restrictions"></a>
+  - [**`force_push_bypassers`**](#attr-branch_protections_v4-force_push_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-force_push_bypassers"></a>
 
-    The list of actor Names/IDs that may push to the branch.
-    Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+    A list of actors that are allowed to bypass force push
+    restrictions.
+
+    An actor may be one of
+
+    - A graphql entity ID
+    - A user name prefixed by a single '/' (/:user)
+    - A organization team (:org/:team)
 
     Default is `[]`.
 
+  - [**`lock_branch`**](#attr-branch_protections_v4-lock_branch): *(Optional `bool`)*<a name="attr-branch_protections_v4-lock_branch"></a>
+
+    Lock the branch, making it readonly.
+
+    Default is `false`.
+
   - [**`require_conversation_resolution`**](#attr-branch_protections_v4-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_conversation_resolution"></a>
 
-    Setting this to true requires all conversations on code must be resolved before a pull request can be merged.
+    Setting this to true requires all conversations on code must be
+    resolved before a pull request can be merged.
 
     Default is `false`.
 
   - [**`require_signed_commits`**](#attr-branch_protections_v4-require_signed_commits): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_signed_commits"></a>
 
-    Setting this to true requires all commits to be signed with GPG.
+    Setting this to true requires all commits to be signed.
 
     Default is `false`.
 
   - [**`required_linear_history`**](#attr-branch_protections_v4-required_linear_history): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_linear_history"></a>
 
-    Setting this to true enforces a linear commit Git history, which prevents anyone from pushing merge commits to a branch.
+    Setting this to true enforces a linear commit Git history.
+
+    Prevents anyone from pushing merge commits to this branch.
 
     Default is `false`.
 
@@ -705,35 +704,49 @@ This is due to some terraform limitation and we will update the module once terr
     - [**`dismissal_restrictions`**](#attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-dismissal_restrictions"></a>
 
       The list of actor Names/IDs with dismissal access.
-      If not empty, `restrict_dismissals` is ignored
-      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+
+      If set, `restrict_dismissals` is ignored.
+
+      An actor may be one of
+
+      - A graphql entity ID
+      - A user name prefixed by a single '/' (/:user)
+      - A organization team (:org/:team)
 
       Default is `[]`.
 
     - [**`pull_request_bypassers`**](#attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-pull_request_bypassers"></a>
 
-      The list of actor Names/IDs that are allowed to bypass pull request requirements.
-      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+      The list of actor Names/IDs that are allowed to bypass pull
+      request requirements.
+
+      An actor may be one of
+
+      - A graphql entity ID
+      - A user name prefixed by a single '/' (/:user)
+      - A organization team (:org/:team)
 
       Default is `[]`.
 
     - [**`require_code_owner_reviews`**](#attr-branch_protections_v4-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-require_code_owner_reviews"></a>
 
-      Require an approved review in pull requests including files with a designated code owner.
+      Require an approved review in pull requests including files
+      with a designated code owner.
 
       Default is `true`.
 
     - [**`required_approving_review_count`**](#attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count): *(Optional `number`)*<a name="attr-branch_protections_v4-required_pull_request_reviews-required_approving_review_count"></a>
 
-      Require x number of approvals to satisfy branch protection requirements.
-      If this is specified it must be a number between 0-6.
+      Require this number of approvals to satisfy branch protection
+      requirements.
+
+      If specified, it must be a number between 0-6.
 
       Default is `0`.
 
   - [**`required_status_checks`**](#attr-branch_protections_v4-required_status_checks): *(Optional `object(required_status_checks)`)*<a name="attr-branch_protections_v4-required_status_checks"></a>
 
-    Enforce restrictions for required status checks.
-    See Required Status Checks below for details.
+    Require certain status checks pass before merges are legal
 
     The `required_status_checks` object accepts the following attributes:
 
@@ -745,7 +758,35 @@ This is due to some terraform limitation and we will update the module once terr
 
     - [**`contexts`**](#attr-branch_protections_v4-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_status_checks-contexts"></a>
 
-      The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+      The list of status checks to require in order to merge into
+      this branch.
+
+      If the list is empty or null, no checks are required.
+
+      Default is `[]`.
+
+  - [**`restrict_pushes`**](#attr-branch_protections_v4-restrict_pushes): *(Optional `object(restrict_pushes)`)*<a name="attr-branch_protections_v4-restrict_pushes"></a>
+
+    Restrict entities that can push to this branch
+
+    The `restrict_pushes` object accepts the following attributes:
+
+    - [**`blocks_creation`**](#attr-branch_protections_v4-restrict_pushes-blocks_creation): *(Optional `bool`)*<a name="attr-branch_protections_v4-restrict_pushes-blocks_creation"></a>
+
+      Prevent entities from creating branches that match this branch
+      `pattern`.
+
+      Default is `true`.
+
+    - [**`push_allowances`**](#attr-branch_protections_v4-restrict_pushes-push_allowances): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-restrict_pushes-push_allowances"></a>
+
+      List of actors that may push to this branch
+
+      An actor may be one of
+
+      - A graphql entity ID
+      - A user name prefixed by a single '/' (/:user)
+      - A organization team (:org/:team)
 
       Default is `[]`.
 
@@ -853,6 +894,29 @@ This is due to some terraform limitation and we will update the module once terr
   - [**`insecure_ssl`**](#attr-webhooks-insecure_ssl): *(Optional `bool`)*<a name="attr-webhooks-insecure_ssl"></a>
 
     Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
+
+#### Variables Configuration
+
+- [**`variables`**](#var-variables): *(Optional `map(string)`)*<a name="var-variables"></a>
+
+  Map of Github Action variables to create for this repository.
+
+  Each key, value pair maps directly to a `vars` context key, and
+  any restrictions Github places on variable naming will be reflected
+  within this map, too.
+
+  You can have a maximum of 500 variables per repository, and each variable's
+  value may be no larger than 48KB.
+
+  Default is `{}`.
+
+  Example:
+
+  ```hcl
+  variables = {
+    MY_REPO_VARIABLE = "my-repo-variable-value"
+  }
+  ```
 
 #### Secrets Configuration
 
@@ -1045,17 +1109,21 @@ Given a version number `MAJOR.MINOR.PATCH`, we increment the:
 - Backwards compatibility in versions `0.0.z` is **not guaranteed** when `z` is increased. (Initial development)
 - Backwards compatibility in versions `0.y.z` is **not guaranteed** when `y` is increased. (Pre-release)
 
-## About Mineiros
+## About Amach
 
-[Mineiros][homepage] is a remote-first company headquartered in Berlin, Germany
-that solves development, automation and security challenges in cloud infrastructure.
+[Amach][homepage]
 
-Our vision is to massively reduce time and overhead for teams to manage and
-deploy production-grade and secure cloud infrastructure.
+Cloud experts around the world. Delivering quality solutions.
 
-We offer commercial support for all of our modules and encourage you to reach out
-if you have any questions or need help. Feel free to email us at [hello@mineiros.io] or join our
-[Community Slack channel][slack].
+From day 1, we have focused on finding the very best talent to drive us
+forward.
+
+At our heart, we are a team of Engineers who love problem-solving while
+focusing on the quality of what we deliver.
+
+We believe that infrastructure as code empowers organizations to provide
+development teams direct access to infrastructure resources, thereby
+fulfilling the spirit of DevOps.
 
 ## Reporting Issues
 
@@ -1078,7 +1146,7 @@ Run `make help` to see details on each available target.
 This module is licensed under the Apache License Version 2.0, January 2004.
 Please see [LICENSE] for full details.
 
-Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
+Copyright &copy; 2020-2023 Mineiros GmbH, 2024 [Amach][homepage]
 
 
 <!-- References -->
@@ -1089,28 +1157,24 @@ Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
 [`github_repository_deploy_key`]: https://www.terraform.io/docs/providers/github/r/repository_deploy_key.html#attributes-reference
 [`github_repository_project`]: https://www.terraform.io/docs/providers/github/r/repository_project.html#attributes-reference
 [`github_repository_autolink_reference`]: https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference
-[homepage]: https://mineiros.io/?ref=terraform-github-repository
-[github-as-code]: https://mineiros.io/github-as-code?ref=terraform-github-repository
-[hello@mineiros.io]: mailto:hello@mineiros.io
-[badge-build]: https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
-[badge-semver]: https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver
+[homepage]: https://amach.com
+[badge-build]: https://github.com/amachsoftware/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg
+[badge-semver]: https://img.shields.io/github/v/tag/amachsoftware/terraform-github-repository.svg?label=latest&sort=semver
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform
-[badge-slack]: https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack
 [badge-tf-gh]: https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform
 [releases-github-provider]: https://github.com/terraform-providers/terraform-provider-github/releases
-[build-status]: https://github.com/mineiros-io/terraform-github-repository/actions
-[releases-github]: https://github.com/mineiros-io/terraform-github-repository/releases
+[build-status]: https://github.com/amachsoftware/terraform-github-repository/actions
+[releases-github]: https://github.com/amachsoftware/terraform-github-repository/releases
 [releases-terraform]: https://github.com/hashicorp/terraform/releases
 [apache20]: https://opensource.org/licenses/Apache-2.0
-[slack]: https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg
 [terraform]: https://www.terraform.io
 [aws]: https://aws.amazon.com/
 [semantic versioning (semver)]: https://semver.org/
-[variables.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/main/variables.tf
-[examples/]: https://github.com/mineiros-io/terraform-github-repository/blob/main/examples
-[issues]: https://github.com/mineiros-io/terraform-github-repository/issues
-[license]: https://github.com/mineiros-io/terraform-github-repository/blob/main/LICENSE
-[makefile]: https://github.com/mineiros-io/terraform-github-repository/blob/main/Makefile
-[pull requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
-[contribution guidelines]: https://github.com/mineiros-io/terraform-github-repository/blob/main/CONTRIBUTING.md
+[variables.tf]: https://github.com/amachsoftware/terraform-github-repository/blob/main/variables.tf
+[examples/]: https://github.com/amachsoftware/terraform-github-repository/blob/main/examples
+[issues]: https://github.com/amachsoftware/terraform-github-repository/issues
+[license]: https://github.com/amachsoftware/terraform-github-repository/blob/main/LICENSE
+[makefile]: https://github.com/amachsoftware/terraform-github-repository/blob/main/Makefile
+[pull requests]: https://github.com/amachsoftware/terraform-github-repository/pulls
+[contribution guidelines]: https://github.com/amachsoftware/terraform-github-repository/blob/main/CONTRIBUTING.md

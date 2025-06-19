@@ -1,4 +1,4 @@
-module github.com/mineiros-io/terraform-github-repository/v2
+module github.com/amachsoftware/terraform-github-repository/v2
 
 go 1.13
 

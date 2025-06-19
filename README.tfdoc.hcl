@@ -1,16 +1,16 @@
 header {
-  image = "https://raw.githubusercontent.com/mineiros-io/brand/3bffd30e8bdbbde32c143e2650b2faa55f1df3ea/mineiros-primary-logo.svg"
-  url   = "https://mineiros.io/?ref=terraform-github-repository"
+  image = "https://repository-images.githubusercontent.com/662075696/23600e8a-7d2b-4f5c-aa58-afd28d01f056"
+  url   = "https://amach.com"
 
   badge "build" {
-    image = "https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg"
-    url   = "https://github.com/mineiros-io/terraform-github-repository/actions"
+    image = "https://github.com/amachsoftware/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg"
+    url   = "https://github.com/amachsoftware/terraform-github-repository/actions"
     text  = "Build Status"
   }
 
   badge "semver)" {
-    image = "https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver"
-    url   = "https://github.com/mineiros-io/terraform-github-repository/releases"
+    image = "https://img.shields.io/github/v/tag/amachsoftware/terraform-github-repository.svg?label=latest&sort=semver"
+    url   = "https://github.com/amachsoftware/terraform-github-repository/releases"
     text  = "GitHub tag (latest SemVer)"
   }
 
@@ -24,12 +24,6 @@ header {
     image = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
     url   = "https://github.com/terraform-providers/terraform-provider-github/releases"
     text  = "Github Provider Version"
-  }
-
-  badge "slack" {
-    image = "https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack"
-    url   = "https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg"
-    text  = "Join Slack"
   }
 }
 
@@ -45,25 +39,6 @@ section {
 
     ** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
   END
-
-  section {
-    title   = "GitHub as Code"
-    content = <<-END
-      [GitHub as Code][github-as-code] is a commercial solution built on top of
-      our open-source Terraform modules for GitHub. It helps our customers to
-      manage their GitHub organization more efficiently by enabling anyone in
-      their organization to **self-service** manage **on- and offboarding of users**,
-      **repositories**, and settings such as **branch protections**, **secrets**, and more
-      through code. GitHub as Code comes with **pre-configured GitHub Actions
-      pipelines** for **change pre-view in Pull Requests**, **fully automated
-      rollouts** and **rollbacks**. It's a comprehensive, ready-to-use blueprint
-      maintained by our team of platform engineering experts and saves
-      companies such as yours tons of time by building on top of a pre-configured
-      solution instead of building and maintaining it yourself.
-
-      For details please see [https://mineiros.io/github-as-code][github-as-code].
-    END
-  }
 
   section {
     title   = "Module Features"
@@ -108,7 +83,7 @@ section {
 
       ```hcl
       module "repository" {
-        source  = "mineiros-io/repository/github"
+        source  = "amachsoftware/repository/github"
         version = "~> 0.18.0"
 
         name               = "terraform-github-repository"
@@ -795,12 +770,15 @@ section {
           type        = list(branch_protection_v4)
           default     = []
           description = <<-END
-            This resource allows you to configure v4 branch protection for repositories in your organization.
+            This resource allows you to configure v4 branch protection for
+            repositories in your organization.
 
-            Each element in the list is a branch to be protected and the value the corresponding to the desired configuration for the branch.
+            Each element in the list is a branch to be protected and the value
+            the corresponding to the desired configuration for the branch.
 
-            When applied, the branch will be protected from forced pushes and deletion.
-            Additional constraints, such as required status checks or restrictions on users and teams, can also be configured.
+            When applied, the branch will be protected from forced pushes and
+            deletion. Additional constraints, such as required status checks or
+            restrictions on users and teams, can also be configured.
 
             **_NOTE:_** May conflict with v3 branch protections if used for the same branch.
           END
@@ -833,15 +811,11 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to `true` to allow force pushes on the branch.
-            END
-          }
+              Setting this to `true` allows force pushes on the branch to
+              everyone.
 
-          attribute "blocks_creations" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to `true` will block creating the branch.
+              Should be set to false if either `force_push_bypassers` or
+              `restrict_pushes` is used.
             END
           }
 
@@ -853,12 +827,26 @@ section {
             END
           }
 
-          attribute "push_restrictions" {
+          attribute "force_push_bypassers" {
             type        = list(string)
             default     = []
             description = <<-END
-              The list of actor Names/IDs that may push to the branch.
-              Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+              A list of actors that are allowed to bypass force push
+              restrictions.
+
+              An actor may be one of
+
+              - A graphql entity ID
+              - A user name prefixed by a single '/' (/:user)
+              - A organization team (:org/:team)
+            END
+          }
+
+          attribute "lock_branch" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Lock the branch, making it readonly.
             END
           }
 
@@ -866,7 +854,8 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true requires all conversations on code must be resolved before a pull request can be merged.
+              Setting this to true requires all conversations on code must be
+              resolved before a pull request can be merged.
             END
           }
 
@@ -874,7 +863,7 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true requires all commits to be signed with GPG.
+              Setting this to true requires all commits to be signed.
             END
           }
 
@@ -882,7 +871,9 @@ section {
             type        = bool
             default     = false
             description = <<-END
-              Setting this to true enforces a linear commit Git history, which prevents anyone from pushing merge commits to a branch.
+              Setting this to true enforces a linear commit Git history.
+
+              Prevents anyone from pushing merge commits to this branch.
             END
           }
 
@@ -912,8 +903,14 @@ section {
               default     = []
               description = <<-END
                 The list of actor Names/IDs with dismissal access.
-                If not empty, `restrict_dismissals` is ignored
-                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+
+                If set, `restrict_dismissals` is ignored.
+
+                An actor may be one of
+
+                - A graphql entity ID
+                - A user name prefixed by a single '/' (/:user)
+                - A organization team (:org/:team)
               END
             }
 
@@ -921,8 +918,14 @@ section {
               type        = list(string)
               default     = []
               description = <<-END
-                The list of actor Names/IDs that are allowed to bypass pull request requirements.
-                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+                The list of actor Names/IDs that are allowed to bypass pull
+                request requirements.
+
+                An actor may be one of
+
+                - A graphql entity ID
+                - A user name prefixed by a single '/' (/:user)
+                - A organization team (:org/:team)
               END
             }
 
@@ -930,7 +933,8 @@ section {
               type        = bool
               default     = true
               description = <<-END
-                Require an approved review in pull requests including files with a designated code owner.
+                Require an approved review in pull requests including files
+                with a designated code owner.
               END
             }
 
@@ -938,8 +942,10 @@ section {
               type        = number
               default     = 0
               description = <<-END
-                Require x number of approvals to satisfy branch protection requirements.
-                If this is specified it must be a number between 0-6.
+                Require this number of approvals to satisfy branch protection
+                requirements.
+
+                If specified, it must be a number between 0-6.
               END
             }
           }
@@ -947,8 +953,7 @@ section {
           attribute "required_status_checks" {
             type        = object(required_status_checks)
             description = <<-END
-              Enforce restrictions for required status checks.
-              See Required Status Checks below for details.
+              Require certain status checks pass before merges are legal
             END
 
             attribute "strict" {
@@ -963,7 +968,40 @@ section {
               type        = list(string)
               default     = []
               description = <<-END
-                The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+                The list of status checks to require in order to merge into
+                this branch.
+
+                If the list is empty or null, no checks are required.
+              END
+            }
+          }
+
+          attribute "restrict_pushes" {
+            type        = object(restrict_pushes)
+            description = <<-END
+              Restrict entities that can push to this branch
+            END
+
+            attribute "blocks_creation" {
+              type        = bool
+              default     = true
+              description = <<-END
+                Prevent entities from creating branches that match this branch
+                `pattern`.
+              END
+            }
+
+            attribute "push_allowances" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                List of actors that may push to this branch
+
+                An actor may be one of
+
+                - A graphql entity ID
+                - A user name prefixed by a single '/' (/:user)
+                - A organization team (:org/:team)
               END
             }
           }
@@ -1123,6 +1161,31 @@ section {
               Determines whether the SSL certificate of the host for `url` will be verified when delivering payloads. Supported values include `0` (verification is performed) and `1` (verification is not performed). The default is `0`. **We strongly recommend not setting this to `1` as you are subject to man-in-the-middle and other attacks.**
             END
           }
+        }
+      }
+
+      section {
+        title = "Variables Configuration"
+
+        variable "variables" {
+          type        = map(string)
+          default     = {}
+          description = <<-END
+            Map of Github Action variables to create for this repository.
+
+            Each key, value pair maps directly to a `vars` context key, and
+            any restrictions Github places on variable naming will be reflected
+            within this map, too.
+
+            You can have a maximum of 500 variables per repository, and each variable's
+            value may be no larger than 48KB.
+          END
+
+          readme_example = <<-END
+            variables = {
+              MY_REPO_VARIABLE = "my-repo-variable-value"
+            }
+          END
         }
       }
 
@@ -1397,17 +1460,21 @@ section {
   }
 
   section {
-    title   = "About Mineiros"
+    title   = "About Amach"
     content = <<-END
-      [Mineiros][homepage] is a remote-first company headquartered in Berlin, Germany
-      that solves development, automation and security challenges in cloud infrastructure.
+      [Amach][homepage]
 
-      Our vision is to massively reduce time and overhead for teams to manage and
-      deploy production-grade and secure cloud infrastructure.
+      Cloud experts around the world. Delivering quality solutions.
 
-      We offer commercial support for all of our modules and encourage you to reach out
-      if you have any questions or need help. Feel free to email us at [hello@mineiros.io] or join our
-      [Community Slack channel][slack].
+      From day 1, we have focused on finding the very best talent to drive us
+      forward.
+
+      At our heart, we are a team of Engineers who love problem-solving while
+      focusing on the quality of what we deliver.
+
+      We believe that infrastructure as code empowers organizations to provide
+      development teams direct access to infrastructure resources, thereby
+      fulfilling the spirit of DevOps.
     END
   }
 
@@ -1442,7 +1509,7 @@ section {
       This module is licensed under the Apache License Version 2.0, January 2004.
       Please see [LICENSE] for full details.
 
-      Copyright &copy; 2020-2022 [Mineiros GmbH][homepage]
+      Copyright &copy; 2020-2023 Mineiros GmbH, 2024 [Amach][homepage]
     END
   }
 }
@@ -1467,28 +1534,19 @@ references {
     value = "https://www.terraform.io/docs/providers/github/r/repository_autolink_reference.html#attributes-reference"
   }
   ref "homepage" {
-    value = "https://mineiros.io/?ref=terraform-github-repository"
-  }
-  ref "github-as-code" {
-    value = "https://mineiros.io/github-as-code?ref=terraform-github-repository"
-  }
-  ref "hello@mineiros.io" {
-    value = "mailto:hello@mineiros.io"
+    value = "https://amach.com"
   }
   ref "badge-build" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg"
+    value = "https://github.com/amachsoftware/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg"
   }
   ref "badge-semver" {
-    value = "https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver"
+    value = "https://img.shields.io/github/v/tag/amachsoftware/terraform-github-repository.svg?label=latest&sort=semver"
   }
   ref "badge-license" {
     value = "https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg"
   }
   ref "badge-terraform" {
     value = "https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform"
-  }
-  ref "badge-slack" {
-    value = "https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack"
   }
   ref "badge-tf-gh" {
     value = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
@@ -1497,19 +1555,16 @@ references {
     value = "https://github.com/terraform-providers/terraform-provider-github/releases"
   }
   ref "build-status" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/actions"
+    value = "https://github.com/amachsoftware/terraform-github-repository/actions"
   }
   ref "releases-github" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/releases"
+    value = "https://github.com/amachsoftware/terraform-github-repository/releases"
   }
   ref "releases-terraform" {
     value = "https://github.com/hashicorp/terraform/releases"
   }
   ref "apache20" {
     value = "https://opensource.org/licenses/Apache-2.0"
-  }
-  ref "slack" {
-    value = "https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg"
   }
   ref "terraform" {
     value = "https://www.terraform.io"
@@ -1521,24 +1576,24 @@ references {
     value = "https://semver.org/"
   }
   ref "variables.tf" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/blob/main/variables.tf"
+    value = "https://github.com/amachsoftware/terraform-github-repository/blob/main/variables.tf"
   }
   ref "examples/" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/blob/main/examples"
+    value = "https://github.com/amachsoftware/terraform-github-repository/blob/main/examples"
   }
   ref "issues" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/issues"
+    value = "https://github.com/amachsoftware/terraform-github-repository/issues"
   }
   ref "license" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/blob/main/LICENSE"
+    value = "https://github.com/amachsoftware/terraform-github-repository/blob/main/LICENSE"
   }
   ref "makefile" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/blob/main/Makefile"
+    value = "https://github.com/amachsoftware/terraform-github-repository/blob/main/Makefile"
   }
   ref "pull requests" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/pulls"
+    value = "https://github.com/amachsoftware/terraform-github-repository/pulls"
   }
   ref "contribution guidelines" {
-    value = "https://github.com/mineiros-io/terraform-github-repository/blob/main/CONTRIBUTING.md"
+    value = "https://github.com/amachsoftware/terraform-github-repository/blob/main/CONTRIBUTING.md"
   }
 }

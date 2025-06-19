@@ -6,7 +6,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 module "repository" {
-  source  = "mineiros-io/repository/github"
+  source  = "amachsoftware/repository/github"
   version = "~> 0.13.0"
 
   module_depends_on = [
@@ -15,7 +15,7 @@ module "repository" {
 
   name               = "my-public-repository"
   description        = "A description of the repository."
-  homepage_url       = "https://github.com/mineiros-io"
+  homepage_url       = "https://github.com/amachsoftware"
   visibility         = "public"
   has_issues         = true
   has_projects       = false

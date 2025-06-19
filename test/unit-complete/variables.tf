@@ -19,7 +19,7 @@ variable "delete_branch_on_merge" {
 variable "url" {
   description = "The url of the created repository."
   type        = string
-  default     = "https://github.com/mineiros-io"
+  default     = "https://github.com/amachsoftware"
 }
 
 variable "has_issues" {
@@ -153,7 +153,7 @@ variable "repository_defaults" {
   description = "A map of default settings that can be applied to a repository."
   type        = any
   default = {
-    homepage_url       = "https://github.com/mineiros-io"
+    homepage_url       = "https://github.com/amachsoftware"
     visibility         = "private"
     allow_merge_commit = true
     gitignore_template = "Terraform"

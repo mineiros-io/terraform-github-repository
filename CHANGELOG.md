@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for Github Actions variables via `var.variables`
+
+### Changed
+
+- Bumped provider min version to `v5.19`
+
 ## [0.18.0]
 
 ### Added

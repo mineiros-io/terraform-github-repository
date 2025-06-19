@@ -77,8 +77,8 @@ If everything looks good, they will merge the code and release a new version whi
 
 <!-- References -->
 
-[pull requests]: https://github.com/mineiros-io/terraform-github-repository/pulls
-[pre-commit-file]: https://github.com/mineiros-io/terraform-github-repository/blob/main/.pre-commit-config.yaml
+[pull requests]: https://github.com/amachsoftware/terraform-github-repository/pulls
+[pre-commit-file]: https://github.com/amachsoftware/terraform-github-repository/blob/main/.pre-commit-config.yaml
 [github flow]: https://guides.github.com/introduction/flow/
 [codeowners]: https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 [fork]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
