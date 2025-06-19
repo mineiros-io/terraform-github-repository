@@ -222,6 +222,13 @@ resource "github_branch_protection" "branch_protection" {
 resource "github_repository_ruleset" "ruleset" {
   for_each = var.repository_rulesets
 
+  depends_on = [
+    github_repository_collaborator.collaborator,
+    github_team_repository.team_repository,
+    github_team_repository.team_repository_by_slug,
+    github_branch.branch,
+  ]
+
   name       = each.key
   repository = github_repository.repository.name
   target     = each.value.target
@@ -383,7 +390,7 @@ locals {
   # all deployed repositories.
   # add labels if new labels in github are added by default.
   # this is the set of labels and colors as of 2020-02-02
-  github_default_issue_labels = var.issue_labels_merge_with_github_labels ? [
+  github_default_issue_labels = var.issue_labels_merge_with_github_labels != null ? [
     {
       name        = "bug"
       description = "Something isn't working"
