@@ -186,6 +186,18 @@ variable "secret_text" {
   default     = "42"
 }
 
+variable "variable_name" {
+  description = "The name of the variable."
+  type        = string
+  default     = "MY_VAR"
+}
+
+variable "variable_text" {
+  description = "The value of the variable."
+  type        = string
+  default     = "42"
+}
+
 variable "encrypted_secret_name" {
   description = "The name of the secret."
   type        = string
