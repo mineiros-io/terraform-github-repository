@@ -494,6 +494,18 @@ variable "webhooks" {
   # }]
 }
 
+variable "plaintext_variables" {
+  description = "(Optional) Configuring actions variables. For details please check: https://www.terraform.io/docs/providers/github/r/actions_variable"
+  type        = map(string)
+
+  # Example:
+  # plaintext_variable = {
+  #     "MY_VAR" = "42"
+  # }
+
+  default = {}
+}
+
 variable "plaintext_secrets" {
   description = "(Optional) Configuring actions secrets. For details please check: https://www.terraform.io/docs/providers/github/r/actions_secret"
   type        = map(string)
