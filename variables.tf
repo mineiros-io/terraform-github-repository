@@ -333,9 +333,9 @@ variable "branch_protections_v4" {
   #       pattern                         = string
   #       allows_deletions                = optional(bool, false)
   #       allows_force_pushes             = optional(bool, false)
-  #       blocks_creations                = optional(bool, false)
   #       enforce_admins                  = optional(bool, false)
-  #       push_restrictions               = optional(list(string), [])
+  #       force_push_bypassers            = optional(list(string), [])
+  #       lock_branch                     = optional(bool, false)
   #       require_conversation_resolution = optional(bool, false)
   #       require_signed_commits          = optional(bool, false)
   #       required_linear_history         = optional(bool, false)
@@ -352,6 +352,12 @@ variable "branch_protections_v4" {
   #         {
   #           strict   = optional(bool, false)
   #           contexts = optional(list(string), [])
+  #         }
+  #       ))
+  #       restrict_pushes = optional(object(
+  #         {
+  #           blocks_creations = optional(bool, true)
+  #           push_allowances  = optional(list(string), [])
   #         }
   #       ))
   #     }

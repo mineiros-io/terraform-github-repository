@@ -651,24 +651,24 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `false`.
 
-  - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
-
-    Setting this to `true` will block creating the branch.
-
-    Default is `false`.
-
   - [**`enforce_admins`**](#attr-branch_protections_v4-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v4-enforce_admins"></a>
 
     Keeping this as `true` enforces status checks for repository administrators.
 
     Default is `true`.
 
-  - [**`push_restrictions`**](#attr-branch_protections_v4-push_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-push_restrictions"></a>
+  - [**`force_push_bypassers`**](#attr-branch_protections_v4-force_push_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-force_push_bypassers"></a>
 
-    The list of actor Names/IDs that may push to the branch.
-    Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+    The list of actor Names/IDs that are allowed to bypass force push restrictions.
+    Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
 
     Default is `[]`.
+
+  - [**`lock_branch`**](#attr-branch_protections_v4-lock_branch): *(Optional `bool`)*<a name="attr-branch_protections_v4-lock_branch"></a>
+
+    Setting this to `true` will make the branch read-only and prevent any pushes to it.
+
+    Default is `false`.
 
   - [**`require_conversation_resolution`**](#attr-branch_protections_v4-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_conversation_resolution"></a>
 
@@ -748,6 +748,25 @@ This is due to some terraform limitation and we will update the module once terr
     - [**`contexts`**](#attr-branch_protections_v4-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-required_status_checks-contexts"></a>
 
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+
+      Default is `[]`.
+
+  - [**`restrict_pushes`**](#attr-branch_protections_v4-restrict_pushes): *(Optional `object(restrict_pushes)`)*<a name="attr-branch_protections_v4-restrict_pushes"></a>
+
+    Restrict pushes to matching branches. Replaces the former top-level `push_restrictions` and `blocks_creations` arguments which were removed in provider v6.x.
+
+    The `restrict_pushes` object accepts the following attributes:
+
+    - [**`blocks_creations`**](#attr-branch_protections_v4-restrict_pushes-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-restrict_pushes-blocks_creations"></a>
+
+      Setting this to `true` will block creating matching branches via the GitHub web UI and API.
+
+      Default is `true`.
+
+    - [**`push_allowances`**](#attr-branch_protections_v4-restrict_pushes-push_allowances): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-restrict_pushes-push_allowances"></a>
+
+      The list of actor Names/IDs that may push to matching branches.
+      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
 
       Default is `[]`.
 

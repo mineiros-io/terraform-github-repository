@@ -838,14 +838,6 @@ section {
             END
           }
 
-          attribute "blocks_creations" {
-            type        = bool
-            default     = false
-            description = <<-END
-              Setting this to `true` will block creating the branch.
-            END
-          }
-
           attribute "enforce_admins" {
             type        = bool
             default     = true
@@ -854,12 +846,20 @@ section {
             END
           }
 
-          attribute "push_restrictions" {
+          attribute "force_push_bypassers" {
             type        = list(string)
             default     = []
             description = <<-END
-              The list of actor Names/IDs that may push to the branch.
-              Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+              The list of actor Names/IDs that are allowed to bypass force push restrictions.
+              Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+            END
+          }
+
+          attribute "lock_branch" {
+            type        = bool
+            default     = false
+            description = <<-END
+              Setting this to `true` will make the branch read-only and prevent any pushes to it.
             END
           }
 
@@ -965,6 +965,30 @@ section {
               default     = []
               description = <<-END
                 The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+              END
+            }
+          }
+
+          attribute "restrict_pushes" {
+            type        = object(restrict_pushes)
+            description = <<-END
+              Restrict pushes to matching branches. Replaces the former top-level `push_restrictions` and `blocks_creations` arguments which were removed in provider v6.x.
+            END
+
+            attribute "blocks_creations" {
+              type        = bool
+              default     = true
+              description = <<-END
+                Setting this to `true` will block creating matching branches via the GitHub web UI and API.
+              END
+            }
+
+            attribute "push_allowances" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of actor Names/IDs that may push to matching branches.
+                Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
               END
             }
           }

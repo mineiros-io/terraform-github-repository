@@ -223,6 +223,17 @@ resource "github_branch_protection" "branch_protection" {
   require_conversation_resolution = try(var.branch_protections_v4[each.value].require_conversation_resolution, false)
   require_signed_commits          = try(var.branch_protections_v4[each.value].require_signed_commits, false)
   required_linear_history         = try(var.branch_protections_v4[each.value].required_linear_history, false)
+  force_push_bypassers            = try(var.branch_protections_v4[each.value].force_push_bypassers, [])
+  lock_branch                     = try(var.branch_protections_v4[each.value].lock_branch, false)
+
+  dynamic "restrict_pushes" {
+    for_each = try([var.branch_protections_v4[each.value].restrict_pushes], [])
+
+    content {
+      blocks_creations = try(restrict_pushes.value.blocks_creations, true)
+      push_allowances  = try(restrict_pushes.value.push_allowances, [])
+    }
+  }
 
   dynamic "required_pull_request_reviews" {
     for_each = try([var.branch_protections_v4[each.value].required_pull_request_reviews], [])
@@ -743,7 +754,8 @@ resource "github_repository_deploy_key" "deploy_key" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Projects
+# Projects (DEPRECATED — GitHub has removed the classic projects API.
+# This resource will be removed in a future version. Migrate to GitHub Projects v2.)
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {
