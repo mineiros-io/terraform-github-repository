@@ -16,6 +16,7 @@ locals {
   allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
   allow_squash_merge     = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
   allow_auto_merge       = var.allow_auto_merge == null ? lookup(var.defaults, "allow_auto_merge", false) : var.allow_auto_merge
+  allow_update_branch    = var.allow_update_branch == null ? lookup(var.defaults, "allow_update_branch", false) : var.allow_update_branch
   delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", true) : var.delete_branch_on_merge
   is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
   has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
@@ -58,6 +59,7 @@ locals {
       merge({
         strict   = null
         contexts = []
+        checks   = []
     }, b.required_status_checks)] : []
   ]
 
@@ -68,8 +70,11 @@ locals {
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
+        dismissal_apps                  = []
         require_code_owner_reviews      = null
         required_approving_review_count = null
+        require_last_push_approval      = null
+        bypass_pull_request_allowances  = {}
     }, b.required_pull_request_reviews)] : []
   ]
 
@@ -82,6 +87,23 @@ locals {
         apps  = []
     }, b.restrictions)] : []
   ]
+}
+
+locals {
+  rulesets = [
+    for idx, rs in var.rulesets : merge({
+      target                   = "branch"
+      enforcement              = "active"
+      conditions               = {}
+      bypass_actors            = []
+      rules                    = {}
+      do_not_enforce_on_create = null
+    }, rs)
+  ]
+
+  rulesets_map = {
+    for idx, rs in local.rulesets : format("%02d-%s", idx, rs.name) => rs
+  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -100,6 +122,7 @@ resource "github_repository" "repository" {
   allow_rebase_merge     = local.allow_rebase_merge
   allow_squash_merge     = local.allow_squash_merge
   allow_auto_merge       = local.allow_auto_merge
+  allow_update_branch    = local.allow_update_branch
   delete_branch_on_merge = local.delete_branch_on_merge
   is_template            = local.is_template
   has_downloads          = local.has_downloads
@@ -202,12 +225,21 @@ resource "github_branch_protection" "branch_protection" {
 
   allows_deletions                = try(var.branch_protections_v4[each.value].allows_deletions, false)
   allows_force_pushes             = try(var.branch_protections_v4[each.value].allows_force_pushes, false)
-  blocks_creations                = try(var.branch_protections_v4[each.value].blocks_creations, false)
   enforce_admins                  = try(var.branch_protections_v4[each.value].enforce_admins, true)
-  push_restrictions               = try(var.branch_protections_v4[each.value].push_restrictions, [])
   require_conversation_resolution = try(var.branch_protections_v4[each.value].require_conversation_resolution, false)
   require_signed_commits          = try(var.branch_protections_v4[each.value].require_signed_commits, false)
   required_linear_history         = try(var.branch_protections_v4[each.value].required_linear_history, false)
+  force_push_bypassers            = try(var.branch_protections_v4[each.value].force_push_bypassers, [])
+  lock_branch                     = try(var.branch_protections_v4[each.value].lock_branch, false)
+
+  dynamic "restrict_pushes" {
+    for_each = try([var.branch_protections_v4[each.value].restrict_pushes], [])
+
+    content {
+      blocks_creations = try(restrict_pushes.value.blocks_creations, true)
+      push_allowances  = try(restrict_pushes.value.push_allowances, [])
+    }
+  }
 
   dynamic "required_pull_request_reviews" {
     for_each = try([var.branch_protections_v4[each.value].required_pull_request_reviews], [])
@@ -261,6 +293,7 @@ resource "github_branch_protection_v3" "branch_protection" {
     content {
       strict   = required_status_checks.value.strict
       contexts = required_status_checks.value.contexts
+      checks   = required_status_checks.value.checks
     }
   }
 
@@ -271,8 +304,20 @@ resource "github_branch_protection_v3" "branch_protection" {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
       dismissal_users                 = required_pull_request_reviews.value.dismissal_users
       dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
+      dismissal_apps                  = required_pull_request_reviews.value.dismissal_apps
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
+      require_last_push_approval      = required_pull_request_reviews.value.require_last_push_approval
+
+      dynamic "bypass_pull_request_allowances" {
+        for_each = length(keys(required_pull_request_reviews.value.bypass_pull_request_allowances)) > 0 ? [required_pull_request_reviews.value.bypass_pull_request_allowances] : []
+
+        content {
+          users = try(bypass_pull_request_allowances.value.users, [])
+          teams = try(bypass_pull_request_allowances.value.teams, [])
+          apps  = try(bypass_pull_request_allowances.value.apps, [])
+        }
+      }
     }
   }
 
@@ -283,6 +328,237 @@ resource "github_branch_protection_v3" "branch_protection" {
       users = restrictions.value.users
       teams = [for t in restrictions.value.teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
       apps  = restrictions.value.apps
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Repository Rulesets
+# https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_ruleset
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "github_repository_ruleset" "ruleset" {
+  for_each = local.rulesets_map
+
+  name        = each.value.name
+  target      = each.value.target
+  enforcement = each.value.enforcement
+  repository  = github_repository.repository.name
+
+  dynamic "conditions" {
+    for_each = (
+      each.value.target != "push" ||
+      try(each.value.conditions.ref_name, null) != null
+    ) ? [true] : []
+
+    content {
+      ref_name {
+        include = try(each.value.conditions.ref_name.include, ["~DEFAULT_BRANCH"])
+        exclude = try(each.value.conditions.ref_name.exclude, [])
+      }
+    }
+  }
+
+  dynamic "bypass_actors" {
+    for_each = try(each.value.bypass_actors, [])
+
+    content {
+      actor_id    = try(bypass_actors.value.actor_id, null)
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = try(bypass_actors.value.bypass_mode, "always")
+    }
+  }
+
+  rules {
+    creation                      = try(each.value.rules.creation, false)
+    update                        = try(each.value.rules.update, false)
+    update_allows_fetch_and_merge = try(each.value.rules.update_allows_fetch_and_merge, null)
+    deletion                      = try(each.value.rules.deletion, false)
+    required_linear_history       = try(each.value.rules.required_linear_history, false)
+    required_signatures           = try(each.value.rules.required_signatures, false)
+    non_fast_forward              = try(each.value.rules.non_fast_forward, false)
+
+    dynamic "branch_name_pattern" {
+      for_each = try(each.value.rules.branch_name_pattern, null) != null ? [each.value.rules.branch_name_pattern] : []
+
+      content {
+        operator = branch_name_pattern.value.operator
+        pattern  = branch_name_pattern.value.pattern
+        name     = try(branch_name_pattern.value.name, null)
+        negate   = try(branch_name_pattern.value.negate, null)
+      }
+    }
+
+    dynamic "tag_name_pattern" {
+      for_each = try(each.value.rules.tag_name_pattern, null) != null ? [each.value.rules.tag_name_pattern] : []
+
+      content {
+        operator = tag_name_pattern.value.operator
+        pattern  = tag_name_pattern.value.pattern
+        name     = try(tag_name_pattern.value.name, null)
+        negate   = try(tag_name_pattern.value.negate, null)
+      }
+    }
+
+    dynamic "commit_author_email_pattern" {
+      for_each = try(each.value.rules.commit_author_email_pattern, null) != null ? [each.value.rules.commit_author_email_pattern] : []
+
+      content {
+        operator = commit_author_email_pattern.value.operator
+        pattern  = commit_author_email_pattern.value.pattern
+        name     = try(commit_author_email_pattern.value.name, null)
+        negate   = try(commit_author_email_pattern.value.negate, null)
+      }
+    }
+
+    dynamic "required_status_checks" {
+      for_each = try(each.value.rules.required_status_checks, null) != null ? [each.value.rules.required_status_checks] : []
+
+      content {
+        do_not_enforce_on_create             = try(required_status_checks.value.do_not_enforce_on_create, null)
+        strict_required_status_checks_policy = try(required_status_checks.value.strict_required_status_checks_policy, null)
+
+        dynamic "required_check" {
+          for_each = try(required_status_checks.value.required_check, [])
+
+          content {
+            context        = required_check.value.context
+            integration_id = try(required_check.value.integration_id, null)
+          }
+        }
+      }
+    }
+
+    dynamic "required_deployments" {
+      for_each = try(each.value.rules.required_deployments, null) != null ? [each.value.rules.required_deployments] : []
+
+      content {
+        required_deployment_environments = try(required_deployments.value.required_deployment_environments, [])
+      }
+    }
+
+    dynamic "pull_request" {
+      for_each = try(each.value.rules.pull_request, null) != null ? [each.value.rules.pull_request] : []
+
+      content {
+        dismiss_stale_reviews_on_push     = try(pull_request.value.dismiss_stale_reviews_on_push, null)
+        require_code_owner_review         = try(pull_request.value.require_code_owner_review, null)
+        require_last_push_approval        = try(pull_request.value.require_last_push_approval, null)
+        required_approving_review_count   = try(pull_request.value.required_approving_review_count, null)
+        required_review_thread_resolution = try(pull_request.value.required_review_thread_resolution, null)
+        allowed_merge_methods             = try(pull_request.value.allowed_merge_methods, null)
+
+        dynamic "required_reviewers" {
+          for_each = try(pull_request.value.required_reviewers, null) != null ? [pull_request.value.required_reviewers] : []
+
+          content {
+            file_patterns     = required_reviewers.value.file_patterns
+            minimum_approvals = try(required_reviewers.value.minimum_approvals, 0)
+
+            dynamic "reviewer" {
+              for_each = try(required_reviewers.value.reviewer, null) != null ? [required_reviewers.value.reviewer] : []
+
+              content {
+                id   = reviewer.value.id
+                type = try(reviewer.value.type, "Team")
+              }
+            }
+          }
+        }
+      }
+    }
+
+    dynamic "required_code_scanning" {
+      for_each = try(each.value.rules.required_code_scanning, null) != null ? [each.value.rules.required_code_scanning] : []
+
+      content {
+        dynamic "required_code_scanning_tool" {
+          for_each = try(required_code_scanning.value.required_code_scanning_tool, [])
+
+          content {
+            tool                      = try(required_code_scanning_tool.value.tool, null)
+            alerts_threshold          = try(required_code_scanning_tool.value.alerts_threshold, null)
+            security_alerts_threshold = try(required_code_scanning_tool.value.security_alerts_threshold, null)
+          }
+        }
+      }
+    }
+
+    dynamic "commit_message_pattern" {
+      for_each = try(each.value.rules.commit_message_pattern, null) != null ? [each.value.rules.commit_message_pattern] : []
+
+      content {
+        operator = commit_message_pattern.value.operator
+        pattern  = commit_message_pattern.value.pattern
+        name     = try(commit_message_pattern.value.name, null)
+        negate   = try(commit_message_pattern.value.negate, null)
+      }
+    }
+
+    dynamic "committer_email_pattern" {
+      for_each = try(each.value.rules.committer_email_pattern, null) != null ? [each.value.rules.committer_email_pattern] : []
+
+      content {
+        operator = committer_email_pattern.value.operator
+        pattern  = committer_email_pattern.value.pattern
+        name     = try(committer_email_pattern.value.name, null)
+        negate   = try(committer_email_pattern.value.negate, null)
+      }
+    }
+
+    dynamic "file_path_restriction" {
+      for_each = try(each.value.rules.file_path_restriction, null) != null ? [each.value.rules.file_path_restriction] : []
+
+      content {
+        restricted_file_paths = try(file_path_restriction.value.restricted_file_paths, [])
+      }
+    }
+
+    dynamic "file_extension_restriction" {
+      for_each = try(each.value.rules.file_extension_restriction, null) != null ? [each.value.rules.file_extension_restriction] : []
+
+      content {
+        restricted_file_extensions = try(file_extension_restriction.value.restricted_file_extensions, [])
+      }
+    }
+
+    dynamic "max_file_path_length" {
+      for_each = try(each.value.rules.max_file_path_length, null) != null ? [each.value.rules.max_file_path_length] : []
+
+      content {
+        max_file_path_length = try(max_file_path_length.value.max_file_path_length, null)
+      }
+    }
+
+    dynamic "max_file_size" {
+      for_each = try(each.value.rules.max_file_size, null) != null ? [each.value.rules.max_file_size] : []
+
+      content {
+        max_file_size = try(max_file_size.value.max_file_size, null)
+      }
+    }
+
+    dynamic "merge_queue" {
+      for_each = try(each.value.rules.merge_queue, null) != null ? [each.value.rules.merge_queue] : []
+
+      content {
+        check_response_timeout_minutes    = try(merge_queue.value.check_response_timeout_minutes, null)
+        grouping_strategy                 = try(merge_queue.value.grouping_strategy, null)
+        max_entries_to_build              = try(merge_queue.value.max_entries_to_build, null)
+        max_entries_to_merge              = try(merge_queue.value.max_entries_to_merge, null)
+        merge_method                      = try(merge_queue.value.merge_method, null)
+        min_entries_to_merge              = try(merge_queue.value.min_entries_to_merge, null)
+        min_entries_to_merge_wait_minutes = try(merge_queue.value.min_entries_to_merge_wait_minutes, null)
+      }
+    }
+
+    dynamic "copilot_code_review" {
+      for_each = try(each.value.rules.copilot_code_review, null) != null ? [each.value.rules.copilot_code_review] : []
+
+      content {
+        review_on_push             = try(copilot_code_review.value.review_on_push, null)
+        review_draft_pull_requests = try(copilot_code_review.value.review_draft_pull_requests, null)
+      }
     }
   }
 }
@@ -497,7 +773,8 @@ resource "github_repository_deploy_key" "deploy_key" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Projects
+# Projects (DEPRECATED — GitHub has removed the classic projects API.
+# This resource will be removed in a future version. Migrate to GitHub Projects v2.)
 # ---------------------------------------------------------------------------------------------------------------------
 
 locals {

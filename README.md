@@ -3,18 +3,18 @@
 [![Build Status](https://github.com/mineiros-io/terraform-github-repository/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/mineiros-io/terraform-github-repository/actions)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/mineiros-io/terraform-github-repository.svg?label=latest&sort=semver)](https://github.com/mineiros-io/terraform-github-repository/releases)
 [![Terraform Version](https://img.shields.io/badge/terraform-1.x-623CE4.svg?logo=terraform)](https://github.com/hashicorp/terraform/releases)
-[![Github Provider Version](https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform)](https://github.com/terraform-providers/terraform-provider-github/releases)
+[![Github Provider Version](https://img.shields.io/badge/GH-6.11+-F8991D.svg?logo=terraform)](https://github.com/integrations/terraform-provider-github/releases)
 [![Join Slack](https://img.shields.io/badge/slack-@mineiros--community-f32752.svg?logo=slack)](https://join.slack.com/t/mineiros-community/shared_invite/zt-ehidestg-aLGoIENLVs6tvwJ11w9WGg)
 
 # terraform-github-repository
 
 A [Terraform] module for creating a public or private repository on [Github].
 
-**_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.20 and above from `integrations/github`._**
+**_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v6.11 and above from `integrations/github`._**
 
 **Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
 
-** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
+** Note: This module now supports the latest GitHub provider versions (up to v6.x). For rulesets support and the most stable experience, use provider version 6.11 or later.**
 
 
 - [GitHub as Code](#github-as-code)
@@ -30,6 +30,7 @@ A [Terraform] module for creating a public or private repository on [Github].
     - [Deploy Keys Configuration](#deploy-keys-configuration)
     - [Branch Protections v3 Configuration](#branch-protections-v3-configuration)
     - [Branch Protections v4 Configuration](#branch-protections-v4-configuration)
+    - [Rulesets Configuration](#rulesets-configuration)
     - [Issue Labels Configuration](#issue-labels-configuration)
     - [Projects Configuration](#projects-configuration)
     - [Webhooks Configuration](#webhooks-configuration)
@@ -84,6 +85,7 @@ features like Branch Protection or Collaborator Management.
 - **Extended Repository Features**:
   Branches,
   Branch Protection,
+  Repository Rulesets,
   Issue Labels,
   Handle Github Default Issue Labels,
   Collaborators,
@@ -179,6 +181,12 @@ See [variables.tf] and [examples/] for details and use-cases.
   pull requests on the repository. If you enable auto-merge for a pull
   request, the pull request will merge automatically when all required
   reviews are met and status checks have passed.
+
+  Default is `false`.
+
+- [**`allow_update_branch`**](#var-allow_update_branch): *(Optional `bool`)*<a name="var-allow_update_branch"></a>
+
+  Set to `true` to always suggest updating pull request branches.
 
   Default is `false`.
 
@@ -545,7 +553,16 @@ This is due to some terraform limitation and we will update the module once terr
 
     - [**`contexts`**](#attr-branch_protections_v3-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-contexts"></a>
 
+      (DEPRECATED: use `checks` instead)
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+
+      Default is `[]`.
+
+    - [**`checks`**](#attr-branch_protections_v3-required_status_checks-checks): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-checks"></a>
+
+      The list of status checks to require in order to merge into this branch.
+      Each check should be a string of the form `"context:app_id"` (e.g. `"ci/travis:12345"`).
+      This replaces the deprecated `contexts` argument.
 
       Default is `[]`.
 
@@ -577,11 +594,49 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `[]`.
 
+    - [**`dismissal_apps`**](#attr-branch_protections_v3-required_pull_request_reviews-dismissal_apps): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-dismissal_apps"></a>
+
+      The list of app slugs with dismissal access.
+
+      Default is `[]`.
+
     - [**`require_code_owner_reviews`**](#attr-branch_protections_v3-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-require_code_owner_reviews"></a>
 
       Require an approved review in pull requests including files with a designated code owner.
 
       Default is `false`.
+
+    - [**`require_last_push_approval`**](#attr-branch_protections_v3-required_pull_request_reviews-require_last_push_approval): *(Optional `bool`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-require_last_push_approval"></a>
+
+      Require that the most recent push must be approved by someone other than the last pusher.
+
+      Default is `false`.
+
+    - [**`bypass_pull_request_allowances`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances): *(Optional `object(bypass_pull_request_allowances)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances"></a>
+
+      Allow specific users, teams, or apps to bypass pull request requirements.
+
+      Default is `{}`.
+
+      The `bypass_pull_request_allowances` object accepts the following attributes:
+
+      - [**`users`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-users): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-users"></a>
+
+        The list of user logins allowed to bypass pull request requirements.
+
+        Default is `[]`.
+
+      - [**`teams`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-teams): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-teams"></a>
+
+        The list of team slugs allowed to bypass pull request requirements.
+
+        Default is `[]`.
+
+      - [**`apps`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-apps): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-apps"></a>
+
+        The list of app slugs allowed to bypass pull request requirements.
+
+        Default is `[]`.
 
   - [**`restrictions`**](#attr-branch_protections_v3-restrictions): *(Optional `object(restrictions)`)*<a name="attr-branch_protections_v3-restrictions"></a>
 
@@ -649,24 +704,24 @@ This is due to some terraform limitation and we will update the module once terr
 
     Default is `false`.
 
-  - [**`blocks_creations`**](#attr-branch_protections_v4-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-blocks_creations"></a>
-
-    Setting this to `true` will block creating the branch.
-
-    Default is `false`.
-
   - [**`enforce_admins`**](#attr-branch_protections_v4-enforce_admins): *(Optional `bool`)*<a name="attr-branch_protections_v4-enforce_admins"></a>
 
     Keeping this as `true` enforces status checks for repository administrators.
 
     Default is `true`.
 
-  - [**`push_restrictions`**](#attr-branch_protections_v4-push_restrictions): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-push_restrictions"></a>
+  - [**`force_push_bypassers`**](#attr-branch_protections_v4-force_push_bypassers): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-force_push_bypassers"></a>
 
-    The list of actor Names/IDs that may push to the branch.
-    Actor names must either begin with a "/" for users or the organization name followed by a "/" for teams.
+    The list of actor Names/IDs that are allowed to bypass force push restrictions.
+    Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
 
     Default is `[]`.
+
+  - [**`lock_branch`**](#attr-branch_protections_v4-lock_branch): *(Optional `bool`)*<a name="attr-branch_protections_v4-lock_branch"></a>
+
+    Setting this to `true` will make the branch read-only and prevent any pushes to it.
+
+    Default is `false`.
 
   - [**`require_conversation_resolution`**](#attr-branch_protections_v4-require_conversation_resolution): *(Optional `bool`)*<a name="attr-branch_protections_v4-require_conversation_resolution"></a>
 
@@ -748,6 +803,449 @@ This is due to some terraform limitation and we will update the module once terr
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
 
       Default is `[]`.
+
+  - [**`restrict_pushes`**](#attr-branch_protections_v4-restrict_pushes): *(Optional `object(restrict_pushes)`)*<a name="attr-branch_protections_v4-restrict_pushes"></a>
+
+    Restrict pushes to matching branches. Replaces the former top-level `push_restrictions` and `blocks_creations` arguments which were removed in provider v6.x.
+
+    The `restrict_pushes` object accepts the following attributes:
+
+    - [**`blocks_creations`**](#attr-branch_protections_v4-restrict_pushes-blocks_creations): *(Optional `bool`)*<a name="attr-branch_protections_v4-restrict_pushes-blocks_creations"></a>
+
+      Setting this to `true` will block creating matching branches via the GitHub web UI and API.
+
+      Default is `true`.
+
+    - [**`push_allowances`**](#attr-branch_protections_v4-restrict_pushes-push_allowances): *(Optional `list(string)`)*<a name="attr-branch_protections_v4-restrict_pushes-push_allowances"></a>
+
+      The list of actor Names/IDs that may push to matching branches.
+      Actor names must either begin with a `/` for users or the organization name followed by a `/` for teams.
+
+      Default is `[]`.
+
+#### Rulesets Configuration
+
+- [**`rulesets`**](#var-rulesets): *(Optional `list(ruleset)`)*<a name="var-rulesets"></a>
+
+  Configure repository-level rulesets (GitHub rulesets API). Each element represents one ruleset applied to this repository.
+  Requires a token with repository administration rights (or GitHub App with equivalent permissions).
+  Existing rulesets can be imported with `terraform import github_repository_ruleset.ruleset["00-my-ruleset"] <repo_name>:<ruleset_id>`.
+
+  Default is `[]`.
+
+  Each `ruleset` object in the list accepts the following attributes:
+
+  - [**`name`**](#attr-rulesets-name): *(**Required** `string`)*<a name="attr-rulesets-name"></a>
+
+    Display name of the ruleset.
+
+  - [**`target`**](#attr-rulesets-target): *(Optional `string`)*<a name="attr-rulesets-target"></a>
+
+    Scope of the ruleset: `branch`, `tag`, or `push`.
+
+    Default is `"branch"`.
+
+  - [**`enforcement`**](#attr-rulesets-enforcement): *(Optional `string`)*<a name="attr-rulesets-enforcement"></a>
+
+    Enforcement mode: `disabled`, `active`, or `evaluate`. Note that `evaluate` is only available for organisations with a GitHub Enterprise plan.
+
+    Default is `"active"`.
+
+  - [**`conditions`**](#attr-rulesets-conditions): *(Optional `object(ruleset_conditions)`)*<a name="attr-rulesets-conditions"></a>
+
+    Target refs to which the ruleset applies (supports `~DEFAULT_BRANCH` and glob-style patterns). Optional for `push` target rulesets — when omitted, the conditions block is not rendered.
+
+    Default is `{"ref_name":{"exclude":[],"include":["~DEFAULT_BRANCH"]}}`.
+
+    The `ruleset_conditions` object accepts the following attributes:
+
+    - [**`ref_name`**](#attr-rulesets-conditions-ref_name): *(Optional `object(ruleset_ref_name)`)*<a name="attr-rulesets-conditions-ref_name"></a>
+
+      Reference name filters.
+
+      The `ruleset_ref_name` object accepts the following attributes:
+
+      - [**`include`**](#attr-rulesets-conditions-ref_name-include): *(Optional `list(string)`)*<a name="attr-rulesets-conditions-ref_name-include"></a>
+
+        Refs included by the ruleset (supports glob and ~DEFAULT_BRANCH).
+
+        Default is `["~DEFAULT_BRANCH"]`.
+
+      - [**`exclude`**](#attr-rulesets-conditions-ref_name-exclude): *(Optional `list(string)`)*<a name="attr-rulesets-conditions-ref_name-exclude"></a>
+
+        Refs excluded from the ruleset.
+
+        Default is `[]`.
+
+  - [**`bypass_actors`**](#attr-rulesets-bypass_actors): *(Optional `list(object)`)*<a name="attr-rulesets-bypass_actors"></a>
+
+    Optional list of actors allowed to bypass the ruleset. `actor_type` can be Integration, Team, User, OrganizationAdmin, RepositoryRole, or DeployKey. `bypass_mode` is usually `always`, `pull_request`, or `exempt`.
+
+    Each `` object in the list accepts the following attributes:
+
+    - [**`actor_type`**](#attr-rulesets-bypass_actors-actor_type): *(Optional `string`)*<a name="attr-rulesets-bypass_actors-actor_type"></a>
+
+      Integration, Team, User, OrganizationAdmin, RepositoryRole, or DeployKey.
+
+    - [**`actor_id`**](#attr-rulesets-bypass_actors-actor_id): *(Optional `number`)*<a name="attr-rulesets-bypass_actors-actor_id"></a>
+
+      Numeric ID of the actor (team/integration/user id).
+
+    - [**`bypass_mode`**](#attr-rulesets-bypass_actors-bypass_mode): *(Optional `string`)*<a name="attr-rulesets-bypass_actors-bypass_mode"></a>
+
+      Typically `always`, `pull_request`, or `exempt`.
+
+  - [**`rules`**](#attr-rulesets-rules): *(Optional `object(ruleset_rules)`)*<a name="attr-rulesets-rules"></a>
+
+    Set of rules enforced by the ruleset. Unspecified flags default to `false`; nested blocks are optional.
+
+    The `ruleset_rules` object accepts the following attributes:
+
+    - [**`creation`**](#attr-rulesets-rules-creation): *(Optional `bool`)*<a name="attr-rulesets-rules-creation"></a>
+
+      Block repository creations that match the conditions.
+
+    - [**`update`**](#attr-rulesets-rules-update): *(Optional `bool`)*<a name="attr-rulesets-rules-update"></a>
+
+      Block direct updates on matching refs.
+
+    - [**`update_allows_fetch_and_merge`**](#attr-rulesets-rules-update_allows_fetch_and_merge): *(Optional `bool`)*<a name="attr-rulesets-rules-update_allows_fetch_and_merge"></a>
+
+      Allow fetch + merge when update is blocked.
+
+    - [**`deletion`**](#attr-rulesets-rules-deletion): *(Optional `bool`)*<a name="attr-rulesets-rules-deletion"></a>
+
+      Prevent deletions on matching refs.
+
+    - [**`required_linear_history`**](#attr-rulesets-rules-required_linear_history): *(Optional `bool`)*<a name="attr-rulesets-rules-required_linear_history"></a>
+
+      Enforce linear history.
+
+    - [**`required_signatures`**](#attr-rulesets-rules-required_signatures): *(Optional `bool`)*<a name="attr-rulesets-rules-required_signatures"></a>
+
+      Require signed commits.
+
+    - [**`non_fast_forward`**](#attr-rulesets-rules-non_fast_forward): *(Optional `bool`)*<a name="attr-rulesets-rules-non_fast_forward"></a>
+
+      Disallow force-pushes.
+
+    - [**`required_status_checks`**](#attr-rulesets-rules-required_status_checks): *(Optional `object(ruleset_required_status_checks)`)*<a name="attr-rulesets-rules-required_status_checks"></a>
+
+      Status checks required before merge.
+
+      The `ruleset_required_status_checks` object accepts the following attributes:
+
+      - [**`strict_required_status_checks_policy`**](#attr-rulesets-rules-required_status_checks-strict_required_status_checks_policy): *(Optional `bool`)*<a name="attr-rulesets-rules-required_status_checks-strict_required_status_checks_policy"></a>
+
+        Require branches up to date before merge.
+
+      - [**`do_not_enforce_on_create`**](#attr-rulesets-rules-required_status_checks-do_not_enforce_on_create): *(Optional `bool`)*<a name="attr-rulesets-rules-required_status_checks-do_not_enforce_on_create"></a>
+
+        Skip enforcement on repository creation.
+
+      - [**`required_check`**](#attr-rulesets-rules-required_status_checks-required_check): *(Optional `list(object)`)*<a name="attr-rulesets-rules-required_status_checks-required_check"></a>
+
+        List of required checks (context/integration_id).
+
+        Each `` object in the list accepts the following attributes:
+
+        - [**`context`**](#attr-rulesets-rules-required_status_checks-required_check-context): *(Optional `string`)*<a name="attr-rulesets-rules-required_status_checks-required_check-context"></a>
+
+          Status check context name.
+
+        - [**`integration_id`**](#attr-rulesets-rules-required_status_checks-required_check-integration_id): *(Optional `number`)*<a name="attr-rulesets-rules-required_status_checks-required_check-integration_id"></a>
+
+          Integration ID for the check (if applicable).
+
+    - [**`required_deployments`**](#attr-rulesets-rules-required_deployments): *(Optional `object(ruleset_required_deployments)`)*<a name="attr-rulesets-rules-required_deployments"></a>
+
+      Deployment environments that must succeed.
+
+      The `ruleset_required_deployments` object accepts the following attributes:
+
+      - [**`required_deployment_environments`**](#attr-rulesets-rules-required_deployments-required_deployment_environments): *(Optional `list(string)`)*<a name="attr-rulesets-rules-required_deployments-required_deployment_environments"></a>
+
+        Environment names required before merging.
+
+    - [**`pull_request`**](#attr-rulesets-rules-pull_request): *(Optional `object(ruleset_pull_request)`)*<a name="attr-rulesets-rules-pull_request"></a>
+
+      Pull request review requirements.
+
+      The `ruleset_pull_request` object accepts the following attributes:
+
+      - [**`dismiss_stale_reviews_on_push`**](#attr-rulesets-rules-pull_request-dismiss_stale_reviews_on_push): *(Optional `bool`)*<a name="attr-rulesets-rules-pull_request-dismiss_stale_reviews_on_push"></a>
+
+        Dismiss reviews when new commits are pushed.
+
+      - [**`require_code_owner_review`**](#attr-rulesets-rules-pull_request-require_code_owner_review): *(Optional `bool`)*<a name="attr-rulesets-rules-pull_request-require_code_owner_review"></a>
+
+        Require code owner approval.
+
+      - [**`require_last_push_approval`**](#attr-rulesets-rules-pull_request-require_last_push_approval): *(Optional `bool`)*<a name="attr-rulesets-rules-pull_request-require_last_push_approval"></a>
+
+        Require approval from someone other than last pusher.
+
+      - [**`required_approving_review_count`**](#attr-rulesets-rules-pull_request-required_approving_review_count): *(Optional `number`)*<a name="attr-rulesets-rules-pull_request-required_approving_review_count"></a>
+
+        Number of required approvals.
+
+      - [**`required_review_thread_resolution`**](#attr-rulesets-rules-pull_request-required_review_thread_resolution): *(Optional `bool`)*<a name="attr-rulesets-rules-pull_request-required_review_thread_resolution"></a>
+
+        Require all review threads resolved.
+
+      - [**`allowed_merge_methods`**](#attr-rulesets-rules-pull_request-allowed_merge_methods): *(Optional `list(string)`)*<a name="attr-rulesets-rules-pull_request-allowed_merge_methods"></a>
+
+        Allowed merge methods (e.g. `merge`, `squash`, `rebase`).
+
+      - [**`required_reviewers`**](#attr-rulesets-rules-pull_request-required_reviewers): *(Optional `object(ruleset_required_reviewers)`)*<a name="attr-rulesets-rules-pull_request-required_reviewers"></a>
+
+        Require specific reviewers to approve matching files.
+
+        The `ruleset_required_reviewers` object accepts the following attributes:
+
+        - [**`file_patterns`**](#attr-rulesets-rules-pull_request-required_reviewers-file_patterns): *(Optional `list(string)`)*<a name="attr-rulesets-rules-pull_request-required_reviewers-file_patterns"></a>
+
+          File patterns (fnmatch syntax) that must be approved by the reviewer.
+
+        - [**`minimum_approvals`**](#attr-rulesets-rules-pull_request-required_reviewers-minimum_approvals): *(Optional `number`)*<a name="attr-rulesets-rules-pull_request-required_reviewers-minimum_approvals"></a>
+
+          Minimum number of approvals required (0 for optional).
+
+        - [**`reviewer`**](#attr-rulesets-rules-pull_request-required_reviewers-reviewer): *(Optional `object(ruleset_reviewer)`)*<a name="attr-rulesets-rules-pull_request-required_reviewers-reviewer"></a>
+
+          Reviewer identity.
+
+          The `ruleset_reviewer` object accepts the following attributes:
+
+          - [**`id`**](#attr-rulesets-rules-pull_request-required_reviewers-reviewer-id): *(Optional `number`)*<a name="attr-rulesets-rules-pull_request-required_reviewers-reviewer-id"></a>
+
+            Team ID of the reviewer.
+
+          - [**`type`**](#attr-rulesets-rules-pull_request-required_reviewers-reviewer-type): *(Optional `string`)*<a name="attr-rulesets-rules-pull_request-required_reviewers-reviewer-type"></a>
+
+            Reviewer type, currently only `Team` is supported.
+
+    - [**`required_code_scanning`**](#attr-rulesets-rules-required_code_scanning): *(Optional `object(ruleset_required_code_scanning)`)*<a name="attr-rulesets-rules-required_code_scanning"></a>
+
+      Require code scanning results.
+
+      The `ruleset_required_code_scanning` object accepts the following attributes:
+
+      - [**`required_code_scanning_tool`**](#attr-rulesets-rules-required_code_scanning-required_code_scanning_tool): *(Optional `list(object)`)*<a name="attr-rulesets-rules-required_code_scanning-required_code_scanning_tool"></a>
+
+        At least one tool is required.
+
+        Each `` object in the list accepts the following attributes:
+
+        - [**`tool`**](#attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-tool): *(Optional `string`)*<a name="attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-tool"></a>
+
+          Identifier of the code scanning tool.
+
+        - [**`alerts_threshold`**](#attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-alerts_threshold): *(Optional `string`)*<a name="attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-alerts_threshold"></a>
+
+          Minimum alert severity to block.
+
+        - [**`security_alerts_threshold`**](#attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-security_alerts_threshold): *(Optional `string`)*<a name="attr-rulesets-rules-required_code_scanning-required_code_scanning_tool-security_alerts_threshold"></a>
+
+          Minimum security alert severity to block.
+
+    - [**`commit_message_pattern`**](#attr-rulesets-rules-commit_message_pattern): *(Optional `object(ruleset_commit_message_pattern)`)*<a name="attr-rulesets-rules-commit_message_pattern"></a>
+
+      Pattern enforcement for commit messages.
+
+      The `ruleset_commit_message_pattern` object accepts the following attributes:
+
+      - [**`operator`**](#attr-rulesets-rules-commit_message_pattern-operator): *(Optional `string`)*<a name="attr-rulesets-rules-commit_message_pattern-operator"></a>
+
+        One of `starts_with`, `ends_with`, `contains`, or `regex`.
+
+      - [**`pattern`**](#attr-rulesets-rules-commit_message_pattern-pattern): *(Optional `string`)*<a name="attr-rulesets-rules-commit_message_pattern-pattern"></a>
+
+        Regular expression applied to commit messages.
+
+      - [**`name`**](#attr-rulesets-rules-commit_message_pattern-name): *(Optional `string`)*<a name="attr-rulesets-rules-commit_message_pattern-name"></a>
+
+        Display name for the rule (optional).
+
+      - [**`negate`**](#attr-rulesets-rules-commit_message_pattern-negate): *(Optional `bool`)*<a name="attr-rulesets-rules-commit_message_pattern-negate"></a>
+
+        Invert the match to block matching messages.
+
+    - [**`commit_author_email_pattern`**](#attr-rulesets-rules-commit_author_email_pattern): *(Optional `object(ruleset_commit_author_email_pattern)`)*<a name="attr-rulesets-rules-commit_author_email_pattern"></a>
+
+      Pattern enforcement for commit author email.
+
+      The `ruleset_commit_author_email_pattern` object accepts the following attributes:
+
+      - [**`operator`**](#attr-rulesets-rules-commit_author_email_pattern-operator): *(Optional `string`)*<a name="attr-rulesets-rules-commit_author_email_pattern-operator"></a>
+
+        One of `starts_with`, `ends_with`, `contains`, or `regex`.
+
+      - [**`pattern`**](#attr-rulesets-rules-commit_author_email_pattern-pattern): *(Optional `string`)*<a name="attr-rulesets-rules-commit_author_email_pattern-pattern"></a>
+
+        Regular expression applied to author emails.
+
+      - [**`name`**](#attr-rulesets-rules-commit_author_email_pattern-name): *(Optional `string`)*<a name="attr-rulesets-rules-commit_author_email_pattern-name"></a>
+
+        Display name for the rule (optional).
+
+      - [**`negate`**](#attr-rulesets-rules-commit_author_email_pattern-negate): *(Optional `bool`)*<a name="attr-rulesets-rules-commit_author_email_pattern-negate"></a>
+
+        Invert the match to block matching emails.
+
+    - [**`committer_email_pattern`**](#attr-rulesets-rules-committer_email_pattern): *(Optional `object(ruleset_committer_email_pattern)`)*<a name="attr-rulesets-rules-committer_email_pattern"></a>
+
+      Pattern enforcement for committer email.
+
+      The `ruleset_committer_email_pattern` object accepts the following attributes:
+
+      - [**`operator`**](#attr-rulesets-rules-committer_email_pattern-operator): *(Optional `string`)*<a name="attr-rulesets-rules-committer_email_pattern-operator"></a>
+
+        One of `starts_with`, `ends_with`, `contains`, or `regex`.
+
+      - [**`pattern`**](#attr-rulesets-rules-committer_email_pattern-pattern): *(Optional `string`)*<a name="attr-rulesets-rules-committer_email_pattern-pattern"></a>
+
+        Regular expression applied to committer emails.
+
+      - [**`name`**](#attr-rulesets-rules-committer_email_pattern-name): *(Optional `string`)*<a name="attr-rulesets-rules-committer_email_pattern-name"></a>
+
+        Display name for the rule (optional).
+
+      - [**`negate`**](#attr-rulesets-rules-committer_email_pattern-negate): *(Optional `bool`)*<a name="attr-rulesets-rules-committer_email_pattern-negate"></a>
+
+        Invert the match to block matching emails.
+
+    - [**`branch_name_pattern`**](#attr-rulesets-rules-branch_name_pattern): *(Optional `object(ruleset_branch_name_pattern)`)*<a name="attr-rulesets-rules-branch_name_pattern"></a>
+
+      Pattern enforcement for branch names.
+
+      The `ruleset_branch_name_pattern` object accepts the following attributes:
+
+      - [**`operator`**](#attr-rulesets-rules-branch_name_pattern-operator): *(Optional `string`)*<a name="attr-rulesets-rules-branch_name_pattern-operator"></a>
+
+        One of `starts_with`, `ends_with`, `contains`, or `regex`.
+
+      - [**`pattern`**](#attr-rulesets-rules-branch_name_pattern-pattern): *(Optional `string`)*<a name="attr-rulesets-rules-branch_name_pattern-pattern"></a>
+
+        Regular expression applied to branch names.
+
+      - [**`name`**](#attr-rulesets-rules-branch_name_pattern-name): *(Optional `string`)*<a name="attr-rulesets-rules-branch_name_pattern-name"></a>
+
+        Display name for the rule (optional).
+
+      - [**`negate`**](#attr-rulesets-rules-branch_name_pattern-negate): *(Optional `bool`)*<a name="attr-rulesets-rules-branch_name_pattern-negate"></a>
+
+        Invert the match to block matching branch names.
+
+    - [**`tag_name_pattern`**](#attr-rulesets-rules-tag_name_pattern): *(Optional `object(ruleset_tag_name_pattern)`)*<a name="attr-rulesets-rules-tag_name_pattern"></a>
+
+      Pattern enforcement for tag names.
+
+      The `ruleset_tag_name_pattern` object accepts the following attributes:
+
+      - [**`operator`**](#attr-rulesets-rules-tag_name_pattern-operator): *(Optional `string`)*<a name="attr-rulesets-rules-tag_name_pattern-operator"></a>
+
+        One of `starts_with`, `ends_with`, `contains`, or `regex`.
+
+      - [**`pattern`**](#attr-rulesets-rules-tag_name_pattern-pattern): *(Optional `string`)*<a name="attr-rulesets-rules-tag_name_pattern-pattern"></a>
+
+        Regular expression applied to tag names.
+
+      - [**`name`**](#attr-rulesets-rules-tag_name_pattern-name): *(Optional `string`)*<a name="attr-rulesets-rules-tag_name_pattern-name"></a>
+
+        Display name for the rule (optional).
+
+      - [**`negate`**](#attr-rulesets-rules-tag_name_pattern-negate): *(Optional `bool`)*<a name="attr-rulesets-rules-tag_name_pattern-negate"></a>
+
+        Invert the match to block matching tag names.
+
+    - [**`file_path_restriction`**](#attr-rulesets-rules-file_path_restriction): *(Optional `object(ruleset_file_path_restriction)`)*<a name="attr-rulesets-rules-file_path_restriction"></a>
+
+      Restrict files by path patterns.
+
+      The `ruleset_file_path_restriction` object accepts the following attributes:
+
+      - [**`restricted_file_paths`**](#attr-rulesets-rules-file_path_restriction-restricted_file_paths): *(Optional `list(string)`)*<a name="attr-rulesets-rules-file_path_restriction-restricted_file_paths"></a>
+
+        List of restricted file path patterns.
+
+    - [**`file_extension_restriction`**](#attr-rulesets-rules-file_extension_restriction): *(Optional `object(ruleset_file_extension_restriction)`)*<a name="attr-rulesets-rules-file_extension_restriction"></a>
+
+      Restrict files by extension.
+
+      The `ruleset_file_extension_restriction` object accepts the following attributes:
+
+      - [**`restricted_file_extensions`**](#attr-rulesets-rules-file_extension_restriction-restricted_file_extensions): *(Optional `list(string)`)*<a name="attr-rulesets-rules-file_extension_restriction-restricted_file_extensions"></a>
+
+        List of restricted file extensions.
+
+    - [**`max_file_path_length`**](#attr-rulesets-rules-max_file_path_length): *(Optional `object(ruleset_max_file_path_length)`)*<a name="attr-rulesets-rules-max_file_path_length"></a>
+
+      Set maximum file path length.
+
+      The `ruleset_max_file_path_length` object accepts the following attributes:
+
+      - [**`max_file_path_length`**](#attr-rulesets-rules-max_file_path_length-max_file_path_length): *(Optional `number`)*<a name="attr-rulesets-rules-max_file_path_length-max_file_path_length"></a>
+
+        Maximum path length.
+
+    - [**`max_file_size`**](#attr-rulesets-rules-max_file_size): *(Optional `object(ruleset_max_file_size)`)*<a name="attr-rulesets-rules-max_file_size"></a>
+
+      Set maximum file size.
+
+      The `ruleset_max_file_size` object accepts the following attributes:
+
+      - [**`max_file_size`**](#attr-rulesets-rules-max_file_size-max_file_size): *(Optional `number`)*<a name="attr-rulesets-rules-max_file_size-max_file_size"></a>
+
+        Maximum file size in bytes.
+
+    - [**`merge_queue`**](#attr-rulesets-rules-merge_queue): *(Optional `object(ruleset_merge_queue)`)*<a name="attr-rulesets-rules-merge_queue"></a>
+
+      Merge queue settings.
+
+      The `ruleset_merge_queue` object accepts the following attributes:
+
+      - [**`check_response_timeout_minutes`**](#attr-rulesets-rules-merge_queue-check_response_timeout_minutes): *(Optional `number`)*<a name="attr-rulesets-rules-merge_queue-check_response_timeout_minutes"></a>
+
+        Timeout for checks in minutes.
+
+      - [**`grouping_strategy`**](#attr-rulesets-rules-merge_queue-grouping_strategy): *(Optional `string`)*<a name="attr-rulesets-rules-merge_queue-grouping_strategy"></a>
+
+        Grouping strategy for queue entries.
+
+      - [**`max_entries_to_build`**](#attr-rulesets-rules-merge_queue-max_entries_to_build): *(Optional `number`)*<a name="attr-rulesets-rules-merge_queue-max_entries_to_build"></a>
+
+        Max queue entries to build.
+
+      - [**`max_entries_to_merge`**](#attr-rulesets-rules-merge_queue-max_entries_to_merge): *(Optional `number`)*<a name="attr-rulesets-rules-merge_queue-max_entries_to_merge"></a>
+
+        Max queue entries to merge.
+
+      - [**`merge_method`**](#attr-rulesets-rules-merge_queue-merge_method): *(Optional `string`)*<a name="attr-rulesets-rules-merge_queue-merge_method"></a>
+
+        Merge method used by queue.
+
+      - [**`min_entries_to_merge`**](#attr-rulesets-rules-merge_queue-min_entries_to_merge): *(Optional `number`)*<a name="attr-rulesets-rules-merge_queue-min_entries_to_merge"></a>
+
+        Min queue entries before merging.
+
+      - [**`min_entries_to_merge_wait_minutes`**](#attr-rulesets-rules-merge_queue-min_entries_to_merge_wait_minutes): *(Optional `number`)*<a name="attr-rulesets-rules-merge_queue-min_entries_to_merge_wait_minutes"></a>
+
+        Wait time before merging minimal entries.
+
+    - [**`copilot_code_review`**](#attr-rulesets-rules-copilot_code_review): *(Optional `object(ruleset_copilot_code_review)`)*<a name="attr-rulesets-rules-copilot_code_review"></a>
+
+      Copilot code review settings for pull requests.
+
+      The `ruleset_copilot_code_review` object accepts the following attributes:
+
+      - [**`review_on_push`**](#attr-rulesets-rules-copilot_code_review-review_on_push): *(Optional `bool`)*<a name="attr-rulesets-rules-copilot_code_review-review_on_push"></a>
+
+        Enable Copilot review on push events.
+
+      - [**`review_draft_pull_requests`**](#attr-rulesets-rules-copilot_code_review-review_draft_pull_requests): *(Optional `bool`)*<a name="attr-rulesets-rules-copilot_code_review-review_draft_pull_requests"></a>
+
+        Enable Copilot review on draft pull requests.
 
 #### Issue Labels Configuration
 
@@ -963,6 +1461,10 @@ The following attributes are exported by the module:
   All repository attributes as returned by the [`github_branch`]
   resource containing all arguments as specified above and the other
   attributes as specified below.
+
+- [**`ruleset_ids`**](#output-ruleset_ids): *(`map(string)`)*<a name="output-ruleset_ids"></a>
+
+  Map of repository ruleset IDs keyed by the ruleset key used in the module.
 
 - [**`full_name`**](#output-full_name): *(`string`)*<a name="output-full_name"></a>
 
