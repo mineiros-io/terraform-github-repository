@@ -70,6 +70,11 @@ variable "allow_auto_merge" {
   default     = true
 }
 
+variable "allow_update_branch" {
+  description = "Set to true to always suggest updating pull request branches."
+  type        = bool
+  default     = false
+}
 
 variable "has_downloads" {
   description = "Set to true to enable the (deprecated) downloads features on the repository."

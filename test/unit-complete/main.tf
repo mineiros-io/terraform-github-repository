@@ -40,6 +40,7 @@ module "repository" {
   allow_rebase_merge     = var.allow_rebase_merge
   allow_squash_merge     = var.allow_squash_merge
   allow_auto_merge       = var.allow_auto_merge
+  allow_update_branch    = var.allow_update_branch
   delete_branch_on_merge = var.delete_branch_on_merge
   is_template            = var.is_template
   has_downloads          = var.has_downloads
@@ -92,11 +93,17 @@ module "repository" {
 
       allows_deletions                = false
       allows_force_pushes             = false
-      blocks_creations                = false
       enforce_admins                  = true
       require_conversation_resolution = true
       require_signed_commits          = true
       required_linear_history         = true
+      force_push_bypassers            = ["/${var.team_user}"]
+      lock_branch                     = false
+
+      restrict_pushes = {
+        blocks_creations = false
+        push_allowances  = []
+      }
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
@@ -120,14 +127,21 @@ module "repository" {
       required_status_checks = {
         strict   = true
         contexts = ["ci/travis"]
+        checks   = []
       }
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
         dismissal_users                 = [var.team_user]
         dismissal_teams                 = [github_team.team.name]
+        dismissal_apps                  = ["test-app"]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
+        require_last_push_approval      = false
+
+        bypass_pull_request_allowances = {
+          users = [var.team_user]
+        }
       }
 
       restrictions = {
