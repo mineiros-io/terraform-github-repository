@@ -547,7 +547,16 @@ This is due to some terraform limitation and we will update the module once terr
 
     - [**`contexts`**](#attr-branch_protections_v3-required_status_checks-contexts): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-contexts"></a>
 
+      (DEPRECATED: use `checks` instead)
       The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+
+      Default is `[]`.
+
+    - [**`checks`**](#attr-branch_protections_v3-required_status_checks-checks): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_status_checks-checks"></a>
+
+      The list of status checks to require in order to merge into this branch.
+      Each check should be a string of the form `"context:app_id"` (e.g. `"ci/travis:12345"`).
+      This replaces the deprecated `contexts` argument.
 
       Default is `[]`.
 
@@ -579,11 +588,49 @@ This is due to some terraform limitation and we will update the module once terr
 
       Default is `[]`.
 
+    - [**`dismissal_apps`**](#attr-branch_protections_v3-required_pull_request_reviews-dismissal_apps): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-dismissal_apps"></a>
+
+      The list of app slugs with dismissal access.
+
+      Default is `[]`.
+
     - [**`require_code_owner_reviews`**](#attr-branch_protections_v3-required_pull_request_reviews-require_code_owner_reviews): *(Optional `bool`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-require_code_owner_reviews"></a>
 
       Require an approved review in pull requests including files with a designated code owner.
 
       Default is `false`.
+
+    - [**`require_last_push_approval`**](#attr-branch_protections_v3-required_pull_request_reviews-require_last_push_approval): *(Optional `bool`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-require_last_push_approval"></a>
+
+      Require that the most recent push must be approved by someone other than the last pusher.
+
+      Default is `false`.
+
+    - [**`bypass_pull_request_allowances`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances): *(Optional `object(bypass_pull_request_allowances)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances"></a>
+
+      Allow specific users, teams, or apps to bypass pull request requirements.
+
+      Default is `{}`.
+
+      The `bypass_pull_request_allowances` object accepts the following attributes:
+
+      - [**`users`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-users): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-users"></a>
+
+        The list of user logins allowed to bypass pull request requirements.
+
+        Default is `[]`.
+
+      - [**`teams`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-teams): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-teams"></a>
+
+        The list of team slugs allowed to bypass pull request requirements.
+
+        Default is `[]`.
+
+      - [**`apps`**](#attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-apps): *(Optional `list(string)`)*<a name="attr-branch_protections_v3-required_pull_request_reviews-bypass_pull_request_allowances-apps"></a>
+
+        The list of app slugs allowed to bypass pull request requirements.
+
+        Default is `[]`.
 
   - [**`restrictions`**](#attr-branch_protections_v3-restrictions): *(Optional `object(restrictions)`)*<a name="attr-branch_protections_v3-restrictions"></a>
 

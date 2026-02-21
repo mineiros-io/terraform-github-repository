@@ -274,51 +274,71 @@ variable "branch_protections_v3" {
   # Terraform version. See https://github.com/hashicorp/terraform/issues/19898 and https://github.com/hashicorp/terraform/issues/22449
   #
   # type = list(object({
-  #   branch                 = string
-  #   enforce_admins         = bool
-  #   require_signed_commits = bool
-  #   required_status_checks = object({
-  #     strict   = bool
-  #     contexts = list(string)
-  #   })
-  #   required_pull_request_reviews = object({
-  #     dismiss_stale_reviews           = bool
-  #     dismissal_users                 = list(string)
-  #     dismissal_teams                 = list(string)
-  #     require_code_owner_reviews      = bool
-  #     required_approving_review_count = number
-  #   })
-  #   restrictions = object({
-  #     users = list(string)
-  #     teams = list(string)
-  #   })
+  #   branch                          = string
+  #   enforce_admins                  = optional(bool)
+  #   require_conversation_resolution = optional(bool)
+  #   require_signed_commits          = optional(bool)
+  #   required_status_checks = optional(object({
+  #     strict   = optional(bool)
+  #     contexts = optional(list(string))   # DEPRECATED: use checks
+  #     checks   = optional(list(string))   # "context:app_id" format
+  #   }))
+  #   required_pull_request_reviews = optional(object({
+  #     dismiss_stale_reviews           = optional(bool)
+  #     dismissal_users                 = optional(list(string))
+  #     dismissal_teams                 = optional(list(string))
+  #     dismissal_apps                  = optional(list(string))
+  #     require_code_owner_reviews      = optional(bool)
+  #     required_approving_review_count = optional(number)
+  #     require_last_push_approval      = optional(bool)
+  #     bypass_pull_request_allowances  = optional(object({
+  #       users = optional(list(string))
+  #       teams = optional(list(string))
+  #       apps  = optional(list(string))
+  #     }))
+  #   }))
+  #   restrictions = optional(object({
+  #     users = optional(list(string))
+  #     teams = optional(list(string))
+  #     apps  = optional(list(string))
+  #   }))
   # }))
 
   default = []
 
   # Example:
-  # branch_protections = [
+  # branch_protections_v3 = [
   #   {
-  #     branch                 = "main"
-  #     enforce_admins         = true
-  #     require_signed_commits = true
+  #     branch                          = "main"
+  #     enforce_admins                  = true
+  #     require_conversation_resolution = true
+  #     require_signed_commits          = true
   #
   #     required_status_checks = {
-  #       strict   = false
-  #       contexts = ["ci/travis"]
+  #       strict = false
+  #       checks = ["ci/travis:0"]
   #     }
   #
   #     required_pull_request_reviews = {
   #       dismiss_stale_reviews           = true
   #       dismissal_users                 = ["user1", "user2"]
   #       dismissal_teams                 = ["team-slug-1", "team-slug-2"]
+  #       dismissal_apps                  = ["app-slug-1"]
   #       require_code_owner_reviews      = true
   #       required_approving_review_count = 1
+  #       require_last_push_approval      = true
+  #
+  #       bypass_pull_request_allowances = {
+  #         users = ["user1"]
+  #         teams = ["team-slug-1"]
+  #         apps  = ["app-slug-1"]
+  #       }
   #     }
   #
   #     restrictions = {
   #       users = ["user1"]
   #       teams = ["team-slug-1"]
+  #       apps  = ["app-slug-1"]
   #     }
   #   }
   # ]

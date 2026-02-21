@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `examples/with-ruleset/` example
 - Add `restrict_pushes` block support for `branch_protections_v4` (replaces removed `push_restrictions` and `blocks_creations`)
 - Add `force_push_bypassers` and `lock_branch` support for `branch_protections_v4`
+- Add `checks` argument to `branch_protections_v3` `required_status_checks` (replaces deprecated `contexts`)
+- Add `dismissal_apps` and `require_last_push_approval` to `branch_protections_v3` `required_pull_request_reviews`
+- Add `bypass_pull_request_allowances` block to `branch_protections_v3` `required_pull_request_reviews`
 
 ### Changed
 
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 
 - `var.branch_protections_v3` and `github_branch_protection_v3` — use `var.branch_protections_v4` or `var.rulesets` instead
+- `required_status_checks.contexts` in `branch_protections_v3` — use `checks` instead
 
 ## [0.18.0]
 

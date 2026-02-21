@@ -706,7 +706,18 @@ section {
               type        = list(string)
               default     = []
               description = <<-END
+                (DEPRECATED: use `checks` instead)
                 The list of status checks to require in order to merge into this branch. If default is `[]` no status checks are required.
+              END
+            }
+
+            attribute "checks" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of status checks to require in order to merge into this branch.
+                Each check should be a string of the form `"context:app_id"` (e.g. `"ci/travis:12345"`).
+                This replaces the deprecated `contexts` argument.
               END
             }
           }
@@ -744,12 +755,60 @@ section {
               END
             }
 
+            attribute "dismissal_apps" {
+              type        = list(string)
+              default     = []
+              description = <<-END
+                The list of app slugs with dismissal access.
+              END
+            }
+
             attribute "require_code_owner_reviews" {
               type        = bool
               default     = false
               description = <<-END
                 Require an approved review in pull requests including files with a designated code owner.
               END
+            }
+
+            attribute "require_last_push_approval" {
+              type        = bool
+              default     = false
+              description = <<-END
+                Require that the most recent push must be approved by someone other than the last pusher.
+              END
+            }
+
+            attribute "bypass_pull_request_allowances" {
+              type        = object(bypass_pull_request_allowances)
+              default     = {}
+              description = <<-END
+                Allow specific users, teams, or apps to bypass pull request requirements.
+              END
+
+              attribute "users" {
+                type        = list(string)
+                default     = []
+                description = <<-END
+                  The list of user logins allowed to bypass pull request requirements.
+                END
+              }
+
+              attribute "teams" {
+                type        = list(string)
+                default     = []
+                description = <<-END
+                  The list of team slugs allowed to bypass pull request requirements.
+                END
+              }
+
+              attribute "apps" {
+                type        = list(string)
+                default     = []
+                description = <<-END
+                  The list of app slugs allowed to bypass pull request requirements.
+                END
+              }
             }
           }
 

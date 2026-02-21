@@ -58,6 +58,7 @@ locals {
       merge({
         strict   = null
         contexts = []
+        checks   = []
     }, b.required_status_checks)] : []
   ]
 
@@ -68,8 +69,11 @@ locals {
         dismiss_stale_reviews           = true
         dismissal_users                 = []
         dismissal_teams                 = []
+        dismissal_apps                  = []
         require_code_owner_reviews      = null
         required_approving_review_count = null
+        require_last_push_approval      = null
+        bypass_pull_request_allowances  = {}
     }, b.required_pull_request_reviews)] : []
   ]
 
@@ -287,6 +291,7 @@ resource "github_branch_protection_v3" "branch_protection" {
     content {
       strict   = required_status_checks.value.strict
       contexts = required_status_checks.value.contexts
+      checks   = required_status_checks.value.checks
     }
   }
 
@@ -297,8 +302,20 @@ resource "github_branch_protection_v3" "branch_protection" {
       dismiss_stale_reviews           = required_pull_request_reviews.value.dismiss_stale_reviews
       dismissal_users                 = required_pull_request_reviews.value.dismissal_users
       dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
+      dismissal_apps                  = required_pull_request_reviews.value.dismissal_apps
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
+      require_last_push_approval      = required_pull_request_reviews.value.require_last_push_approval
+
+      dynamic "bypass_pull_request_allowances" {
+        for_each = length(keys(required_pull_request_reviews.value.bypass_pull_request_allowances)) > 0 ? [required_pull_request_reviews.value.bypass_pull_request_allowances] : []
+
+        content {
+          users = try(bypass_pull_request_allowances.value.users, [])
+          teams = try(bypass_pull_request_allowances.value.teams, [])
+          apps  = try(bypass_pull_request_allowances.value.apps, [])
+        }
+      }
     }
   }
 
