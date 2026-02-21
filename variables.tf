@@ -373,6 +373,243 @@ variable "branch_protections_v4" {
   }
 }
 
+variable "rulesets" {
+  description = "(Optional) A list of repository rulesets to apply to the repository. Default is []."
+  type        = any
+
+  # We can't use a detailed type specification due to a terraform limitation. However, this might be changed in a future
+  # Terraform version. See https://github.com/hashicorp/terraform/issues/19898 and https://github.com/hashicorp/terraform/issues/22449
+  #
+  # type = list(object({
+  #   name        = string
+  #   target      = optional(string, "branch")
+  #   enforcement = optional(string, "active")
+  #   conditions = optional(object({
+  #     ref_name = object({
+  #       include = list(string)
+  #       exclude = list(string)
+  #     })
+  #   }))
+  #   bypass_actors = optional(list(object({
+  #     actor_id    = optional(number)
+  #     actor_type  = string
+  #     bypass_mode = optional(string, "always")
+  #   })), [])
+  #   rules = optional(object({
+  #     creation                      = optional(bool, false)
+  #     update                        = optional(bool, false)
+  #     update_allows_fetch_and_merge = optional(bool)
+  #     deletion                      = optional(bool, false)
+  #     required_linear_history       = optional(bool, false)
+  #     required_signatures           = optional(bool, false)
+  #     non_fast_forward              = optional(bool, false)
+  #     branch_name_pattern = optional(object({
+  #       operator = string
+  #       pattern  = string
+  #       name     = optional(string)
+  #       negate   = optional(bool)
+  #     }))
+  #     tag_name_pattern = optional(object({
+  #       operator = string
+  #       pattern  = string
+  #       name     = optional(string)
+  #       negate   = optional(bool)
+  #     }))
+  #     commit_author_email_pattern = optional(object({
+  #       operator = string
+  #       pattern  = string
+  #       name     = optional(string)
+  #       negate   = optional(bool)
+  #     }))
+  #     commit_message_pattern = optional(object({
+  #       operator = string
+  #       pattern  = string
+  #       name     = optional(string)
+  #       negate   = optional(bool)
+  #     }))
+  #     committer_email_pattern = optional(object({
+  #       operator = string
+  #       pattern  = string
+  #       name     = optional(string)
+  #       negate   = optional(bool)
+  #     }))
+  #     required_status_checks = optional(object({
+  #       do_not_enforce_on_create             = optional(bool)
+  #       strict_required_status_checks_policy = optional(bool)
+  #       required_check = list(object({
+  #         context        = string
+  #         integration_id = optional(number)
+  #       }))
+  #     }))
+  #     required_deployments = optional(object({
+  #       required_deployment_environments = optional(list(string), [])
+  #     }))
+  #     pull_request = optional(object({
+  #       dismiss_stale_reviews_on_push     = optional(bool)
+  #       require_code_owner_review         = optional(bool)
+  #       require_last_push_approval        = optional(bool)
+  #       required_approving_review_count   = optional(number)
+  #       required_review_thread_resolution = optional(bool)
+  #       allowed_merge_methods             = optional(list(string))
+  #       required_reviewers = optional(object({
+  #         file_patterns     = list(string)
+  #         minimum_approvals = optional(number, 0)
+  #         reviewer = optional(object({
+  #           id   = number
+  #           type = optional(string, "Team")
+  #         }))
+  #       }))
+  #     }))
+  #     required_code_scanning = optional(object({
+  #       required_code_scanning_tool = list(object({
+  #         tool                      = optional(string)
+  #         alerts_threshold          = optional(string)
+  #         security_alerts_threshold = optional(string)
+  #       }))
+  #     }))
+  #     file_path_restriction = optional(object({
+  #       restricted_file_paths = optional(list(string), [])
+  #     }))
+  #     file_extension_restriction = optional(object({
+  #       restricted_file_extensions = optional(list(string), [])
+  #     }))
+  #     max_file_path_length = optional(object({
+  #       max_file_path_length = optional(number)
+  #     }))
+  #     max_file_size = optional(object({
+  #       max_file_size = optional(number)
+  #     }))
+  #     merge_queue = optional(object({
+  #       check_response_timeout_minutes    = optional(number)
+  #       grouping_strategy                 = optional(string)
+  #       max_entries_to_build              = optional(number)
+  #       max_entries_to_merge              = optional(number)
+  #       merge_method                      = optional(string)
+  #       min_entries_to_merge              = optional(number)
+  #       min_entries_to_merge_wait_minutes = optional(number)
+  #     }))
+  #     copilot_code_review = optional(object({
+  #       review_on_push             = optional(bool)
+  #       review_draft_pull_requests = optional(bool)
+  #     }))
+  #   }))
+  # }))
+
+  default = []
+
+  # Example:
+  # rulesets = [
+  #   {
+  #     name        = "protect-main"
+  #     target      = "branch"
+  #     enforcement = "active"
+  #     conditions = {
+  #       ref_name = {
+  #         include = ["~DEFAULT_BRANCH"]
+  #         exclude = ["refs/heads/chore/*"]
+  #       }
+  #     }
+  #     rules = {
+  #       required_linear_history = true
+  #       required_status_checks = {
+  #         strict_required_status_checks_policy = true
+  #         required_check = [
+  #           { context = "ci/test" }
+  #         ]
+  #       }
+  #       required_signatures = true
+  #     }
+  #   }
+  # ]
+
+  validation {
+    condition     = alltrue([for r in var.rulesets : try(r.name != "", false)])
+    error_message = "Each ruleset must set a non-empty name."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      contains(["branch", "tag", "push"], try(r.target, "branch"))
+    ])
+    error_message = "Ruleset target must be \"branch\", \"tag\", or \"push\"."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      contains(["disabled", "active", "evaluate"], try(r.enforcement, "active"))
+    ])
+    error_message = "Ruleset enforcement must be \"disabled\", \"active\", or \"evaluate\"."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      alltrue([
+        for actor in try(r.bypass_actors, []) :
+        contains(["Integration", "Team", "User", "OrganizationAdmin", "RepositoryRole", "DeployKey"], try(actor.actor_type, ""))
+      ])
+    ])
+    error_message = "Each bypass_actors.actor_type must be Integration, Team, User, OrganizationAdmin, RepositoryRole, or DeployKey."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      try(r.rules.commit_message_pattern == null, true) || (
+        contains(["starts_with", "ends_with", "contains", "regex"], r.rules.commit_message_pattern.operator) &&
+        length(try(r.rules.commit_message_pattern.pattern, "")) > 0
+      )
+    ])
+    error_message = "rules.commit_message_pattern requires operator \"starts_with\", \"ends_with\", \"contains\", or \"regex\" and a non-empty pattern."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      try(r.rules.branch_name_pattern == null, true) || (
+        contains(["starts_with", "ends_with", "contains", "regex"], r.rules.branch_name_pattern.operator) &&
+        length(try(r.rules.branch_name_pattern.pattern, "")) > 0
+      )
+    ])
+    error_message = "rules.branch_name_pattern requires operator \"starts_with\", \"ends_with\", \"contains\", or \"regex\" and a non-empty pattern."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      try(r.rules.tag_name_pattern == null, true) || (
+        contains(["starts_with", "ends_with", "contains", "regex"], r.rules.tag_name_pattern.operator) &&
+        length(try(r.rules.tag_name_pattern.pattern, "")) > 0
+      )
+    ])
+    error_message = "rules.tag_name_pattern requires operator \"starts_with\", \"ends_with\", \"contains\", or \"regex\" and a non-empty pattern."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      try(r.rules.commit_author_email_pattern == null, true) || (
+        contains(["starts_with", "ends_with", "contains", "regex"], r.rules.commit_author_email_pattern.operator) &&
+        length(try(r.rules.commit_author_email_pattern.pattern, "")) > 0
+      )
+    ])
+    error_message = "rules.commit_author_email_pattern requires operator \"starts_with\", \"ends_with\", \"contains\", or \"regex\" and a non-empty pattern."
+  }
+
+  validation {
+    condition = alltrue([
+      for r in var.rulesets :
+      try(r.rules.committer_email_pattern == null, true) || (
+        contains(["starts_with", "ends_with", "contains", "regex"], r.rules.committer_email_pattern.operator) &&
+        length(try(r.rules.committer_email_pattern.pattern, "")) > 0
+      )
+    ])
+    error_message = "rules.committer_email_pattern requires operator \"starts_with\", \"ends_with\", \"contains\", or \"regex\" and a non-empty pattern."
+  }
+}
+
 variable "issue_labels_merge_with_github_labels" {
   description = "(Optional) Specify if you want to merge and control githubs default set of issue labels."
   type        = bool

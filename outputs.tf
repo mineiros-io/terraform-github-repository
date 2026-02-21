@@ -41,6 +41,11 @@ output "branches" {
   description = "A map of branch objects keyed by branch name."
 }
 
+output "ruleset_ids" {
+  value       = { for k, v in github_repository_ruleset.ruleset : k => v.id }
+  description = "A map of repository ruleset IDs keyed by the ruleset key."
+}
+
 output "collaborators" {
   value       = github_repository_collaborator.collaborator
   description = "A map of collaborator objects keyed by collaborator.name."
