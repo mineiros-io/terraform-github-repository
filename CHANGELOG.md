@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for repository rulesets (`var.rulesets`) with full coverage of branch, tag, and push targets
+- Add `ruleset_ids` output for referencing created rulesets
+- Add `test/unit-ruleset/` test fixture and `TestUnitRuleset` Go test
+- Add `examples/with-ruleset/` example
+
+### Changed
+
+- BREAKING CHANGE: Bump minimum GitHub provider version from `>= 4.20, < 6.0` to `>= 6.11, < 7.0`
+- Remove unsupported branch protection v4 arguments (`blocks_creations` and `push_restrictions`) for provider v6.x compatibility
+- Update documentation badges and provider notes to reflect v6.11+ requirement
+
 ## [0.18.0]
 
 ### Added

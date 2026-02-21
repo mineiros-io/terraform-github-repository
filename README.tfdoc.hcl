@@ -21,8 +21,8 @@ header {
   }
 
   badge "tf-gh" {
-    image = "https://img.shields.io/badge/GH-4.10+-F8991D.svg?logo=terraform"
-    url   = "https://github.com/terraform-providers/terraform-provider-github/releases"
+    image = "https://img.shields.io/badge/GH-6.11+-F8991D.svg?logo=terraform"
+    url   = "https://github.com/integrations/terraform-provider-github/releases"
     text  = "Github Provider Version"
   }
 
@@ -39,11 +39,11 @@ section {
   content = <<-END
     A [Terraform] module for creating a public or private repository on [Github].
 
-    **_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v4.20 and above from `integrations/github`._**
+    **_This module supports Terraform v1.x and is compatible with the Official Terraform GitHub Provider v6.11 and above from `integrations/github`._**
 
     **Attention: This module is incompatible with the Hashicorp GitHub Provider! The latest version of this module supporting `hashicorp/github` provider is `~> 0.10.0`**
 
-    ** Note: Versions 5.3.0, 5.4.0, and 5.5.0 of the Terraform Github Provider have broken branch protections support and should not be used.**
+    ** Note: This module now supports the latest GitHub provider versions (up to v6.x). For rulesets support and the most stable experience, use provider version 6.11 or later.**
   END
 
   section {
@@ -86,6 +86,7 @@ section {
       - **Extended Repository Features**:
         Branches,
         Branch Protection,
+        Repository Rulesets,
         Issue Labels,
         Handle Github Default Issue Labels,
         Collaborators,
@@ -971,6 +972,483 @@ section {
       }
 
       section {
+        title = "Rulesets Configuration"
+
+        variable "rulesets" {
+          type        = list(ruleset)
+          default     = []
+          description = <<-END
+            Configure repository-level rulesets (GitHub rulesets API). Each element represents one ruleset applied to this repository.
+            Requires a token with repository administration rights (or GitHub App with equivalent permissions).
+            Existing rulesets can be imported with `terraform import github_repository_ruleset.ruleset["00-my-ruleset"] <repo_name>:<ruleset_id>`.
+          END
+
+          attribute "name" {
+            type        = string
+            required    = true
+            description = <<-END
+              Display name of the ruleset.
+            END
+          }
+
+          attribute "target" {
+            type        = string
+            default     = "branch"
+            description = <<-END
+              Scope of the ruleset: `branch`, `tag`, or `push`.
+            END
+          }
+
+          attribute "enforcement" {
+            type        = string
+            default     = "active"
+            description = <<-END
+              Enforcement mode: `disabled`, `active`, or `evaluate`. Note that `evaluate` is only available for organisations with a GitHub Enterprise plan.
+            END
+          }
+
+          attribute "conditions" {
+            type        = object(ruleset_conditions)
+            default     = { ref_name = { include = ["~DEFAULT_BRANCH"], exclude = [] } }
+            description = <<-END
+              Target refs to which the ruleset applies (supports `~DEFAULT_BRANCH` and glob-style patterns). Optional for `push` target rulesets — when omitted, the conditions block is not rendered.
+            END
+
+            attribute "ref_name" {
+              type        = object(ruleset_ref_name)
+              description = "Reference name filters."
+
+              attribute "include" {
+                type        = list(string)
+                default     = ["~DEFAULT_BRANCH"]
+                description = "Refs included by the ruleset (supports glob and ~DEFAULT_BRANCH)."
+              }
+
+              attribute "exclude" {
+                type        = list(string)
+                default     = []
+                description = "Refs excluded from the ruleset."
+              }
+            }
+          }
+
+          attribute "bypass_actors" {
+            type        = list(any)
+            description = <<-END
+              Optional list of actors allowed to bypass the ruleset. `actor_type` can be Integration, Team, User, OrganizationAdmin, RepositoryRole, or DeployKey. `bypass_mode` is usually `always`, `pull_request`, or `exempt`.
+            END
+
+            attribute "actor_type" {
+              type        = string
+              description = "Integration, Team, User, OrganizationAdmin, RepositoryRole, or DeployKey."
+            }
+
+            attribute "actor_id" {
+              type        = number
+              description = "Numeric ID of the actor (team/integration/user id)."
+            }
+
+            attribute "bypass_mode" {
+              type        = string
+              description = "Typically `always`, `pull_request`, or `exempt`."
+            }
+          }
+
+          attribute "rules" {
+            type        = object(ruleset_rules)
+            description = <<-END
+              Set of rules enforced by the ruleset. Unspecified flags default to `false`; nested blocks are optional.
+            END
+
+            attribute "creation" {
+              type        = bool
+              description = "Block repository creations that match the conditions."
+            }
+
+            attribute "update" {
+              type        = bool
+              description = "Block direct updates on matching refs."
+            }
+
+            attribute "update_allows_fetch_and_merge" {
+              type        = bool
+              description = "Allow fetch + merge when update is blocked."
+            }
+
+            attribute "deletion" {
+              type        = bool
+              description = "Prevent deletions on matching refs."
+            }
+
+            attribute "required_linear_history" {
+              type        = bool
+              description = "Enforce linear history."
+            }
+
+            attribute "required_signatures" {
+              type        = bool
+              description = "Require signed commits."
+            }
+
+            attribute "non_fast_forward" {
+              type        = bool
+              description = "Disallow force-pushes."
+            }
+
+            attribute "required_status_checks" {
+              type        = object(ruleset_required_status_checks)
+              description = "Status checks required before merge."
+
+              attribute "strict_required_status_checks_policy" {
+                type        = bool
+                description = "Require branches up to date before merge."
+              }
+
+              attribute "do_not_enforce_on_create" {
+                type        = bool
+                description = "Skip enforcement on repository creation."
+              }
+
+              attribute "required_check" {
+                type        = list(any)
+                description = "List of required checks (context/integration_id)."
+
+                attribute "context" {
+                  type        = string
+                  description = "Status check context name."
+                }
+
+                attribute "integration_id" {
+                  type        = number
+                  description = "Integration ID for the check (if applicable)."
+                }
+              }
+            }
+
+            attribute "required_deployments" {
+              type        = object(ruleset_required_deployments)
+              description = "Deployment environments that must succeed."
+
+              attribute "required_deployment_environments" {
+                type        = list(string)
+                description = "Environment names required before merging."
+              }
+            }
+
+            attribute "pull_request" {
+              type        = object(ruleset_pull_request)
+              description = "Pull request review requirements."
+
+              attribute "dismiss_stale_reviews_on_push" {
+                type        = bool
+                description = "Dismiss reviews when new commits are pushed."
+              }
+
+              attribute "require_code_owner_review" {
+                type        = bool
+                description = "Require code owner approval."
+              }
+
+              attribute "require_last_push_approval" {
+                type        = bool
+                description = "Require approval from someone other than last pusher."
+              }
+
+              attribute "required_approving_review_count" {
+                type        = number
+                description = "Number of required approvals."
+              }
+
+              attribute "required_review_thread_resolution" {
+                type        = bool
+                description = "Require all review threads resolved."
+              }
+
+              attribute "allowed_merge_methods" {
+                type        = list(string)
+                description = "Allowed merge methods (e.g. `merge`, `squash`, `rebase`)."
+              }
+
+              attribute "required_reviewers" {
+                type        = object(ruleset_required_reviewers)
+                description = "Require specific reviewers to approve matching files."
+
+                attribute "file_patterns" {
+                  type        = list(string)
+                  description = "File patterns (fnmatch syntax) that must be approved by the reviewer."
+                }
+
+                attribute "minimum_approvals" {
+                  type        = number
+                  description = "Minimum number of approvals required (0 for optional)."
+                }
+
+                attribute "reviewer" {
+                  type        = object(ruleset_reviewer)
+                  description = "Reviewer identity."
+
+                  attribute "id" {
+                    type        = number
+                    description = "Team ID of the reviewer."
+                  }
+
+                  attribute "type" {
+                    type        = string
+                    description = "Reviewer type, currently only `Team` is supported."
+                  }
+                }
+              }
+            }
+
+            attribute "required_code_scanning" {
+              type        = object(ruleset_required_code_scanning)
+              description = "Require code scanning results."
+
+              attribute "required_code_scanning_tool" {
+                type        = list(any)
+                description = "At least one tool is required."
+
+                attribute "tool" {
+                  type        = string
+                  description = "Identifier of the code scanning tool."
+                }
+
+                attribute "alerts_threshold" {
+                  type        = string
+                  description = "Minimum alert severity to block."
+                }
+
+                attribute "security_alerts_threshold" {
+                  type        = string
+                  description = "Minimum security alert severity to block."
+                }
+              }
+            }
+
+            attribute "commit_message_pattern" {
+              type        = object(ruleset_commit_message_pattern)
+              description = "Pattern enforcement for commit messages."
+
+              attribute "operator" {
+                type        = string
+                description = "One of `starts_with`, `ends_with`, `contains`, or `regex`."
+              }
+
+              attribute "pattern" {
+                type        = string
+                description = "Regular expression applied to commit messages."
+              }
+
+              attribute "name" {
+                type        = string
+                description = "Display name for the rule (optional)."
+              }
+
+              attribute "negate" {
+                type        = bool
+                description = "Invert the match to block matching messages."
+              }
+            }
+
+            attribute "commit_author_email_pattern" {
+              type        = object(ruleset_commit_author_email_pattern)
+              description = "Pattern enforcement for commit author email."
+
+              attribute "operator" {
+                type        = string
+                description = "One of `starts_with`, `ends_with`, `contains`, or `regex`."
+              }
+
+              attribute "pattern" {
+                type        = string
+                description = "Regular expression applied to author emails."
+              }
+
+              attribute "name" {
+                type        = string
+                description = "Display name for the rule (optional)."
+              }
+
+              attribute "negate" {
+                type        = bool
+                description = "Invert the match to block matching emails."
+              }
+            }
+
+            attribute "committer_email_pattern" {
+              type        = object(ruleset_committer_email_pattern)
+              description = "Pattern enforcement for committer email."
+
+              attribute "operator" {
+                type        = string
+                description = "One of `starts_with`, `ends_with`, `contains`, or `regex`."
+              }
+
+              attribute "pattern" {
+                type        = string
+                description = "Regular expression applied to committer emails."
+              }
+
+              attribute "name" {
+                type        = string
+                description = "Display name for the rule (optional)."
+              }
+
+              attribute "negate" {
+                type        = bool
+                description = "Invert the match to block matching emails."
+              }
+            }
+
+            attribute "branch_name_pattern" {
+              type        = object(ruleset_branch_name_pattern)
+              description = "Pattern enforcement for branch names."
+
+              attribute "operator" {
+                type        = string
+                description = "One of `starts_with`, `ends_with`, `contains`, or `regex`."
+              }
+
+              attribute "pattern" {
+                type        = string
+                description = "Regular expression applied to branch names."
+              }
+
+              attribute "name" {
+                type        = string
+                description = "Display name for the rule (optional)."
+              }
+
+              attribute "negate" {
+                type        = bool
+                description = "Invert the match to block matching branch names."
+              }
+            }
+
+            attribute "tag_name_pattern" {
+              type        = object(ruleset_tag_name_pattern)
+              description = "Pattern enforcement for tag names."
+
+              attribute "operator" {
+                type        = string
+                description = "One of `starts_with`, `ends_with`, `contains`, or `regex`."
+              }
+
+              attribute "pattern" {
+                type        = string
+                description = "Regular expression applied to tag names."
+              }
+
+              attribute "name" {
+                type        = string
+                description = "Display name for the rule (optional)."
+              }
+
+              attribute "negate" {
+                type        = bool
+                description = "Invert the match to block matching tag names."
+              }
+            }
+
+            attribute "file_path_restriction" {
+              type        = object(ruleset_file_path_restriction)
+              description = "Restrict files by path patterns."
+
+              attribute "restricted_file_paths" {
+                type        = list(string)
+                description = "List of restricted file path patterns."
+              }
+            }
+
+            attribute "file_extension_restriction" {
+              type        = object(ruleset_file_extension_restriction)
+              description = "Restrict files by extension."
+
+              attribute "restricted_file_extensions" {
+                type        = list(string)
+                description = "List of restricted file extensions."
+              }
+            }
+
+            attribute "max_file_path_length" {
+              type        = object(ruleset_max_file_path_length)
+              description = "Set maximum file path length."
+
+              attribute "max_file_path_length" {
+                type        = number
+                description = "Maximum path length."
+              }
+            }
+
+            attribute "max_file_size" {
+              type        = object(ruleset_max_file_size)
+              description = "Set maximum file size."
+
+              attribute "max_file_size" {
+                type        = number
+                description = "Maximum file size in bytes."
+              }
+            }
+
+            attribute "merge_queue" {
+              type        = object(ruleset_merge_queue)
+              description = "Merge queue settings."
+
+              attribute "check_response_timeout_minutes" {
+                type        = number
+                description = "Timeout for checks in minutes."
+              }
+
+              attribute "grouping_strategy" {
+                type        = string
+                description = "Grouping strategy for queue entries."
+              }
+
+              attribute "max_entries_to_build" {
+                type        = number
+                description = "Max queue entries to build."
+              }
+
+              attribute "max_entries_to_merge" {
+                type        = number
+                description = "Max queue entries to merge."
+              }
+
+              attribute "merge_method" {
+                type        = string
+                description = "Merge method used by queue."
+              }
+
+              attribute "min_entries_to_merge" {
+                type        = number
+                description = "Min queue entries before merging."
+              }
+
+              attribute "min_entries_to_merge_wait_minutes" {
+                type        = number
+                description = "Wait time before merging minimal entries."
+              }
+            }
+
+            attribute "copilot_code_review" {
+              type        = object(ruleset_copilot_code_review)
+              description = "Copilot code review settings for pull requests."
+
+              attribute "review_on_push" {
+                type        = bool
+                description = "Enable Copilot review on push events."
+              }
+
+              attribute "review_draft_pull_requests" {
+                type        = bool
+                description = "Enable Copilot review on draft pull requests."
+              }
+            }
+          }
+        }
+      }
+
+      section {
         title = "Issue Labels Configuration"
 
         variable "issue_labels" {
@@ -1264,6 +1742,13 @@ section {
         All repository attributes as returned by the [`github_branch`]
         resource containing all arguments as specified above and the other
         attributes as specified below.
+      END
+    }
+
+    output "ruleset_ids" {
+      type        = map(string)
+      description = <<-END
+        Map of repository ruleset IDs keyed by the ruleset key used in the module.
       END
     }
 
