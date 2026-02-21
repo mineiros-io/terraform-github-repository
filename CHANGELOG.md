@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `checks` argument to `branch_protections_v3` `required_status_checks` (replaces deprecated `contexts`)
 - Add `dismissal_apps` and `require_last_push_approval` to `branch_protections_v3` `required_pull_request_reviews`
 - Add `bypass_pull_request_allowances` block to `branch_protections_v3` `required_pull_request_reviews`
+- Add `allow_update_branch` support for repository configuration
 
 ### Changed
 
@@ -25,11 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove unsupported branch protection v4 arguments (`blocks_creations` and `push_restrictions`) for provider v6.x compatibility
 - Update documentation badges and provider notes to reflect v6.11+ requirement
 - Mark `github_repository_project` resource as deprecated (classic projects API removed upstream)
-
-### Deprecated
-
-- `var.branch_protections_v3` and `github_branch_protection_v3` — use `var.branch_protections_v4` or `var.rulesets` instead
-- `required_status_checks.contexts` in `branch_protections_v3` — use `checks` instead
 
 ## [0.18.0]
 

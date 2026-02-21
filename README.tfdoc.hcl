@@ -217,6 +217,14 @@ section {
         END
       }
 
+      variable "allow_update_branch" {
+        type        = bool
+        default     = false
+        description = <<-END
+          Set to `true` to always suggest updating pull request branches.
+        END
+      }
+
       variable "description" {
         type        = string
         default     = ""
