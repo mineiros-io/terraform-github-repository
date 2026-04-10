@@ -6,11 +6,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 module "repository" {
-  source  = "mineiros-io/repository/github"
-  version = "~> 0.13.0"
+  source = "../../"
 
   module_depends_on = [
-    module.team
+    github_team.team
   ]
 
   name               = "my-public-repository"
@@ -24,14 +23,13 @@ module "repository" {
   allow_rebase_merge = false
   allow_squash_merge = false
   allow_auto_merge   = true
-  has_downloads      = false
   auto_init          = true
   gitignore_template = "Terraform"
   license_template   = "mit"
   topics             = ["terraform", "unit-test"]
 
   admin_team_ids = [
-    module.team.team.id
+    github_team.team.id
   ]
 
   webhooks = [
@@ -47,7 +45,7 @@ module "repository" {
 
   admin_collaborators = ["terraform-test-user-1"]
 
-  branch_protections = [
+  branch_protections_v3 = [
     {
       branch                          = "main"
       enforce_admins                  = true
@@ -61,37 +59,33 @@ module "repository" {
 
       required_pull_request_reviews = {
         dismiss_stale_reviews           = true
-        dismissal_teams                 = [module.team.name]
+        dismissal_teams                 = [github_team.team.slug]
         require_code_owner_reviews      = true
         required_approving_review_count = 1
       }
 
       restrictions = {
-        teams = [module.team.name]
+        teams = [github_team.team.slug]
       }
     }
   ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# TEAM
+# TEAM (native resources — registry team module still requires integrations/github < 6.0)
 # ---------------------------------------------------------------------------------------------------------------------
 
-module "team" {
-  source  = "mineiros-io/team/github"
-  version = "~> 0.8.0"
-
+resource "github_team" "team" {
   name        = "DevOps"
   description = "The DevOps Team"
   privacy     = "secret"
+}
 
-  # TEAM MEMBERSHIP
-  # We are adding a member to this team: "terraform-test-user-2".
-  # This existing users and already member of the GitHub Organization "terraform-test" that
-  # is an Organization managed by Mineiros.io to run integration tests with Terratest.
-  members = [
-    "terraform-test-user-2",
-  ]
+resource "github_team_membership" "member" {
+  for_each = toset(["terraform-test-user-2"])
+  team_id  = github_team.team.id
+  username = each.value
+  role     = "member"
 }
 
 # ------------------------------------------------------------------------------

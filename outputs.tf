@@ -46,11 +46,6 @@ output "collaborators" {
   description = "A map of collaborator objects keyed by collaborator.name."
 }
 
-output "projects" {
-  value       = github_repository_project.repository_project
-  description = "A map of projects keyed by project input id."
-}
-
 output "issue_labels" {
   value       = github_issue_label.label
   description = "A map of issue labels keyed by label input id or name."

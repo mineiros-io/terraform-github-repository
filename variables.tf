@@ -102,12 +102,6 @@ variable "delete_branch_on_merge" {
   default     = null
 }
 
-variable "has_downloads" {
-  description = "(Optional) Set to true to enable the (deprecated) downloads features on the repository. (Default: false)"
-  type        = bool
-  default     = null
-}
-
 variable "auto_init" {
   description = "(Optional) Wether or not to produce an initial commit in the repository. (Default: true)"
   type        = bool
@@ -168,12 +162,16 @@ variable "extra_topics" {
 }
 
 variable "template" {
-  description = "(Optional) Template repository to use. (Default: {})"
-  type = object({
-    owner      = string
-    repository = string
-  })
-  default = null
+  description = "(Optional) Template repository to use: an object with `owner` and `repository`. (Default: null)"
+  type        = any
+  default     = null
+
+  validation {
+    condition = var.template == null || (
+      try(var.template.owner, null) != null && try(var.template.repository, null) != null
+    )
+    error_message = "When set, template must include owner and repository."
+  }
 }
 
 variable "admin_collaborators" {
@@ -386,12 +384,16 @@ variable "issue_labels_create" {
 }
 
 variable "issue_labels" {
-  description = "(Optional) Configure a GitHub issue label resource."
-  type = list(object({
-    name        = string
-    description = string
-    color       = string
-  }))
+  description = "(Optional) Configure a GitHub issue label resource. Each element is an object with `name`, `description`, and `color` (strings)."
+  type        = any
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for l in var.issue_labels : try(l.name, null) != null && try(l.description, null) != null && try(l.color, null) != null
+    ])
+    error_message = "Each issue label must set name, description, and color."
+  }
 
   # Example:
   # issue_labels = [
@@ -406,8 +408,6 @@ variable "issue_labels" {
   #     color       = "1dc34f"
   #   }
   # ]
-
-  default = []
 }
 
 variable "deploy_keys" {
@@ -441,24 +441,6 @@ variable "deploy_keys_computed" {
   #     title     = "CI User Deploy Key"
   #     key       = computed.resource
   #     read_only = true
-  #   }
-  # ]
-
-  default = []
-}
-
-variable "projects" {
-  description = "(Optional) Create and manage projects for GitHub repository."
-  type = list(object({
-    name = string
-    body = string
-  }))
-
-  # Example:
-  # projects = [
-  #   {
-  #     name = "Testproject"
-  #     body = "This is a fancy test project for testing"
   #   }
   # ]
 
@@ -522,10 +504,15 @@ variable "encrypted_secrets" {
 
 variable "autolink_references" {
   description = "(Optional) Configuring autolink references. For details please check: https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_autolink_reference"
-  type = list(object({
-    key_prefix          = string
-    target_url_template = string
-  }))
+  type        = any
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for r in var.autolink_references : try(r.key_prefix, null) != null && try(r.target_url_template, null) != null
+    ])
+    error_message = "Each autolink reference must set key_prefix and target_url_template."
+  }
 
   # Example:
   # autolink_references = [
@@ -534,8 +521,6 @@ variable "autolink_references" {
   #     target_url_template = "https://hello.there/TICKET?query=<num>"
   #   }
   # ]
-
-  default = []
 }
 
 variable "vulnerability_alerts" {

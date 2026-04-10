@@ -10,7 +10,7 @@ locals {
   private_visibility     = local.private ? "private" : "public"
   visibility             = var.visibility == null ? lookup(var.defaults, "visibility", local.private_visibility) : var.visibility
   has_issues             = var.has_issues == null ? lookup(var.defaults, "has_issues", false) : var.has_issues
-  has_projects           = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : length(var.projects) > 0 ? true : var.has_projects
+  has_projects           = var.has_projects == null ? lookup(var.defaults, "has_projects", false) : var.has_projects
   has_wiki               = var.has_wiki == null ? lookup(var.defaults, "has_wiki", false) : var.has_wiki
   allow_merge_commit     = var.allow_merge_commit == null ? lookup(var.defaults, "allow_merge_commit", true) : var.allow_merge_commit
   allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
@@ -18,7 +18,6 @@ locals {
   allow_auto_merge       = var.allow_auto_merge == null ? lookup(var.defaults, "allow_auto_merge", false) : var.allow_auto_merge
   delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", true) : var.delete_branch_on_merge
   is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
-  has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
   auto_init              = var.auto_init == null ? lookup(var.defaults, "auto_init", true) : var.auto_init
   gitignore_template     = var.gitignore_template == null ? lookup(var.defaults, "gitignore_template", "") : var.gitignore_template
   license_template       = var.license_template == null ? lookup(var.defaults, "license_template", "") : var.license_template
@@ -70,6 +69,7 @@ locals {
         dismissal_teams                 = []
         require_code_owner_reviews      = null
         required_approving_review_count = null
+        require_last_push_approval      = null
     }, b.required_pull_request_reviews)] : []
   ]
 
@@ -102,7 +102,6 @@ resource "github_repository" "repository" {
   allow_auto_merge       = local.allow_auto_merge
   delete_branch_on_merge = local.delete_branch_on_merge
   is_template            = local.is_template
-  has_downloads          = local.has_downloads
   auto_init              = local.auto_init
   gitignore_template     = local.gitignore_template
   license_template       = local.license_template
@@ -202,12 +201,22 @@ resource "github_branch_protection" "branch_protection" {
 
   allows_deletions                = try(var.branch_protections_v4[each.value].allows_deletions, false)
   allows_force_pushes             = try(var.branch_protections_v4[each.value].allows_force_pushes, false)
-  blocks_creations                = try(var.branch_protections_v4[each.value].blocks_creations, false)
   enforce_admins                  = try(var.branch_protections_v4[each.value].enforce_admins, true)
-  push_restrictions               = try(var.branch_protections_v4[each.value].push_restrictions, [])
   require_conversation_resolution = try(var.branch_protections_v4[each.value].require_conversation_resolution, false)
   require_signed_commits          = try(var.branch_protections_v4[each.value].require_signed_commits, false)
   required_linear_history         = try(var.branch_protections_v4[each.value].required_linear_history, false)
+
+  dynamic "restrict_pushes" {
+    for_each = (
+      length(try(var.branch_protections_v4[each.value].push_restrictions, [])) > 0
+      || try(var.branch_protections_v4[each.value].blocks_creations, false)
+    ) ? [1] : []
+
+    content {
+      blocks_creations = try(var.branch_protections_v4[each.value].blocks_creations, false)
+      push_allowances  = try(var.branch_protections_v4[each.value].push_restrictions, [])
+    }
+  }
 
   dynamic "required_pull_request_reviews" {
     for_each = try([var.branch_protections_v4[each.value].required_pull_request_reviews], [])
@@ -219,6 +228,10 @@ resource "github_branch_protection" "branch_protection" {
       pull_request_bypassers          = try(required_pull_request_reviews.value.pull_request_bypassers, [])
       require_code_owner_reviews      = try(required_pull_request_reviews.value.require_code_owner_reviews, true)
       required_approving_review_count = try(required_pull_request_reviews.value.required_approving_review_count, 0)
+      require_last_push_approval = coalesce(
+        try(required_pull_request_reviews.value.require_last_push_approval, null),
+        false
+      )
     }
   }
 
@@ -273,6 +286,10 @@ resource "github_branch_protection_v3" "branch_protection" {
       dismissal_teams                 = [for t in required_pull_request_reviews.value.dismissal_teams : replace(lower(t), "/[^a-z0-9_]/", "-")]
       require_code_owner_reviews      = required_pull_request_reviews.value.require_code_owner_reviews
       required_approving_review_count = required_pull_request_reviews.value.required_approving_review_count
+      require_last_push_approval = coalesce(
+        try(required_pull_request_reviews.value.require_last_push_approval, null),
+        false
+      )
     }
   }
 
@@ -494,24 +511,6 @@ resource "github_repository_deploy_key" "deploy_key" {
   title      = each.value.title
   key        = each.value.key
   read_only  = each.value.read_only
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# Projects
-# ---------------------------------------------------------------------------------------------------------------------
-
-locals {
-  projects = { for i in var.projects : lookup(i, "id", lower(i.name)) => merge({
-    body = null
-  }, i) }
-}
-
-resource "github_repository_project" "repository_project" {
-  for_each = local.projects
-
-  repository = github_repository.repository.name
-  name       = each.value.name
-  body       = each.value.body
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

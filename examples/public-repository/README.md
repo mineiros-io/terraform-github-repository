@@ -14,8 +14,7 @@ branch protection.
 
 ```hcl
 module "repository" {
-  source  = "mineiros-io/repository/github"
-  version = "~> 0.13.0"
+  source = "../../"
 
   module_depends_on = [
     github_team.team
@@ -31,7 +30,7 @@ module "repository" {
   allow_merge_commit = true
   allow_rebase_merge = false
   allow_squash_merge = false
-  has_downloads      = false
+  allow_auto_merge   = true
   auto_init          = true
   gitignore_template = "Terraform"
   license_template   = "mit"
@@ -54,11 +53,12 @@ module "repository" {
 
   admin_collaborators = ["terraform-test-user-1"]
 
-  branch_protections = [
+  branch_protections_v3 = [
     {
-      branch                 = "main"
-      enforce_admins         = true
-      require_signed_commits = true
+      branch                          = "main"
+      enforce_admins                  = true
+      require_conversation_resolution = true
+      require_signed_commits          = true
 
       required_status_checks = {
         strict   = true
@@ -78,6 +78,19 @@ module "repository" {
     }
   ]
 }
+
+resource "github_team" "team" {
+  name        = "DevOps"
+  description = "The DevOps Team"
+  privacy     = "secret"
+}
+
+resource "github_team_membership" "member" {
+  for_each = toset(["terraform-test-user-2"])
+  team_id  = github_team.team.id
+  username = each.value
+  role     = "member"
+}
 ```
 
 ## Running the example
@@ -86,7 +99,7 @@ module "repository" {
 
 ```bash
 git clone https://github.com/mineiros-io/terraform-github-repository.git
-cd terraform-github-repository/examples/public-respository
+cd terraform-github-repository/examples/public-repository
 ```
 
 ### Initializing Terraform
@@ -108,7 +121,7 @@ Run `terraform destroy` to destroy all resources again.
 
 <!-- References -->
 
-[main.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/main/examples/public-respository/main.tf
+[main.tf]: https://github.com/mineiros-io/terraform-github-repository/blob/main/examples/public-repository/main.tf
 [homepage]: https://mineiros.io/?ref=terraform-github-repository
 [badge-license]: https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg
 [badge-terraform]: https://img.shields.io/badge/terraform-1.x%20|0.15%20|0.14%20|%200.13%20|%200.12.20+-623CE4.svg?logo=terraform
