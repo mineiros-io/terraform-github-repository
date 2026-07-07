@@ -16,6 +16,7 @@ locals {
   allow_rebase_merge     = var.allow_rebase_merge == null ? lookup(var.defaults, "allow_rebase_merge", false) : var.allow_rebase_merge
   allow_squash_merge     = var.allow_squash_merge == null ? lookup(var.defaults, "allow_squash_merge", false) : var.allow_squash_merge
   allow_auto_merge       = var.allow_auto_merge == null ? lookup(var.defaults, "allow_auto_merge", false) : var.allow_auto_merge
+  allow_update_branch    = var.allow_update_branch == null ? lookup(var.defaults, "allow_update_branch", null) : var.allow_update_branch
   delete_branch_on_merge = var.delete_branch_on_merge == null ? lookup(var.defaults, "delete_branch_on_merge", true) : var.delete_branch_on_merge
   is_template            = var.is_template == null ? lookup(var.defaults, "is_template", false) : var.is_template
   has_downloads          = var.has_downloads == null ? lookup(var.defaults, "has_downloads", false) : var.has_downloads
@@ -100,6 +101,7 @@ resource "github_repository" "repository" {
   allow_rebase_merge     = local.allow_rebase_merge
   allow_squash_merge     = local.allow_squash_merge
   allow_auto_merge       = local.allow_auto_merge
+  allow_update_branch    = local.allow_update_branch
   delete_branch_on_merge = local.delete_branch_on_merge
   is_template            = local.is_template
   has_downloads          = local.has_downloads
@@ -125,10 +127,21 @@ resource "github_repository" "repository" {
     for_each = var.pages != null ? [true] : []
 
     content {
-      source {
-        branch = var.pages.branch
-        path   = try(var.pages.path, "/")
+      # build_type "legacy" (default) serves Pages from a branch; "workflow"
+      # serves from a GitHub Actions build.
+      build_type = try(var.pages.build_type, "legacy")
+
+      # Emit a source whenever a branch is given. Legacy Pages require it;
+      # workflow Pages keep a nominal source that GitHub still reports.
+      dynamic "source" {
+        for_each = try(var.pages.branch, null) != null ? [true] : []
+
+        content {
+          branch = var.pages.branch
+          path   = try(var.pages.path, "/")
+        }
       }
+
       cname = try(var.pages.cname, null)
     }
   }

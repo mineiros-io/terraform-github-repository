@@ -155,11 +155,20 @@ section {
           See below for a list of supported arguments.
         END
 
+        attribute "build_type" {
+          type        = string
+          default     = "legacy"
+          description = <<-END
+            How the site is built. Either `legacy` (built from a branch, the
+            default) or `workflow` (built by a GitHub Actions workflow).
+          END
+        }
+
         attribute "branch" {
-          required    = true
           type        = string
           description = <<-END
             The repository branch used to publish the site's source files.
+            Required when `build_type` is `legacy`.
           END
         }
 
@@ -213,6 +222,14 @@ section {
           pull requests on the repository. If you enable auto-merge for a pull
           request, the pull request will merge automatically when all required
           reviews are met and status checks have passed.
+        END
+      }
+
+      variable "allow_update_branch" {
+        type        = bool
+        description = <<-END
+          Set to `true` to always suggest updating pull request branches.
+          When left unset, the repository's current setting is preserved.
         END
       }
 

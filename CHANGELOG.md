@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `allow_update_branch` variable to manage the repository's "Always suggest updating pull request branches" setting.
+- Add `build_type` attribute to the `pages` object (`legacy` or `workflow`) to support GitHub Actions-based Pages. `branch`/`path` are now optional so workflow-based Pages can be configured.
+
 ## [0.18.0]
 
 ### Added

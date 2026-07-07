@@ -140,9 +140,17 @@ See [variables.tf] and [examples/] for details and use-cases.
 
   The `pages` object accepts the following attributes:
 
-  - [**`branch`**](#attr-pages-branch): *(**Required** `string`)*<a name="attr-pages-branch"></a>
+  - [**`build_type`**](#attr-pages-build_type): *(Optional `string`)*<a name="attr-pages-build_type"></a>
+
+    How the site is built. Either `legacy` (built from a branch, the
+    default) or `workflow` (built by a GitHub Actions workflow).
+
+    Default is `"legacy"`.
+
+  - [**`branch`**](#attr-pages-branch): *(Optional `string`)*<a name="attr-pages-branch"></a>
 
     The repository branch used to publish the site's source files.
+    Required when `build_type` is `legacy`.
 
   - [**`path`**](#attr-pages-path): *(Optional `string`)*<a name="attr-pages-path"></a>
 
@@ -181,6 +189,11 @@ See [variables.tf] and [examples/] for details and use-cases.
   reviews are met and status checks have passed.
 
   Default is `false`.
+
+- [**`allow_update_branch`**](#var-allow_update_branch): *(Optional `bool`)*<a name="var-allow_update_branch"></a>
+
+  Set to `true` to always suggest updating pull request branches.
+  When left unset, the repository's current setting is preserved.
 
 - [**`description`**](#var-description): *(Optional `string`)*<a name="var-description"></a>
 
